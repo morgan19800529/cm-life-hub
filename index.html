@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>清迈华人旅居生活全景地图 | Chiang Mai Living Hub</title>
+  
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Leaflet 地图引擎 -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .leaflet-popup-content-wrapper { border-radius: 16px; padding: 4px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); }
+    .leaflet-popup-content { margin: 8px 12px; line-height: 1.45; }
+    input, select, textarea { font-size: 16px !important; }
+    @media (min-width: 768px) {
+      input, select, textarea { font-size: 12px !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 h-[100dvh] w-screen flex flex-col overflow-hidden font-sans select-none">
+
+  <!-- 1. 顶部紧凑状态栏 -->
+  <header class="bg-white border-b border-slate-200 z-30 shadow-xs shrink-0">
+    <div class="px-3.5 py-2 flex justify-between items-center max-w-7xl mx-auto">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold shadow-sm">
+          <i class="fa-solid fa-compass text-sm"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-slate-900 text-sm md:text-base leading-tight">清迈旅居生活指南</h1>
+          <p class="text-[10px] text-slate-400">使领馆 · 移民局 · 21所名校 · 医院商场 · 运动集市</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-1.5">
+        <button onclick="locateUser()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-2.5 py-1.5 rounded-lg border border-slate-300 transition flex items-center gap-1 font-medium">
+          <i class="fa-solid fa-location-crosshairs text-blue-600"></i> 定位
+        </button>
+        <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-2.5 py-1.5 rounded-lg shadow-sm transition">
+          提报
+        </button>
+      </div>
+    </div>
+
+    <!-- 一级全场景横向滑动导航 -->
+    <div class="bg-blue-50/50 border-t border-blue-100/60 px-3 py-1.5 flex items-center gap-1.5 text-xs overflow-x-auto no-scrollbar">
+      <button onclick="setPersonaMode('all')" id="tab-all" class="px-3 py-1 rounded-full bg-blue-600 text-white font-medium shadow-xs shrink-0 text-xs">全部点位 (65)</button>
+      <button onclick="setPersonaMode('gov')" id="tab-gov" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏛️ 政务使馆 (5)</button>
+      <button onclick="setPersonaMode('schools')" id="tab-schools" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🎓 国际学校 (21)</button>
+      <button onclick="setPersonaMode('malls')" id="tab-malls" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🛍️ 购物中心 (4)</button>
+      <button onclick="setPersonaMode('hospitals')" id="tab-hospitals" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏥 重点医院 (4)</button>
+      <button onclick="setPersonaMode('markets_super')" id="tab-markets_super" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🛒 大型超市 (4)</button>
+      <button onclick="setPersonaMode('michelin')" id="tab-michelin" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🍴 米其林美食 (4)</button>
+      <button onclick="setPersonaMode('sports')" id="tab-sports" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏅 体育运动 (14)</button>
+      <button onclick="setPersonaMode('cafes')" id="tab-cafes" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">☕ 特色咖啡 (8)</button>
+      <button onclick="setPersonaMode('markets')" id="tab-markets" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🧺 烟火集市 (9)</button>
+    </div>
+
+    <!-- 搜索与区域过滤 -->
+    <div class="bg-slate-50 border-t border-slate-200 px-3 py-1.5 flex items-center gap-2">
+      <div class="relative flex-1">
+        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="搜大尚泰移民局、领事馆、云南早市、ABA学校、超市..." 
+          class="w-full pl-7 pr-3 py-1 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+          oninput="applyFilter()"
+        />
+      </div>
+
+      <select id="districtFilter" onchange="applyFilter()" class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-700 text-xs focus:outline-none">
+        <option value="">全部区域</option>
+        <option value="三塞">三塞/Central Fest</option>
+        <option value="长康路">长康路 (领馆/云南市场)</option>
+        <option value="古城">古城区 (北门/南门/东门)</option>
+        <option value="宁曼路">宁曼/Maya/清大</option>
+        <option value="湄海">湄海区 (Mae Hia/交通局)</option>
+        <option value="杭东">杭东区 (国际学校走廊)</option>
+        <option value="瓦特盖特">瓦特盖特/麦考密克</option>
+        <option value="运河路">运河路/湄林 (Mae Rim)</option>
+        <option value="沙拉丕">沙拉丕 (Saraphi)</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- 2. 主展示区域：自适应切换 -->
+  <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+    
+    <!-- 列表视图 -->
+    <aside id="listView" class="w-full md:w-[460px] h-full bg-white flex flex-col z-10 shrink-0">
+      <div class="px-3.5 py-1.5 border-b border-slate-100 flex justify-between items-center text-xs text-slate-500 bg-slate-50">
+        <span id="placeCount" class="font-medium">正在加载数据...</span>
+        <span class="text-[11px] text-slate-400">点击卡片看实景/打车</span>
+      </div>
+
+      <div id="placeCardList" class="flex-1 overflow-y-auto divide-y divide-slate-100 p-2.5 space-y-3 pb-24 md:pb-6">
+        <!-- 动态卡片 -->
+      </div>
+    </aside>
+
+    <!-- 地图视图 -->
+    <main id="mapView" class="hidden md:block flex-1 h-full relative z-0 bg-slate-200">
+      <div id="map" class="w-full h-full"></div>
+    </main>
+  </div>
+
+  <!-- 3. 手机端专属：底部浮动切换胶囊 -->
+  <div class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
+    <button onclick="toggleMobileView()" id="mobileToggleBtn" class="bg-slate-900/90 backdrop-blur text-white px-5 py-2.5 rounded-full shadow-xl flex items-center gap-2 text-xs font-semibold active:scale-95 transition tracking-wide border border-white/10">
+      <i class="fa-solid fa-map text-blue-400"></i>
+      <span id="toggleText">切换到大地图模式</span>
+    </button>
+  </div>
+
+  <!-- 4. 纠错提报弹窗 -->
+  <div id="feedbackModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-4 space-y-3 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-pen-to-square text-blue-600"></i> 提交/补充生活点位
+        </h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-lg px-2">✕</button>
+      </div>
+
+      <form onsubmit="handleFeedbackSubmit(event)" class="space-y-2.5 text-xs">
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">地点名称</label>
+          <input required type="text" id="fbName" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50" placeholder="如：某某办事点 或 某某商场" />
+        </div>
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">补充详情</label>
+          <textarea required id="fbContent" rows="3" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50" placeholder="如：办公时间、楼层指引、停车等"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" onclick="closeModal()" class="px-3.5 py-1.5 border border-slate-200 rounded-lg text-slate-600">取消</button>
+          <button type="submit" class="px-4 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">确认提交</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const places = [
+      // ===== 🏛️ 政务与使领馆 (5 处) =====
+      {
+        id: 805,
+        type: "gov",
+        nameZh: "清迈移民局大尚泰分局 (Central Festival 2楼)",
+        nameEn: "Chiang Mai Immigration Office (Central Chiangmai 2F)",
+        nameTh: "จุดบริการตรวจคนเข้าเมืองจังหวัดเชียงใหม่ (เซ็นทรัล เฟสติวัล ชั้น 2)",
+        addressTh: "ชั้น 2 เซ็นทรัล เชียงใหม่ (เฟสติวัล) ถนนซุปเปอร์ไฮเวย์ ต.ฟ้าฮ่าม อ.เมืองเชียงใหม่",
+        lat: 18.8075,
+        lng: 99.0175,
+        district: "三塞",
+        category: "商场冷气空调便民移民服务站",
+        tel: "053-201-755",
+        time: "周一至周五 09:00 - 17:00 (商场内)",
+        highlight: "90天报到(90 Days Report)、旅游签证续签、冷气舒适无需户外暴晒",
+        photo: "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=600&auto=format&fit=crop&q=80",
+        tips: "位于 Central Festival 大尚泰商场 2 楼（靠近邮局与政府便民服务区）。相比机场总局排队更舒服，办完可顺便在商场吃饭买菜，办理90天报到极推荐！",
+        hospitalNear: "位于大尚泰商场内"
+      },
+      {
+        id: 801,
+        type: "gov",
+        nameZh: "中华人民共和国驻清迈总领事馆",
+        nameEn: "Consulate-General of the PRC in Chiang Mai",
+        nameTh: "สถานกงสุลใหญ่แห่งสาธารณรัฐประชาชนจีน ประจำเชียงใหม่",
+        addressTh: "111 ถนนช้างคลาน ต.ช้างคลาน อ.เมืองเชียงใหม่",
+        lat: 18.7725,
+        lng: 99.0020,
+        district: "长康路",
+        category: "中国同胞领事保护与证件大本营",
+        tel: "053-280-380 / 领保081-882-3283",
+        time: "周一至周五 09:00 - 11:30 (证件办理)",
+        highlight: "护照换发补发、公证认证、中国同胞境外紧急领事保护援助",
+        photo: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=600&auto=format&fit=crop&q=80",
+        tips: "在清迈长期旅居的中国同胞主心骨，护照丢失补办、公证书认证及重大涉外急难救助均在此办理。",
+        hospitalNear: "距第一综合医院 500米"
+      },
+      {
+        id: 802,
+        type: "gov",
+        nameZh: "清迈移民局总局 (Chiang Mai Immigration Airport)",
+        nameEn: "Chiang Mai Immigration Office (Airport Headquarter)",
+        nameTh: "สำนักงานตรวจคนเข้าเมืองจังหวัดเชียงใหม่ (สนามบิน)",
+        addressTh: "71 หมู่ 3 ถนนสนามบิน ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7690,
+        lng: 98.9660,
+        district: "古城",
+        category: "全签证业务大本营与回头签总办处",
+        tel: "053-201-755",
+        time: "周一至周五 08:30 - 16:30",
+        highlight: "学生签/陪读签/养老签首次签发与延期、回头签(Re-entry)、住址申报(TM30)",
+        photo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80",
+        tips: "机场旁的移民局总部，各类长期签证（陪读、学生、养老、工作）首次审批及复杂业务的办理中心，建议清早前往取号。",
+        hospitalNear: "紧邻 Central Airport 购物中心"
+      },
+      {
+        id: 803,
+        type: "gov",
+        nameZh: "清迈交通陆路运输署 (驾照考试与更换总局)",
+        nameEn: "Chiang Mai Land Transport Office",
+        nameTh: "สำนักงานขนส่งจังหวัดเชียงใหม่ (แม่เหียะ)",
+        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7390,
+        lng: 98.9620,
+        district: "湄海",
+        category: "泰国驾照考试/换证与车辆管理处",
+        tel: "053-270-412",
+        time: "周一至周五 08:30 - 16:30",
+        highlight: "中国驾照认证换发泰国驾照、驾照2年转5年期、车辆过户与年审纳税",
+        photo: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&auto=format&fit=crop&q=80",
+        tips: "位于湄海与杭东连接段，中国驾照原件加双认证翻译件可在此直接换取泰国合法驾驶证，免路考。",
+        hospitalNear: "距 Big C 杭东店 5分钟"
+      },
+      {
+        id: 804,
+        type: "gov",
+        nameZh: "清迈府政务综合服务中心 (Chiang Mai City Hall)",
+        nameEn: "Chiang Mai Provincial Government Complex",
+        nameTh: "ศูนย์ราชการจังหวัดเชียงใหม่",
+        addressTh: "ถนนโชตนา ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8350,
+        lng: 98.9720,
+        district: "运河路",
+        category: "省府综合政务中心与法律税务处",
+        tel: "053-112-700",
+        time: "周一至周五 08:30 - 16:30",
+        highlight: "劳动厅(工作证办结)、商业厅DBD登记、税务局纳税办理",
+        photo: "https://images.unsplash.com/photo-1577495508048-b635879837f1?w=600&auto=format&fit=crop&q=80",
+        tips: "清迈省府综合办公区，办理在泰正规公司注册、工作证（Work Permit）、税务申报等综合性事务的总部基地。",
+        hospitalNear: "紧邻 700年体育中心与纳空平医院"
+      },
+
+      // ===== 🛍️ 大型综合购物中心 (4 处) =====
+      {
+        id: 901,
+        type: "mall",
+        nameZh: "Central Festival 清迈旗舰尚泰商场",
+        nameEn: "Central Chiang Mai (Fest)",
+        nameTh: "เซ็นทรัล เชียงใหม่ (เฟสติวัล)",
+        addressTh: "99/3 หมู่ 4 ถนนซุปเปอร์ไฮเวย์ ต.ฟ้าฮ่าม อ.เมืองเชียงใหม่",
+        lat: 18.8070,
+        lng: 99.0180,
+        district: "三塞",
+        category: "全清迈规模最大综合性商业地标",
+        tel: "053-998-999",
+        time: "每天 10:00 - 21:30 (周末至22:00)",
+        highlight: "2楼移民局便民站、IMAX影城、海底捞、MUJI、优衣库、真冰场",
+        photo: "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=600&auto=format&fit=crop&q=80",
+        tips: "清迈设施最完备的顶流商场，内设二楼移民局，吹冷气办签证逛街聚餐一站搞定。",
+        hospitalNear: "距清迈曼谷医院 5分钟"
+      },
+      {
+        id: 902,
+        type: "mall",
+        nameZh: "Maya 玛雅生活购物中心 (宁曼地标)",
+        nameEn: "MAYA Lifestyle Shopping Center",
+        nameTh: "เมญ่า ไลฟ์สไตล์ ช้อปปิ้ง เซ็นเตอร์ เชียงใหม่",
+        addressTh: "55 หมู่ 5 ถนนห้วยแก้ว ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8025,
+        lng: 98.9675,
+        district: "宁曼路",
+        category: "宁曼十字路口潮流时尚商场",
+        tel: "052-081-555",
+        time: "每天 10:00 - 22:00",
+        highlight: "顶层落日观景天台、Camp 24小时自习咖啡区、SF Cinema电影院",
+        photo: "https://images.unsplash.com/photo-1567449303078-57ad995bd302?w=600&auto=format&fit=crop&q=80",
+        tips: "宁曼路门户地标，年轻潮流聚集，顶层天台看素帖山落日晚霞极其震撼。",
+        hospitalNear: "距清迈兰医院 1.0km"
+      },
+      {
+        id: 903,
+        type: "mall",
+        nameZh: "Central Chiangmai Airport (机场尚泰)",
+        nameEn: "Central Chiang Mai Airport",
+        nameTh: "เซ็นทรัล เชียงใหม่ แอร์พอร์ต",
+        addressTh: "2 ถนนมหิดล ต.หายยา อ.เมืองเชียงใหม่",
+        lat: 18.7695,
+        lng: 98.9750,
+        district: "古城",
+        category: "西南区老牌综合购物广场",
+        tel: "053-999-199",
+        time: "每天 10:30 - 21:00",
+        highlight: "地下一层Kad Luang泰北文化美食村、大型Major影城、优衣库",
+        photo: "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=600&auto=format&fit=crop&q=80",
+        tips: "临近机场和古城南门，负一层泰北风情美食广场平价地道，手信果干肉干齐全。",
+        hospitalNear: "距清迈移民局总局 500米"
+      },
+      {
+        id: 904,
+        type: "mall",
+        nameZh: "One Nimman 宁曼一号欧风文创街区",
+        nameEn: "One Nimman Lifestyle Community",
+        nameTh: "วัน นิมมาน เชียงใหม่",
+        addressTh: "1 ถนนนิมมานเหมินท์ ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.8000,
+        lng: 98.9680,
+        district: "宁曼路",
+        category: "红砖欧式建筑艺术文创街区",
+        tel: "052-080-900",
+        time: "每天 11:00 - 22:00",
+        highlight: "复古钟楼广场、周末文创市集、高端泰北手工艺品、网美打卡",
+        photo: "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&auto=format&fit=crop&q=80",
+        tips: "充满欧式复古红砖风情的高端街区，晚间经常有摇摆舞派对和现场演奏，文艺情调极浓。",
+        hospitalNear: "距清迈兰医院 1.2km"
+      },
+
+      // ===== 🧺 烟火市集与云南早市 =====
+      {
+        id: 309,
+        type: "market",
+        nameZh: "长康路云南穆斯林早市 (Kad Ban Ho)",
+        nameEn: "Yunnan Muslim Morning Market (Kad Ban Ho)",
+        nameTh: "ตลาดเช้าบ้านฮ่อ (ตลาดจีนฮ่อ) เชียงใหม่",
+        addressTh: "ถนนเจริญประเทศ ซอย 1 ต.ช้างคลาน อ.เมืองเชียงใหม่",
+        lat: 18.7840,
+        lng: 99.0010,
+        district: "长康路",
+        category: "清迈华人味蕾归宿 / 仅周五清晨限定",
+        tel: "",
+        time: "仅每周五早晨 05:30 - 11:00 (早到热气腾腾)",
+        highlight: "地道云南稀豆粉油条、手工卷粉饵丝、牛干巴、自制腐乳酸菜、破酥包",
+        photo: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80",
+        tips: "清迈老华侨凝聚而成的乡情早市！稀豆粉泡油条与小锅米线让人一秒回国，长住华人必逛！",
+        hospitalNear: "距中国驻清迈总领事馆仅 800米"
+      },
+      {
+        id: 301,
+        type: "market",
+        nameZh: "椰林周末市集 (Coconut Market)",
+        nameEn: "Coconut Market Chiang Mai (Kad Kala)",
+        nameTh: "กาดกะลา ตลาดสวนมะพร้าว เชียงใหม่",
+        addressTh: "94 หมู่ 3 ต.ฟ้าฮ่าม อ.เมืองเชียงใหม่",
+        lat: 18.8250,
+        lng: 99.0150,
+        district: "三塞",
+        category: "高耸椰林梦幻水景市集",
+        tel: "",
+        time: "仅周六、周日 08:00 - 14:00",
+        highlight: "椰林水渠倒影、竹桥漫步、新鲜烤椰子与泰北点心",
+        photo: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600&auto=format&fit=crop&q=80",
+        tips: "最浪漫的田园集市，平地好走，各种地道纯天然小吃。",
+        hospitalNear: "距曼谷医院清迈分院 10分钟"
+      },
+      {
+        id: 302,
+        type: "market",
+        nameZh: "真加有机农夫手作市集 (Jing Jai)",
+        nameEn: "Jing Jai (JJ) Weekend Market",
+        nameTh: "จริงใจ มาร์เก็ต เชียงใหม่",
+        addressTh: "45 ถนนอัษฎาธร ต.ป่าตัน อ.เมืองเชียงใหม่",
+        lat: 18.8055,
+        lng: 98.9960,
+        district: "古城",
+        category: "顶流有机生活与手作市集",
+        tel: "053-231-520",
+        time: "周六、周日 06:30 - 14:00",
+        highlight: "农人直供有机蔬果、高品质手作、现场民谣乐队",
+        photo: "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&auto=format&fit=crop&q=80",
+        tips: "旅居常住者每周必逛！有机蔬菜新鲜，环境极其干净。",
+        hospitalNear: "距清迈兰医院 1.5km"
+      },
+      {
+        id: 303,
+        type: "market",
+        nameZh: "悟孟寺后手作艺术家村 (Baan Kang Wat)",
+        nameEn: "Baan Kang Wat Craft Community",
+        nameTh: "บ้านข้างวัด ต.สุเทพ อ.เมืองเชียงใหม่",
+        addressTh: "191 หมู่ 5 ซอยวัดอุโมงค์ ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7760,
+        lng: 98.9480,
+        district: "宁曼路",
+        category: "森林露天剧场艺术手作村",
+        tel: "095-691-6544",
+        time: "周二至周日 10:00 - 18:00",
+        highlight: "圆形露天剧场、陶艺手工坊、独立书店、咖啡屋",
+        photo: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600&auto=format&fit=crop&q=80",
+        tips: "木制吊脚楼环绕着绿茵剧场，独立设计工作室林立。",
+        hospitalNear: "距清迈大学联属医院 8分钟"
+      },
+      {
+        id: 304,
+        type: "market",
+        nameZh: "竹林面包市集 (Nana Jungle Bakery)",
+        nameEn: "Nana Jungle Saturday Market",
+        nameTh: "นานา จังเกิ้ล กาดขนมปังบ้านสวนไผ่",
+        addressTh: "ถนนชลประทาน ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8150,
+        lng: 98.9600,
+        district: "运河路",
+        category: "素帖竹林周六晨间法式面包市集",
+        tel: "",
+        time: "仅每周六 07:00 - 11:00",
+        highlight: "现烤法棍可颂、天然酵母酸包、现煮咖啡",
+        photo: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80",
+        tips: "每周六早晨限定乡村烘焙，刚出炉的面包香气扑鼻。",
+        hospitalNear: "距清迈兰医院 10分钟"
+      },
+      {
+        id: 305,
+        type: "market",
+        nameZh: "周日古城步行街 (Sunday Walking Street)",
+        nameEn: "Sunday Walking Street Night Market",
+        nameTh: "ถนนคนเดินวันอาทิตย์ ท่าแพ เชียงใหม่",
+        addressTh: "ถนนราชดำเนิน ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7878,
+        lng: 98.9930,
+        district: "古城",
+        category: "清迈规模最大的古城周日夜市",
+        tel: "",
+        time: "仅每周日 17:00 - 22:30",
+        highlight: "贯穿塔佩门1公里长街、万人空巷、特色小吃",
+        photo: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80",
+        tips: "最壮观步行街，整街封路，寺庙院内化身小吃街，街头艺人表演精彩。",
+        hospitalNear: "距第一综合医院 1.0km"
+      },
+      {
+        id: 306,
+        type: "market",
+        nameZh: "周六银桥步行街 (Saturday Walking Street)",
+        nameEn: "Saturday Walking Street (Wualai Road)",
+        nameTh: "ถนนคนเดินวันเสาร์ วัวลาย เชียงใหม่",
+        addressTh: "ถนนวัวลาย ต.หายยา อ.เมืองเชียงใหม่",
+        lat: 18.7770,
+        lng: 98.9830,
+        district: "古城",
+        category: "古城南门银匠街周六夜市",
+        tel: "",
+        time: "仅每周六 17:00 - 22:30",
+        highlight: "传统银器工坊、素攀寺银庙夜景、美食长廊",
+        photo: "https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=600&auto=format&fit=crop&q=80",
+        tips: "瓦莱银匠街展开，中途可顺道欣赏全银素攀寺，热闹非凡。",
+        hospitalNear: "距清迈市中心医院 500米"
+      },
+      {
+        id: 307,
+        type: "market",
+        nameZh: "湄海生鲜综合大早市 (Mae Hia Market)",
+        nameEn: "Mae Hia Fresh Market",
+        nameTh: "ตลาดสดแม่เหียะ เชียงใหม่",
+        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7470,
+        lng: 98.9550,
+        district: "湄海",
+        category: "干净优质生鲜综合大菜市",
+        tel: "",
+        time: "每天 05:00 - 20:00",
+        highlight: "极度干净整洁、平价热带水果、新鲜肉禽海鲜、停车位足",
+        photo: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=80",
+        tips: "湄海与杭东片区买菜首选！地面干爽无异味，热带水果价格公道。",
+        hospitalNear: "距曼谷医院清迈分院 10分钟"
+      },
+      {
+        id: 308,
+        type: "market",
+        nameZh: "瓦洛洛百年传统大市场 (Warorot Market)",
+        nameEn: "Warorot Market (Kad Luang)",
+        nameTh: "ตลาดวโรรส (กาดหลวง) เชียงใหม่",
+        addressTh: "ถนนวิชยานนท์ ต.ช้างม่อย อ.เมืองเชียงใหม่",
+        lat: 18.7900,
+        lng: 99.0005,
+        district: "长康路",
+        category: "萍河畔最古老综合批发市场",
+        tel: "",
+        time: "每天 04:00 - 18:00",
+        highlight: "百年老建筑、泰北香肠脆猪皮、果干茶叶批发、民族布料",
+        photo: "https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?w=600&auto=format&fit=crop&q=80",
+        tips: "清迈百年老市集，长辈买果干、茶叶、特产以及日常布艺的批发源头。",
+        hospitalNear: "距第一综合医院 1.0km"
+      },
+
+      // ===== 🎓 核心国际学校与双语学院 (21 所) =====
+      {
+        id: 721,
+        type: "school",
+        nameZh: "ABA 双语学院 (Ambassador Bilingual Academy 湄海)",
+        nameEn: "Ambassador Bilingual Academy (ABA Mae Hia)",
+        nameTh: "สถาบันสองภาษา แอมบาสเดอร์ แม่เหียะ เชียงใหม่",
+        addressTh: "133 หมู่ 2 ต.แม่เหียะ อ.เมืองเชียงใหม่ (Behind Goodview Village)",
+        lat: 18.7510,
+        lng: 98.9460,
+        district: "湄海",
+        category: "美式项目制 + 核心主科纯英文教学",
+        tel: "081-950-6659",
+        time: "周一至周五 08:00 - 16:30",
+        highlight: "紧邻Goodview Village、核心主科全英文授课、重视生活技能与项目制学习",
+        photo: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&auto=format&fit=crop&q=80",
+        tips: "AEG集团旗下湄海校区，离古城和宁曼近，生源国际化，中英文双语过渡友好。",
+        hospitalNear: "距湄海生鲜早市仅 500米"
+      },
+      {
+        id: 701,
+        type: "school",
+        nameZh: "清迈国际学校 (CMIS)",
+        nameEn: "Chiang Mai International School (CMIS)",
+        nameTh: "โรงเรียนนานาชาติเชียงใหม่",
+        addressTh: "13 ถนนเชษฐา ต.วัดเกต อ.เมืองเชียงใหม่",
+        lat: 18.7935,
+        lng: 99.0080,
+        district: "瓦特盖特",
+        category: "老牌美式AP名校 / 基督教背景",
+        tel: "053-242-027",
+        time: "周一至周五 07:30 - 15:30",
+        highlight: "始于1954年历史最悠久、WASC认证、AP升学强校",
+        photo: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&auto=format&fit=crop&q=80",
+        tips: "基督教宣教士创立，学术严谨，地处老城东侧交通便利，常年一位难求。",
+        hospitalNear: "紧邻 McCormick 教会医院"
+      },
+      {
+        id: 702,
+        type: "school",
+        nameZh: "普林国际学校 (Prem Tinsulanonda / PTIS)",
+        nameEn: "Prem Tinsulanonda International School",
+        nameTh: "โรงเรียนนานาชาติเปรม ติณสูลานนท์ เชียงใหม่",
+        addressTh: "234 หมู่ 3 ต.ห้วยทราย อ.แม่ริม เชียงใหม่",
+        lat: 18.9410,
+        lng: 98.9320,
+        district: "运河路",
+        category: "全IB体系豪华寄宿庄园名校",
+        tel: "053-301-500",
+        time: "周一至周五 08:00 - 16:00 (寄宿)",
+        highlight: "100英亩森林农场庄园、全IB(PYP/MYP/DP/CP)、专业网球高尔夫学院",
+        photo: "https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?w=600&auto=format&fit=crop&q=80",
+        tips: "素帖山北麓百亩校园宛如度假村，培养全人格与国际精英视野。",
+        hospitalNear: "距纳空平综合医院 15分钟"
+      },
+      {
+        id: 703,
+        type: "school",
+        nameZh: "兰纳国际学校 (Lanna International / LIST)",
+        nameEn: "Lanna International School Thailand",
+        nameTh: "โรงเรียนนานาชาติลานนา เชียงใหม่",
+        addressTh: "399 หมู่ 2 ต.บ้านแหวน อ.หางดง เชียงใหม่",
+        lat: 18.6940,
+        lng: 98.9220,
+        district: "杭东",
+        category: "老牌英式剑桥A-Level国际学校",
+        tel: "052-000-838",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "30余年英制教育、FOBISIA会员、Cambridge IGCSE & A-Level",
+        photo: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&auto=format&fit=crop&q=80",
+        tips: "杭东走廊核心英制名校，新校区硬件崭新，师资英籍占比高，适合目标英联邦高校家庭。",
+        hospitalNear: "距杭东综合医院 8分钟"
+      },
+      {
+        id: 704,
+        type: "school",
+        nameZh: "恩光国际学校 (Grace International / GIS)",
+        nameEn: "Grace International School (GIS)",
+        nameTh: "โรงเรียนนานาชาติเกรซ เชียงใหม่",
+        addressTh: "88 หมู่ 3 ต.หารแก้ว อ.หางดง เชียงใหม่",
+        lat: 18.6720,
+        lng: 98.9080,
+        district: "杭东",
+        category: "全球最大宣教基督教美制国际学校",
+        tel: "052-088-777",
+        time: "周一至周五 07:45 - 15:15",
+        highlight: "美式圣经世界观、宣教士家庭汇聚、学风淳朴、学费亲民",
+        photo: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80",
+        tips: "注重信仰、爱心与品格操守，基督徒家庭首选。",
+        hospitalNear: "距杭东综合医院 5分钟"
+      },
+      {
+        id: 705,
+        type: "school",
+        nameZh: "潘雅登国际学校 (Panyaden International)",
+        nameEn: "Panyaden International School",
+        nameTh: "โรงเรียนนานาชาติปัญญาเด่น เชียงใหม่",
+        addressTh: "218 หมู่ 2 ต.น้ำแพร่ อ.หางดง เชียงใหม่",
+        lat: 18.7020,
+        lng: 98.9030,
+        district: "杭东",
+        category: "全竹构绿色生态 / 英式+IB Diploma",
+        tel: "053-441-460",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "屡获国际建筑大奖竹建筑、纯天然无塑校园、环保与IB高中",
+        photo: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80",
+        tips: "自然生态学校，莲花竹制体育馆震撼，注重内心宁静、环保责任与双语思维。",
+        hospitalNear: "距杭东综合医院 8分钟"
+      },
+      {
+        id: 706,
+        type: "school",
+        nameZh: "纳空帕亚国际学校 (Nakornpayap / NIS)",
+        nameEn: "Nakornpayap International School (NIS)",
+        nameTh: "โรงเรียนนานาชาตินครพายัพ เชียงใหม่",
+        addressTh: "240 หมู่ 6 ต.สันผีเสื้อ อ.เมืองเชียงใหม่",
+        lat: 18.8350,
+        lng: 98.9950,
+        district: "运河路",
+        category: "老牌世俗美式AP综合国际学校",
+        tel: "053-110-680",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "始于1993年、加州Common Core课程、WASC认证、性价比高",
+        photo: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&auto=format&fit=crop&q=80",
+        tips: "非宗教背景，对国际生包容度高，课外体育艺术活动多。",
+        hospitalNear: "距清迈兰医院 12分钟"
+      },
+      {
+        id: 707,
+        type: "school",
+        nameZh: "协和国际学校 (Unity Concord / UCIS)",
+        nameEn: "Unity Concord International School",
+        nameTh: "โรงเรียนนานาชาติ ยูนิตี้ คอนคอร์ด เชียงใหม่",
+        addressTh: "272 หมู่ 2 ต.หนองผึ้ง อ.สารภี เชียงใหม่",
+        lat: 18.7450,
+        lng: 99.0280,
+        district: "沙拉丕",
+        category: "超大型现代化美式AP国际学校",
+        tel: "052-135-061",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "全套美制AP与STEM实验室、强大英语强化(ESL)支持",
+        photo: "https://images.unsplash.com/photo-1562774053-701939374585?w=600&auto=format&fit=crop&q=80",
+        tips: "ESL英语辅导体系成熟，适合新落地的陪读家庭快速过渡。",
+        hospitalNear: "距曼谷医院清迈分院 8分钟"
+      },
+      {
+        id: 708,
+        type: "school",
+        nameZh: "基督教德国国际学校 (CDSC)",
+        nameEn: "Christian German School Chiang Mai (CDSC)",
+        nameTh: "โรงเรียนนานาชาติคริสเตียนเยอรมัน เชียงใหม่",
+        addressTh: "83/1 หมู่ 2 ต.หนองผึ้ง อ.สารภี เชียงใหม่",
+        lat: 18.7320,
+        lng: 99.0250,
+        district: "沙拉丕",
+        category: "严谨德制DIA / 基督教背景名校",
+        tel: "053-816-624",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "德国海外认证名校、德/英/泰三语、德国高中毕业证(DIA)",
+        photo: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&auto=format&fit=crop&q=80",
+        tips: "小班精英制教学，师生关系温馨，学生毕业可无缝申请欧洲顶尖高校。",
+        hospitalNear: "距曼谷医院清迈分院 10分钟"
+      },
+      {
+        id: 709,
+        type: "school",
+        nameZh: "新加坡国际学校清迈分校 (SISB)",
+        nameEn: "Singapore International School (SISB)",
+        nameTh: "โรงเรียนนานาชาติสิงคโปร์เชียงใหม่",
+        addressTh: "149 หมู่ 2 ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8180,
+        lng: 98.9720,
+        district: "宁曼路",
+        category: "新加坡数理 + 剑桥课程",
+        tel: "052-010-888",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "著名新加坡数学教材、英语/中文/泰语三语并进、数理扎实",
+        photo: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&auto=format&fit=crop&q=80",
+        tips: "重视数理基础，中文课比重大，特别适合注重孩子学术功底的华人家庭。",
+        hospitalNear: "距清迈兰医院 8分钟"
+      },
+      {
+        id: 710,
+        type: "school",
+        nameZh: "美太平洋国际学校 (APIS 主校区)",
+        nameEn: "American Pacific International School",
+        nameTh: "โรงเรียนนานาชาติอเมริกันแปซิฟิก เชียงใหม่",
+        addressTh: "158/1 หมู่ 3 ต.บ้านปง อ.หางดง เชียงใหม่",
+        lat: 18.7520,
+        lng: 98.8830,
+        district: "杭东",
+        category: "美式教育 + 全IB寄宿生态名校",
+        tel: "053-365-303",
+        time: "周一至周五 08:00 - 16:00 (寄宿)",
+        highlight: "素帖山南麓自然校区、全套IB课程、马术与户外探索",
+        photo: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&auto=format&fit=crop&q=80",
+        tips: "校区幽静开阔，体育设施丰富，全寄宿管理培养孩子自律独立。",
+        hospitalNear: "距杭东综合医院 15分钟"
+      },
+      {
+        id: 711,
+        type: "school",
+        nameZh: "梅里顿英国国际学校 (Meritton British)",
+        nameEn: "Meritton British International School",
+        nameTh: "โรงเรียนนานาชาติเมริทตัน บริติช เชียงใหม่",
+        addressTh: "168 หมู่ 7 ต.ป่าแดด อ.เมืองเชียงใหม่",
+        lat: 18.7490,
+        lng: 98.9810,
+        district: "湄海",
+        category: "剑桥英制 + 价值观品格教育 (VbE)",
+        tel: "053-131-119",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "剑桥Primary & Secondary、英国VbE价值观认证、小班教学",
+        photo: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=600&auto=format&fit=crop&q=80",
+        tips: "位于湄海与长康交界，交通便利，注重品格塑造，低龄段口碑好。",
+        hospitalNear: "距第一综合医院 8分钟"
+      },
+      {
+        id: 712,
+        type: "school",
+        nameZh: "华丽国际学校 (Varee Chiangmai / VCIS)",
+        nameEn: "Varee Chiangmai International School",
+        nameTh: "โรงเรียนนานาชาติวารีเชียงใหม่",
+        addressTh: "59 หมู่ 6 ถนนมหิดล ต.หนองหอย อ.เมืองเชียงใหม่",
+        lat: 18.7660,
+        lng: 99.0180,
+        district: "长康路",
+        category: "老牌英式剑桥IGCSE & A-Level名校",
+        tel: "053-140-232",
+        time: "周一至周五 07:45 - 15:30",
+        highlight: "办学历史久、马希敦干道交通便利、性价比优异",
+        photo: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=600&auto=format&fit=crop&q=80",
+        tips: "英制课程严谨规范，学费相对亲民，升学成绩亮眼。",
+        hospitalNear: "距曼谷医院清迈分院 8分钟"
+      },
+      {
+        id: 713,
+        type: "school",
+        nameZh: "美中国际学校 (ACIS)",
+        nameEn: "Americana Chinese International School",
+        nameTh: "โรงเรียนนานาชาติอเมริคาน่า ไชนีส เชียงใหม่",
+        addressTh: "194 หมู่ 3 ต.หนองผึ้ง อ.สารภี เชียงใหม่",
+        lat: 18.7390,
+        lng: 99.0290,
+        district: "沙拉丕",
+        category: "现代化美制AP + 强化汉语双轨",
+        tel: "052-135-069",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "全新科技校园、加州体系、高标准每日中文强化课",
+        photo: "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=600&auto=format&fit=crop&q=80",
+        tips: "美制课程融合正统中文教育，免除家长对中文断档的担忧。",
+        hospitalNear: "距曼谷医院清迈分院 8分钟"
+      },
+      {
+        id: 714,
+        type: "school",
+        nameZh: "兰实大学双语学校 (SBS Chiangmai)",
+        nameEn: "Satit Bilingual School of Rangsit",
+        nameTh: "โรงเรียนสาธิตแห่งมหาวิทยาลัยรังสิต เชียงใหม่",
+        addressTh: "222 หมู่ 2 ถนนเชียงใหม่-หางดง ต.บ้านแหวน อ.หางดง เชียงใหม่",
+        lat: 18.6910,
+        lng: 98.9240,
+        district: "杭东",
+        category: "剑桥双语双轨国际学校",
+        tel: "053-442-208",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "剑桥体系与双语班双轨、依托大学资源、性价比高",
+        photo: "https://images.unsplash.com/photo-1588072432836-e10032774350?w=600&auto=format&fit=crop&q=80",
+        tips: "坐落杭东核心圈，课程选择灵活，师资投入大。",
+        hospitalNear: "紧邻杭东商业区与综合医院"
+      },
+      {
+        id: 715,
+        type: "school",
+        nameZh: "英国和谐国际学校 (BCIS)",
+        nameEn: "British Concordance International School",
+        nameTh: "โรงเรียนนานาชาติบริติช คอนคอร์ดานซ์ เชียงใหม่",
+        addressTh: "ต.หารแก้ว อ.หางดง เชียงใหม่",
+        lat: 18.6650,
+        lng: 98.9050,
+        district: "杭东",
+        category: "英式剑桥全新现代化国际学校",
+        tel: "052-135-088",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "英式国家课程、现代化设施、关怀式小班育人",
+        photo: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80",
+        tips: "杭东南区全新国际学校，适合居住在杭东偏南别墅区的家庭。",
+        hospitalNear: "距杭东综合医院 6分钟"
+      },
+      {
+        id: 716,
+        type: "school",
+        nameZh: "雪松国际基督教学校 (Cedar)",
+        nameEn: "Chiang Mai Cedar International School",
+        nameTh: "โรงเรียนนานาชาติซีดาร์ เชียงใหม่",
+        addressTh: "ต.ออนใต้ อ.สันกำแพง เชียงใหม่",
+        lat: 18.7290,
+        lng: 99.1350,
+        district: "三塞",
+        category: "美式A.C.E.基督教个性化小班学校",
+        tel: "062-638-8162",
+        time: "周一至周五 08:00 - 15:00",
+        highlight: "美式A.C.E.教程、个性化自主节奏、圣经品格塑造",
+        photo: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=600&auto=format&fit=crop&q=80",
+        tips: "位于山甘烹田园，学风敬虔纯朴，学费亲民实惠。",
+        hospitalNear: "距山甘烹综合医院 3km"
+      },
+      {
+        id: 717,
+        type: "school",
+        nameZh: "ABS 双语国际学校 (Ambassador Bilingual)",
+        nameEn: "Ambassador Bilingual School (ABS)",
+        nameTh: "โรงเรียนสองภาษา แอมบาสเดอร์ เชียงใหม่",
+        addressTh: "222 หมู่ 2 ถนนซุปเปอร์ไฮเวย์ ต.หนองผึ้ง อ.สารภี เชียงใหม่",
+        lat: 18.7350,
+        lng: 99.0310,
+        district: "沙拉丕",
+        category: "老牌泰美双轨高性价比双语学校",
+        tel: "053-336-840",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "美国加州核心课程融合泰制、规模宏大学费极亲民",
+        photo: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&auto=format&fit=crop&q=80",
+        tips: "沙拉丕超级公路旁平价名校，华人和泰国家庭基数大，ESL力度足。",
+        hospitalNear: "距曼谷医院清迈分院 8分钟"
+      },
+      {
+        id: 718,
+        type: "school",
+        nameZh: "北方国际蒙特梭利学校 (NIMS)",
+        nameEn: "Northern International Montessori School",
+        nameTh: "โรงเรียนนานาชาติ นอร์ทเทิร์น มอนเตสซอรี่ เชียงใหม่",
+        addressTh: "ต.หนองควาย อ.หางดง เชียงใหม่",
+        lat: 18.7240,
+        lng: 98.9280,
+        district: "杭东",
+        category: "正统国际蒙特梭利 (AMI) 幼小名校",
+        tel: "081-885-8888",
+        time: "周一至周五 08:30 - 15:00",
+        highlight: "纯正AMI教具、混龄教学、田园自然探索生态",
+        photo: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&auto=format&fit=crop&q=80",
+        tips: "杭东蒙氏名校，以儿童为中心，保护专注力与自驱力。",
+        hospitalNear: "距杭东综合医院 10分钟"
+      },
+      {
+        id: 719,
+        type: "school",
+        nameZh: "温菲尔德法国国际学校 (WFIS)",
+        nameEn: "Windfield French International School",
+        nameTh: "โรงเรียนนานาชาติ วินด์ฟิลด์ ฝรั่งเศส เชียงใหม่",
+        addressTh: "ต.หนองควาย อ.หางดง เชียงใหม่",
+        lat: 18.7150,
+        lng: 98.9210,
+        district: "杭东",
+        category: "清迈唯一法制AEFE + IB国际双轨",
+        tel: "053-111-888",
+        time: "周一至周五 08:00 - 15:30",
+        highlight: "法国教育部认证(AEFE)、法/英/泰三语、IB体系贯通",
+        photo: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=600&auto=format&fit=crop&q=80",
+        tips: "法英双母语培养环境，欧洲旅居家庭高度聚集。",
+        hospitalNear: "距黑森林咖啡 5分钟"
+      },
+      {
+        id: 720,
+        type: "school",
+        nameZh: "哈拿基督教国际幼儿园 (HCIK)",
+        nameEn: "Hana Christian International Kindergarten",
+        nameTh: "โรงเรียนอนุบาลนานาชาติคริสเตียนฮานา เชียงใหม่",
+        addressTh: "55 หมู่ 12 ต.หนองควาย อ.หางดง เชียงใหม่",
+        lat: 18.7280,
+        lng: 98.9320,
+        district: "杭东",
+        category: "美制Common Core + 基督教有爱幼教",
+        tel: "053-336-848",
+        time: "周一至周五 08:00 - 15:30 (1-6岁)",
+        highlight: "以基督爱为中心、美国共同核心标准、温馨小班",
+        photo: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80",
+        tips: "温馨的基督教国际幼儿园，环境充满关爱，低龄首选。",
+        hospitalNear: "距杭东综合医院 10分钟"
+      },
+
+      // ===== 🏥 重点医院 (4 处) =====
+      {
+        id: 401,
+        type: "hospital",
+        nameZh: "清迈麦考密克医院 (McCormick Hospital)",
+        nameEn: "McCormick Hospital Chiang Mai",
+        nameTh: "โรงพยาบาลแมคคอร์มิค เชียงใหม่",
+        addressTh: "133 ถนนแก้วนวรัฐ ต.วัดเกต อ.เมืองเชียงใหม่",
+        lat: 18.7940,
+        lng: 99.0065,
+        district: "瓦特盖特",
+        category: "百年教会创办慈善综合医院",
+        tel: "053-921-777",
+        time: "急诊 24 小时 / 门诊 08:00 - 17:00",
+        highlight: "宣教士创办、平价透明、交通方便",
+        photo: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=600&auto=format&fit=crop&q=80",
+        tips: "医护人员极具耐心，看病性价比高，适合长辈就医日常。",
+        hospitalNear: "院内常设基督教牧灵关怀室"
+      },
+      {
+        id: 402,
+        type: "hospital",
+        nameZh: "曼谷医院清迈分院 (Bangkok Hospital)",
+        nameEn: "Bangkok Hospital Chiang Mai (BDMS)",
+        nameTh: "โรงพยาบาลกรุงเทพเชียงใหม่",
+        addressTh: "88/8-9 หมู่ 6 ถนนซุปเปอร์ไฮเวย์ ต.หนองป่าครั่ง อ.เมืองเชียงใหม่",
+        lat: 18.7950,
+        lng: 99.0335,
+        district: "瓦特盖特",
+        category: "国际顶级三甲私立综合医院",
+        tel: "052-089-888",
+        time: "急诊 24 小时 (急救热线 1719)",
+        highlight: "JCI认证、常设中文翻译、直升机停机坪",
+        photo: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&auto=format&fit=crop&q=80",
+        tips: "设备先进，国际保险直付便利，就医零语言障碍。",
+        hospitalNear: "紧邻超级公路枢纽"
+      },
+      {
+        id: 403,
+        type: "hospital",
+        nameZh: "清迈兰医院 (Chiangmai Ram Hospital)",
+        nameEn: "Chiangmai Ram Hospital",
+        nameTh: "โรงพยาบาลเชียงใหม่ ราม",
+        addressTh: "8 ถนนบุญเรืองฤทธิ์ ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7955,
+        lng: 98.9805,
+        district: "古城",
+        category: "古城地标老牌私立综合医院",
+        tel: "053-920-300",
+        time: "急诊 24 小时",
+        highlight: "古城西北角、名医多、配备中文同工",
+        photo: "https://images.unsplash.com/photo-1512678080530-7760d81faba6?w=600&auto=format&fit=crop&q=80",
+        tips: "交通便利，突发身体不适打车5分钟即达。",
+        hospitalNear: "距古城北门 500米"
+      },
+      {
+        id: 404,
+        type: "hospital",
+        nameZh: "玛哈拉吉清大医院 (Suan Dok 松达公立)",
+        nameEn: "Maharaj Nakorn Chiang Mai Hospital",
+        nameTh: "โรงพยาบาลมหาราชนครเชียงใหม่ (สวนดอก)",
+        addressTh: "110 ถนนอินทวโรรส ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7895,
+        lng: 98.9725,
+        district: "宁曼路",
+        category: "清迈大学医学院附属顶级公立",
+        tel: "053-936-150",
+        time: "急诊 24 小时",
+        highlight: "泰北规模最大教学中心、疑难杂症专家汇聚",
+        photo: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=600&auto=format&fit=crop&q=80",
+        tips: "心血管、神经外科泰北最强，医疗学术天花板。",
+        hospitalNear: "距宁曼路 1.0km"
+      },
+
+      // ===== 🛒 核心大型生活超市 (4 处) =====
+      {
+        id: 501,
+        type: "market_super",
+        nameZh: "Rimping 精品超市 (Mae Hia 湄海店)",
+        nameEn: "Rimping Supermarket (Mae Hia)",
+        nameTh: "ริมปิง ซุปเปอร์มาร์เก็ต สาขาแม่เหียะ",
+        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7460,
+        lng: 98.9555,
+        district: "湄海",
+        category: "高端精品进口生鲜超市",
+        tel: "053-806-099",
+        time: "每天 08:00 - 22:00",
+        highlight: "优质有机蔬菜、牛排生鲜、进口奶酪调料全",
+        photo: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=600&auto=format&fit=crop&q=80",
+        tips: "公认品质第一的生鲜超市，中西日韩进口食品齐全。",
+        hospitalNear: "距 ABA 学校 500米"
+      },
+      {
+        id: 502,
+        type: "market_super",
+        nameZh: "Makro 杭东大型仓储超市 (万客隆批发)",
+        nameEn: "Makro Hang Dong Chiang Mai",
+        nameTh: "แม็คโคร สาขาหางดง เชียงใหม่",
+        addressTh: "207 หมู่ 7 ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7360,
+        lng: 98.9540,
+        district: "杭东",
+        category: "超大型会员制仓储批发超市",
+        tel: "053-447-799",
+        time: "每天 06:00 - 22:00",
+        highlight: "大块三文鱼、肉类整箱批发、家庭大宗采买",
+        photo: "https://images.unsplash.com/photo-1534723452862-4c874018d66d?w=600&auto=format&fit=crop&q=80",
+        tips: "大宗采买圣地，肉类海鲜价格极低，做饭家庭必去。",
+        hospitalNear: "距杭东综合医院 8分钟"
+      },
+      {
+        id: 503,
+        type: "market_super",
+        nameZh: "Big C Supercenter (Hang Dong 1 杭东店)",
+        nameEn: "Big C Supercenter Hang Dong 1",
+        nameTh: "บิ๊กซี ซูเปอร์เซ็นเตอร์ สาขาหางดง 1",
+        addressTh: "433/4-5 หมู่ 7 ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7385,
+        lng: 98.9560,
+        district: "杭东",
+        category: "平价生活卖场与美食城",
+        tel: "053-807-100",
+        time: "每天 09:00 - 22:00",
+        highlight: "平价日用品、本土零食特产、带美食广场与药房",
+        photo: "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?w=600&auto=format&fit=crop&q=80",
+        tips: "平价生活大卖场，底层美食城与药妆齐全，居家杂货一站买齐。",
+        hospitalNear: "距交通运输局 5分钟"
+      },
+      {
+        id: 504,
+        type: "market_super",
+        nameZh: "Lotus's 莲花超市 (Kamthieng 花市店)",
+        nameEn: "Lotus's Chiang Mai Kamthieng",
+        nameTh: "โลตัส เชียงใหม่ คำเที่ยง",
+        addressTh: "19 ถนนซุปเปอร์ไฮเวย์ ต.ป่าตัน อ.เมืองเชียงใหม่",
+        lat: 18.8080,
+        lng: 98.9990,
+        district: "古城",
+        category: "北城大型超市与花卉中心",
+        tel: "053-231-100",
+        time: "每天 08:00 - 22:00",
+        highlight: "紧邻JJ市集与清迈最大花市、停车方便",
+        photo: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=80",
+        tips: "逛完 JJ 农夫市集顺道买菜极方便，水果价格公道。",
+        hospitalNear: "距古城北门 1.5km"
+      },
+
+      // ===== 🍴 米其林特色餐厅 (4 处) =====
+      {
+        id: 601,
+        type: "michelin",
+        nameZh: "Khao Soi Mae Sai（湄赛泰北咖喱金面）",
+        nameEn: "Khao Soi Mae Sai (Bib Gourmand)",
+        nameTh: "ข้าวซอยแม่สาย เชียงใหม่",
+        addressTh: "29/1 ถนนราชพฤกษ์ ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8000,
+        lng: 98.9750,
+        district: "宁曼路",
+        category: "米其林必比登连续推荐名店",
+        tel: "053-213-284",
+        time: "周一至周六 08:00 - 16:00",
+        highlight: "清迈第一金面、浓郁椰浆咖喱汤头、软烂牛肉",
+        photo: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80",
+        tips: "浓郁椰香咖喱搭配手作黄面与脆炸金面，一碗50铢惊艳味蕾。",
+        hospitalNear: "距清迈兰医院 800米"
+      },
+      {
+        id: 602,
+        type: "michelin",
+        nameZh: "古城北门凤飞飞猪脚饭 (Chang Phueak)",
+        nameEn: "Chang Phueak Pork Leg Rice",
+        nameTh: "ข้าวขาหมูช้างเผือก เชียงใหม่",
+        addressTh: "ประตูช้างเผือก ถนนมณีนพรัตน์ ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7958,
+        lng: 98.9860,
+        district: "古城",
+        category: "古城地标卤味排队名摊",
+        tel: "081-366-2969",
+        time: "每天 17:00 - 23:00",
+        highlight: "大锅老卤、猪蹄软烂脱骨、溏心蛋酸菜绝配",
+        photo: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80",
+        tips: "牛仔帽老板娘招牌，猪蹄软糯入口即化，肉汁拌香米饭老少皆宜。",
+        hospitalNear: "距市政乒乓球馆 500米"
+      },
+      {
+        id: 603,
+        type: "michelin",
+        nameZh: "Pa Daeng Jin Tup（米其林木槌敲牛肉）",
+        nameEn: "Pa Daeng Jin Tup (Bib Gourmand)",
+        nameTh: "ป้าแดง จิ้นทุบ เชียงใหม่",
+        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7320,
+        lng: 98.9510,
+        district: "杭东",
+        category: "炭烤木槌手打特色牛肉",
+        tel: "081-883-2947",
+        time: "周一至周六 16:30 - 21:00",
+        highlight: "炭烤嫩牛肉、大木槌捶打撕裂肉质纤维、特制蘸酱",
+        photo: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80",
+        tips: "杭东老饕秘藏小店，牛肉捶打后松散细腻，越嚼越香。",
+        hospitalNear: "距杭东综合医院 8分钟"
+      },
+      {
+        id: 604,
+        type: "michelin",
+        nameZh: "SP Chicken 帕辛寺秘制香草烤鸡",
+        nameEn: "SP Chicken (Michelin Recommended)",
+        nameTh: "เอสพี ชิกเก้น เชียงใหม่",
+        addressTh: "ถนนสามล้าน ซอย 1 ต.พระสิงห์ อ.เมืองเชียงใหม่",
+        lat: 18.7880,
+        lng: 98.9810,
+        district: "古城",
+        category: "香草肚包立式炭火慢烤鸡",
+        tel: "081-472-3223",
+        time: "每天 10:00 - 17:00",
+        highlight: "立式炭火慢烤炉、大蒜香草填腹、鸡皮焦脆爆汁",
+        photo: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=600&auto=format&fit=crop&q=80",
+        tips: "古城帕辛寺旁，立式烘烤让鸡皮干爽香脆无油腻，配沙拉极开胃。",
+        hospitalNear: "距第一综合医院 1.2km"
+      },
+
+      // ===== ☕ 特色景观咖啡馆 (8 处) =====
+      {
+        id: 201,
+        type: "cafe",
+        nameZh: "黑森林景观餐厅咖啡 (Khaomao-Khaofang)",
+        nameEn: "Khaomao-Khaofang Black Forest",
+        nameTh: "ข้าวเม่า-ข้าวฟ่าง ป่าในจินตนาการ เชียงใหม่",
+        addressTh: "181 หมู่ 7 ถนนราชพฤกษ์ ต.หนองควาย อ.หางดง เชียงใหม่",
+        lat: 18.7180,
+        lng: 98.9275,
+        district: "杭东",
+        category: "雨林瀑布奇景咖啡",
+        tel: "063-485-7888",
+        time: "每天 11:00 - 15:00 / 17:00 - 21:30",
+        highlight: "真实热带雨林、巨型人造瀑布、水雾弥漫栈道",
+        photo: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop&q=80",
+        tips: "地标级自然生态咖啡餐厅，空气湿润清爽，适合带父母长辈慢步就餐。",
+        hospitalNear: "距杭东综合医院 8分钟"
+      },
+      {
+        id: 202,
+        type: "cafe",
+        nameZh: "Chom 仙境绿野瀑布咖啡 (Chom Cafe)",
+        nameEn: "Chom Cafe and Restaurant",
+        nameTh: "ชม คาเฟ่ แอนด์ เรสเตอรองท์ เชียงใหม่",
+        addressTh: "2/13 หมู่ 2 ถนนสมโภชเชียงใหม่ 700 ปี ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7525,
+        lng: 98.9505,
+        district: "湄海",
+        category: "爱丽丝仙境迷雾森林",
+        tel: "053-271-749",
+        time: "每天 11:00 - 22:00",
+        highlight: "苔藓瀑布、锦鲤游鱼、梦幻水雾、冷气大厅",
+        photo: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=600&auto=format&fit=crop&q=80",
+        tips: "如入爱丽丝漫游仙境，庭院景观打理极佳，冷气充足。",
+        hospitalNear: "距曼谷医院清迈分院 10分钟"
+      },
+      {
+        id: 203,
+        type: "cafe",
+        nameZh: "No.39 湖畔滑梯森林咖啡 (No.39 Cafe)",
+        nameEn: "No.39 Cafe Chiang Mai",
+        nameTh: "นัมเบอร์ 39 คาเฟ่ เชียงใหม่",
+        addressTh: "ซอยวัดอุโมงค์ ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7830,
+        lng: 98.9485,
+        district: "宁曼路",
+        category: "湖畔木屋滑梯咖啡",
+        tel: "091-919-3939",
+        time: "每天 09:30 - 18:30",
+        highlight: "碧绿中央湖、木屋滑梯、现场吉他弹唱",
+        photo: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&auto=format&fit=crop&q=80",
+        tips: "悟孟寺艺术区旁，湖畔木屋午后微风吹拂，适合静坐发呆。",
+        hospitalNear: "距清迈大学联属医院 8分钟"
+      },
+      {
+        id: 204,
+        type: "cafe",
+        nameZh: "红陶古迹庭院咖啡 (Clay Studio)",
+        nameEn: "Clay Studio Coffee in the Garden",
+        nameTh: "เคลย์ สตูดิโอ คอฟฟี่ อิน เดอะ การ์เด้น",
+        addressTh: "36 ถนนพระปกเกล้า ซอย 2 ต.พระสิงห์ อ.เมืองเชียงใหม่",
+        lat: 18.7840,
+        lng: 98.9875,
+        district: "古城",
+        category: "古刹红陶秘境庭院",
+        tel: "053-278-187",
+        time: "每天 08:00 - 17:00",
+        highlight: "红砖古墙、青苔石雕、佛首红陶雕塑、大树绿荫",
+        photo: "https://images.unsplash.com/photo-1545232979-fbf68fe9b1af?w=600&auto=format&fit=crop&q=80",
+        tips: "古城南门内的幽静庭院，满园红陶雕塑，宛如古文明遗迹。",
+        hospitalNear: "距第一综合医院 1.0km"
+      },
+      {
+        id: 205,
+        type: "cafe",
+        nameZh: "Roast8ry 旗舰店 (世界拉花冠军店)",
+        nameEn: "Roast8ry Flagship Specialty Coffee",
+        nameTh: "โรสท์เอททรี แฟลกชิป เชียงใหม่",
+        addressTh: "24/9 ถนนนิมมานเหมินท์ ซอย 17 ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7960,
+        lng: 98.9670,
+        district: "宁曼路",
+        category: "世界拉花冠军精品店",
+        tel: "091-789-3951",
+        time: "每天 08:00 - 17:00",
+        highlight: "世界咖啡拉花冠军主理、骷髅头特调、精品豆",
+        photo: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&auto=format&fit=crop&q=80",
+        tips: "清迈咖啡界名片，意式浓缩与拿铁出品极精细，咖啡迷必去。",
+        hospitalNear: "距清迈兰医院 1.2km"
+      },
+      {
+        id: 206,
+        type: "cafe",
+        nameZh: "清大静心湖畔咖啡 (Living A Dream)",
+        nameEn: "Living A Dream Coffee (Ang Kaew)",
+        nameTh: "ลิฟวิ่ง อะ ดรีม อ่างแก้ว มหาวิทยาลัยเชียงใหม่",
+        addressTh: "อ่างแก้ว มหาวิทยาลัยเชียงใหม่ ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.8060,
+        lng: 98.9515,
+        district: "宁曼路",
+        category: "高山湖景开阔咖啡",
+        tel: "",
+        time: "每天 07:00 - 19:00",
+        highlight: "直面素帖山、清大静心湖全景、湖滨草坪步道",
+        photo: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&auto=format&fit=crop&q=80",
+        tips: "正对素帖山碧绿湖景，傍晚山风清爽，长辈散步首选。",
+        hospitalNear: "紧邻清迈大学联属医院"
+      },
+      {
+        id: 207,
+        type: "cafe",
+        nameZh: "蕨林庭院早午餐咖啡 (Fern Forest)",
+        nameEn: "Fern Forest Cafe Chiang Mai",
+        nameTh: "เฟิร์น ฟอเรสต์ คาเฟ่ เชียงใหม่",
+        addressTh: "54/1 ถนนสิงหราช ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7925,
+        lng: 98.9820,
+        district: "古城",
+        category: "古城百年绿植庭院",
+        tel: "084-616-1144",
+        time: "每天 08:30 - 18:30",
+        highlight: "巨大蕨类、法式烘焙甜点、招牌椰子派清甜",
+        photo: "https://images.unsplash.com/photo-1445116572660-23842988c843?w=600&auto=format&fit=crop&q=80",
+        tips: "古城西北侧经典老牌庭院，绿树流水包裹，招牌椰子派清甜不腻。",
+        hospitalNear: "距清迈兰医院 800米"
+      },
+      {
+        id: 208,
+        type: "cafe",
+        nameZh: "Brandnew Field Good (稻田长木桥咖啡)",
+        nameEn: "Brandnew Field Good Hang Dong",
+        nameTh: "แบรนด์นิว ฟีลด์กู๊ด บ้านปง หางดง",
+        addressTh: "218 หมู่ 2 บ้านปง อ.หางดง เชียงใหม่",
+        lat: 18.7610,
+        lng: 98.8680,
+        district: "杭东",
+        category: "山谷稻田木桥野趣",
+        tel: "097-971-5854",
+        time: "09:00 - 18:00 (周二休)",
+        highlight: "百米木栈桥穿过稻田、远眺青山、山谷微风",
+        photo: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&auto=format&fit=crop&q=80",
+        tips: "位于杭东外侧山谷，长栈桥跨越翠绿稻田，周末踏青好去处。",
+        hospitalNear: "距杭东综合医院 15分钟"
+      },
+
+      // ===== 🏅 体育运动场馆 (14 处) =====
+      {
+        id: 101,
+        type: "sports",
+        nameZh: "文马克乒乓球馆 (市政体育场内)",
+        nameEn: "Boonmark Pingpong Club",
+        nameTh: "สนามปิงปอง บุญมาก (สนามกีฬาเทศบาลนครเชียงใหม่)",
+        addressTh: "สนามกีฬาเทศบาลนครเชียงใหม่ ถนนสนามกีฬา ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.8004,
+        lng: 98.9899,
+        district: "古城",
+        category: "专业室内乒乓球馆",
+        tel: "090-317-9165",
+        time: "每天 13:00 - 21:00",
+        highlight: "多张比赛球台、室内地胶、按次仅40-60铢",
+        photo: "https://images.unsplash.com/photo-1534158914592-062992fbe900?w=600&auto=format&fit=crop&q=80",
+        tips: "清迈核心专业乒乓球地胶球馆，长辈与民间高手云集，下午打擂台气氛好。",
+        hospitalNear: "距清迈兰医院 1.5km"
+      },
+      {
+        id: 102,
+        type: "sports",
+        nameZh: "清迈大学体育中心·乒乓球馆 (2号馆)",
+        nameEn: "CMU Sports Center Gymnasium 2",
+        nameTh: "อาคารพลศึกษา 2 มหาวิทยาลัยเชียงใหม่",
+        addressTh: "มหาวิทยาลัยเชียงใหม่ ถนนสุเทพ ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7950,
+        lng: 98.9520,
+        district: "宁曼路",
+        category: "大学综合体育馆",
+        tel: "053-941-000",
+        time: "周一至周五 16:00 - 21:30 / 周末开放",
+        highlight: "8张比赛球台、挑高开阔通风",
+        photo: "https://images.unsplash.com/photo-1609710228159-0fa9bd7c0827?w=600&auto=format&fit=crop&q=80",
+        tips: "清迈大学主校区素帖山脚下，环境极佳绿树环绕，按次收费约50铢。",
+        hospitalNear: "紧邻清迈大学联属医院"
+      },
+      {
+        id: 103,
+        type: "sports",
+        nameZh: "700年体育场网球中心 (700 Year Tennis)",
+        nameEn: "700th Anniversary Complex Tennis Courts",
+        nameTh: "สนามเทนนิส สนามกีฬาสมโภชเชียงใหม่ 700 ปี",
+        addressTh: "ถนนเลียบคลองชลประทาน ต.ดอนแก้ว อ.แม่ริม เชียงใหม่",
+        lat: 18.8415,
+        lng: 98.9612,
+        district: "运河路",
+        category: "省级综合网球中心",
+        tel: "053-112-301",
+        time: "每天 06:00 - 21:00 (带夜间灯光)",
+        highlight: "10+片标准硬地网球场、更衣淋浴间、大停车场",
+        photo: "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=600&auto=format&fit=crop&q=80",
+        tips: "清迈最高规格网球场地，背靠素帖山脉空气清新，常有长辈与欧美球友常驻。",
+        hospitalNear: "距纳空平综合医院 5分钟"
+      },
+      {
+        id: 104,
+        type: "sports",
+        nameZh: "Rally 室内网球馆 (Mae Hia 湄海)",
+        nameEn: "Rally Tennis Court Mae Hia",
+        nameTh: "แรลลี่ เทนนิส คอร์ท แม่เหียะ",
+        addressTh: "10/10 หมู่ 4 ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7435,
+        lng: 98.9510,
+        district: "湄海",
+        category: "高端室内全遮阳网球馆",
+        tel: "092-246-8889",
+        time: "每天 07:00 - 22:00",
+        highlight: "3片室内硬地球场、空调休息室、避暑防雨全天候",
+        photo: "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=600&auto=format&fit=crop&q=80",
+        tips: "湄海核心区，带顶棚完全不受雨季和正午高温影响，对陪读家庭友好。",
+        hospitalNear: "距曼谷医院清迈分院 10分钟"
+      },
+      {
+        id: 105,
+        type: "sports",
+        nameZh: "金卡纳网球俱乐部 (Gymkhana Club)",
+        nameEn: "Gymkhana Sports Club Tennis Courts",
+        nameTh: "สโมสรยิมคาน่าเชียงใหม่",
+        addressTh: "ถนนราษฎร์อุทิศ ต.วัดเกต อ.เมืองเชียงใหม่",
+        lat: 18.7750,
+        lng: 99.0090,
+        district: "长康路",
+        category: "百年历史会员制俱乐部",
+        tel: "053-241-073",
+        time: "每天 06:30 - 20:00",
+        highlight: "2片硬地网球场、百年古树草坪环绕、英式茶室",
+        photo: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=600&auto=format&fit=crop&q=80",
+        tips: "始于1898年的百年俱乐部，打完球可在露天木屋喝茶吹风，环境典雅静谧。",
+        hospitalNear: "距第一综合医院 8分钟"
+      },
+      {
+        id: 106,
+        type: "sports",
+        nameZh: "700年体育场奥林匹克游泳馆 (50米长池)",
+        nameEn: "700 Year Stadium Olympic Pool",
+        nameTh: "สระว่ายน้ำ สนามกีฬาสมโภชเชียงใหม่ 700 ปี",
+        addressTh: "ถนนเลียบคลองชลประทาน ต.ดอนแก้ว อ.แม่ริม เชียงใหม่",
+        lat: 18.8398,
+        lng: 98.9625,
+        district: "运河路",
+        category: "国家级标准竞赛泳池",
+        tel: "053-112-302",
+        time: "周二至周日 08:30 - 20:00",
+        highlight: "50米10泳道标准长池、遮阳顶棚、水质清澈",
+        photo: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&auto=format&fit=crop&q=80",
+        tips: "专业长池泳馆，有遮阳顶棚避免烈日直晒，长距离游泳爱好者的首选。",
+        hospitalNear: "距纳空平综合医院 5分钟"
+      },
+      {
+        id: 107,
+        type: "sports",
+        nameZh: "兰纳乡村高尔夫度假泳池 (Lanna Sports Pool)",
+        nameEn: "Lanna Golf Club Swimming Pool",
+        nameTh: "สระว่ายน้ำ สนามกอล์ฟลานนา เชียงใหม่",
+        addressTh: "ถนนโชตนา ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8280,
+        lng: 98.9780,
+        district: "古城",
+        category: "园林露天度假泳池",
+        tel: "053-221-744",
+        time: "每天 08:00 - 19:00",
+        highlight: "25米标准露天泳池、高尔夫草坪环绕、人少安静",
+        photo: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=600&auto=format&fit=crop&q=80",
+        tips: "绿化优美安静，非常适合长辈养生慢游放松腰膝。",
+        hospitalNear: "距清迈兰医院 10分钟"
+      },
+      {
+        id: 108,
+        type: "sports",
+        nameZh: "清迈匹克球俱乐部 (Chiang Mai Pickleball)",
+        nameEn: "Chiang Mai Pickleball Club",
+        nameTh: "เชียงใหม่ พิคเคิลบอล คลับ ถนนวัวลาย",
+        addressTh: "177 ถนนวัวลาย ต.หายยา อ.เมืองเชียงใหม่",
+        lat: 18.7765,
+        lng: 98.9835,
+        district: "古城",
+        category: "新兴潮流匹克球据点",
+        tel: "",
+        time: "每天 08:00 - 21:00",
+        highlight: "专业匹克球场地、规则简单、易上手不伤膝关节",
+        photo: "https://images.unsplash.com/photo-1599474924187-334a4ae5bd3c?w=600&auto=format&fit=crop&q=80",
+        tips: "风靡国际的潮流轻运动，负荷适中，非常适合长辈与家庭全龄参与。",
+        hospitalNear: "距第一综合医院 1.2km"
+      },
+      {
+        id: 109,
+        type: "sports",
+        nameZh: "North Arena 综合体育公园 (湄海/杭东)",
+        nameEn: "North Arena Sport Club Chiang Mai",
+        nameTh: "นอร์ธ อารีน่า สปอร์ตคลับ เชียงใหม่",
+        addressTh: "ถนนเลียบคลองชลประทาน ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7380,
+        lng: 98.9480,
+        district: "湄海",
+        category: "西南区大型综合体育场馆",
+        tel: "053-111-999",
+        time: "每天 08:00 - 23:00",
+        highlight: "多片标准室内羽毛球场、乒乓球台、室内足球场",
+        photo: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&auto=format&fit=crop&q=80",
+        tips: "湄海与杭东南区规模最大综合馆，羽毛球、乒乓球齐全，华人长住家庭聚集。",
+        hospitalNear: "距杭东综合医院 8分钟"
+      },
+      {
+        id: 110,
+        type: "sports",
+        nameZh: "清迈羽毛球俱乐部 (Chiang Mai Badminton)",
+        nameEn: "Chiang Mai Badminton Club",
+        nameTh: "สนามแบดมินตันเชียงใหม่",
+        addressTh: "ถนนวัวลาย ต.หายยา อ.เมืองเชียงใหม่",
+        lat: 18.7750,
+        lng: 98.9810,
+        district: "古城",
+        category: "专业室内羽毛球馆",
+        tel: "",
+        time: "每天 09:00 - 23:00",
+        highlight: "12片实木地板球场、防眩目灯光、华人双打多",
+        photo: "https://images.unsplash.com/photo-1613918431703-aa6321f4791b?w=600&auto=format&fit=crop&q=80",
+        tips: "古城南门银桥区旁，木地板保护膝盖，很多旅居家庭在此固定包场。",
+        hospitalNear: "距清迈市中心医院 5分钟"
+      },
+      {
+        id: 111,
+        type: "sports",
+        nameZh: "Renegade 国际台球俱乐部 (美式九球)",
+        nameEn: "Renegade Craft Beer & Billiards",
+        nameTh: "เรเนเกด บิลเลียด เชียงใหม่",
+        addressTh: "ถนนมูลเมือง ซอย 9 ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7928,
+        lng: 98.9918,
+        district: "古城",
+        category: "专业美式台球吧",
+        tel: "081-992-8821",
+        time: "每天 14:00 - 00:00",
+        highlight: "Diamond与Rasson赛级球台、Aramith水晶球、无烟空调",
+        photo: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=600&auto=format&fit=crop&q=80",
+        tips: "清迈品质极高的美式球馆，冷气充足无烟味，各国高手常在此切磋。",
+        hospitalNear: "距第一综合医院 1.5km"
+      },
+      {
+        id: 112,
+        type: "sports",
+        nameZh: "JC 斯诺克俱乐部 (JC Snooker Club)",
+        nameEn: "JC Snooker Club Chiang Mai",
+        nameTh: "เจซี สนุ๊กเกอร์ คลับ เชียงใหม่",
+        addressTh: "ถนนช้างเผือก ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.8035,
+        lng: 98.9860,
+        district: "古城",
+        category: "地道英式斯诺克馆",
+        tel: "",
+        time: "每天 12:00 - 01:00",
+        highlight: "8张标准英式12尺大台、全新台呢平整、全空调",
+        photo: "https://images.unsplash.com/photo-1544216717-3bbf52512656?w=600&auto=format&fit=crop&q=80",
+        tips: "古城北门传统斯诺克老馆，台面平整走球精准，长住老手聚集。",
+        hospitalNear: "距清迈兰医院 1.2km"
+      },
+      {
+        id: 113,
+        type: "sports",
+        nameZh: "Go Gym 巨型健身中心 (清迈最大铁馆)",
+        nameEn: "Go Gym Chiang Mai",
+        nameTh: "โก ยิม เชียงใหม่",
+        addressTh: "ถนนซุปเปอร์ไฮเวย์ ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8150,
+        lng: 98.9950,
+        district: "古城",
+        category: "全器械半开放巨型铁馆",
+        tel: "095-675-7182",
+        time: "每天 08:00 - 00:00",
+        highlight: "清迈最大力量举区、百余台器械、单次约100铢",
+        photo: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&auto=format&fit=crop&q=80",
+        tips: "硬核健身圣地，器械极全不排队，价格极低，力量训练首选。",
+        hospitalNear: "距清迈曼谷医院 10分钟"
+      },
+      {
+        id: 114,
+        type: "sports",
+        nameZh: "Dang 泰拳训练馆 (Dang Muay Thai)",
+        nameEn: "Dang Muay Thai Chiang Mai",
+        nameTh: "แดง มวยไทย เชียงใหม่",
+        addressTh: "ถนนอารักษ์ ต.พระสิงห์ อ.เมืองเชียงใหม่",
+        lat: 18.7885,
+        lng: 98.9790,
+        district: "古城",
+        category: "古城口碑泰拳格斗馆",
+        tel: "081-026-6404",
+        time: "周一至周六 08:00-10:00 / 16:00-19:00",
+        highlight: "专业擂台打靶、教练对新手耐心、减脂塑形体能极佳",
+        photo: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=600&auto=format&fit=crop&q=80",
+        tips: "古城西门内口碑泰拳馆，小班制针对性强，既适合锻炼体能也适合零基础防身。",
+        hospitalNear: "距清迈兰医院 1.0km"
+      }
+    ];
+
+    let map;
+    let markers = [];
+    let userMarker = null;
+    let currentPersona = 'all';
+    let isMapModeOnMobile = false;
+
+    function initMap() {
+      map = L.map('map', { zoomControl: false }).setView([18.7883, 98.9853], 12);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+      setPersonaMode('all');
+    }
+
+    function toggleMobileView() {
+      const listView = document.getElementById("listView");
+      const mapView = document.getElementById("mapView");
+      const toggleText = document.getElementById("toggleText");
+      const toggleIcon = document.querySelector("#mobileToggleBtn i");
+
+      isMapModeOnMobile = !isMapModeOnMobile;
+
+      if (isMapModeOnMobile) {
+        listView.classList.add("hidden");
+        mapView.classList.remove("hidden");
+        toggleText.textContent = "返回查看列表";
+        toggleIcon.className = "fa-solid fa-list-ul text-blue-400";
+        setTimeout(() => map.invalidateSize(), 200);
+      } else {
+        mapView.classList.add("hidden");
+        listView.classList.remove("hidden");
+        toggleText.textContent = "切换到大地图模式";
+        toggleIcon.className = "fa-solid fa-map text-blue-400";
+      }
+    }
+
+    function setPersonaMode(mode) {
+      currentPersona = mode;
+      
+      ['all', 'gov', 'malls', 'schools', 'hospitals', 'markets_super', 'michelin', 'sports', 'cafes', 'markets'].forEach(m => {
+        const btn = document.getElementById(`tab-${m}`);
+        if (btn) {
+          if (m === mode) {
+            btn.className = "px-3 py-1 rounded-full bg-blue-600 text-white font-medium shadow-xs shrink-0 text-xs";
+          } else {
+            btn.className = "px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs";
+          }
+        }
+      });
+
+      applyFilter();
+    }
+
+    function renderMarkers(dataList) {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+
+      dataList.forEach(item => {
+        const marker = L.marker([item.lat, item.lng], { title: item.nameZh }).addTo(map);
+
+        let typeBadge = '';
+        if (item.type === 'gov') typeBadge = '<span class="bg-cyan-100 text-cyan-800 text-[10px] px-1.5 py-0.5 rounded font-medium">🏛️ 政务使馆</span>';
+        else if (item.type === 'mall') typeBadge = '<span class="bg-fuchsia-100 text-fuchsia-800 text-[10px] px-1.5 py-0.5 rounded font-medium">🛍️ 购物中心</span>';
+        else if (item.type === 'school') typeBadge = '<span class="bg-purple-100 text-purple-800 text-[10px] px-1.5 py-0.5 rounded font-medium">🎓 国际学校</span>';
+        else if (item.type === 'hospital') typeBadge = '<span class="bg-rose-100 text-rose-800 text-[10px] px-1.5 py-0.5 rounded font-medium">🏥 重点医院</span>';
+        else if (item.type === 'market_super') typeBadge = '<span class="bg-indigo-100 text-indigo-800 text-[10px] px-1.5 py-0.5 rounded font-medium">🛒 大型超市</span>';
+        else if (item.type === 'michelin') typeBadge = '<span class="bg-red-100 text-red-800 text-[10px] px-1.5 py-0.5 rounded font-medium">🍴 米其林美食</span>';
+        else if (item.type === 'cafe') typeBadge = '<span class="bg-amber-100 text-amber-800 text-[10px] px-1.5 py-0.5 rounded font-medium">☕ 特色咖啡</span>';
+        else if (item.type === 'market') typeBadge = '<span class="bg-orange-100 text-orange-800 text-[10px] px-1.5 py-0.5 rounded font-medium">🧺 烟火集市</span>';
+        else if (item.type === 'sports') typeBadge = '<span class="bg-blue-100 text-blue-800 text-[10px] px-1.5 py-0.5 rounded font-medium">🏅 体育运动</span>';
+
+        const popupContent = `
+          <div class="text-xs max-w-[270px]">
+            <img src="${item.photo}" class="w-full h-28 object-cover rounded-xl mb-2" alt="${item.nameZh}" />
+            <div class="font-bold text-slate-900 text-sm mb-0.5">${item.nameZh}</div>
+            <div class="mb-1.5">${typeBadge}</div>
+            <div class="text-blue-800 font-semibold mb-1"><i class="fa-regular fa-clock"></i> <b>时间：</b>${item.time}</div>
+            ${item.highlight ? `<div class="text-slate-700 text-[11px] mb-1 font-medium"><i class="fa-solid fa-star text-amber-500"></i> ${item.highlight}</div>` : ''}
+            <div class="text-slate-500 text-[11px] mb-2"><i class="fa-solid fa-location-dot text-rose-500"></i> ${item.district} · ${item.hospitalNear}</div>
+            <button onclick="copyToClipboard('${item.addressTh}', '泰文打车地址')" class="w-full bg-blue-50 text-blue-900 py-1.5 rounded-lg text-xs font-semibold mb-1.5 border border-blue-200 active:bg-blue-100">
+              <i class="fa-regular fa-copy"></i> 复制泰文打车地址
+            </button>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}" target="_blank" class="block w-full text-center bg-slate-900 text-white py-1.5 rounded-lg text-xs font-semibold">
+              导航前往
+            </a>
+          </div>
+        `;
+        marker.bindPopup(popupContent);
+        marker.placeId = item.id;
+        markers.push(marker);
+      });
+    }
+
+    function renderCards(dataList) {
+      const container = document.getElementById("placeCardList");
+      const countEl = document.getElementById("placeCount");
+      countEl.textContent = `共匹配 ${dataList.length} 处地点`;
+
+      if (dataList.length === 0) {
+        container.innerHTML = `
+          <div class="py-12 text-center text-slate-400 text-xs">
+            <i class="fa-solid fa-compass text-2xl mb-2 text-blue-500"></i>
+            <p>暂无符合筛选条件的位置</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = dataList.map(item => {
+        let tagColor = 'bg-slate-100 text-slate-700';
+        let cardBorder = 'border-slate-200';
+        let icon = 'fa-location-dot';
+
+        if (item.type === 'gov') {
+          tagColor = 'bg-cyan-100 text-cyan-900';
+          cardBorder = 'border-cyan-200/80 bg-cyan-50/10';
+          icon = 'fa-landmark-dome';
+        } else if (item.type === 'mall') {
+          tagColor = 'bg-fuchsia-100 text-fuchsia-900';
+          cardBorder = 'border-fuchsia-200/80 bg-fuchsia-50/10';
+          icon = 'fa-bag-shopping';
+        } else if (item.type === 'school') {
+          tagColor = 'bg-purple-100 text-purple-900';
+          cardBorder = 'border-purple-200/80 bg-purple-50/10';
+          icon = 'fa-graduation-cap';
+        } else if (item.type === 'hospital') {
+          tagColor = 'bg-rose-100 text-rose-900';
+          cardBorder = 'border-rose-200/80 bg-rose-50/10';
+          icon = 'fa-hospital';
+        } else if (item.type === 'market_super') {
+          tagColor = 'bg-indigo-100 text-indigo-900';
+          cardBorder = 'border-indigo-200/80 bg-indigo-50/10';
+          icon = 'fa-cart-shopping';
+        } else if (item.type === 'michelin') {
+          tagColor = 'bg-red-100 text-red-900';
+          cardBorder = 'border-red-200/80 bg-red-50/10';
+          icon = 'fa-utensils';
+        } else if (item.type === 'cafe') {
+          tagColor = 'bg-amber-100 text-amber-900';
+          cardBorder = 'border-amber-200/80 bg-amber-50/10';
+          icon = 'fa-mug-saucer';
+        } else if (item.type === 'market') {
+          tagColor = 'bg-orange-100 text-orange-900';
+          cardBorder = 'border-orange-200/80 bg-orange-50/10';
+          icon = 'fa-basket-shopping';
+        } else if (item.type === 'sports') {
+          tagColor = 'bg-blue-100 text-blue-900';
+          cardBorder = 'border-blue-200/80 bg-blue-50/10';
+          icon = 'fa-medal';
+        }
+
+        return `
+          <div id="card-${item.id}" onclick="focusPlaceFromCard(${item.id})" class="bg-white border ${cardBorder} rounded-2xl overflow-hidden hover:border-blue-400 transition cursor-pointer shadow-xs active:bg-slate-50 flex flex-col">
+            <div class="w-full h-36 relative overflow-hidden bg-slate-100 shrink-0">
+              <img src="${item.photo}" class="w-full h-full object-cover hover:scale-105 transition duration-500" alt="${item.nameZh}" loading="lazy" />
+              <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] ${tagColor} font-bold px-2 py-0.5 rounded shadow-sm backdrop-blur-md bg-white/90">
+                  <i class="fa-solid ${icon}"></i> ${item.category}
+                </span>
+              </div>
+              <span class="absolute bottom-2 right-2 text-[10px] bg-slate-900/75 text-white px-2 py-0.5 rounded-full font-medium backdrop-blur-xs">
+                ${item.district}
+              </span>
+            </div>
+
+            <div class="p-3">
+              <div class="flex justify-between items-start mb-1">
+                <h3 class="font-bold text-slate-900 text-base leading-snug">${item.nameZh}</h3>
+                ${item.distance ? `<span class="text-xs text-blue-700 font-bold shrink-0 ml-1">约 ${item.distance}km</span>` : ''}
+              </div>
+              <p class="text-[11px] text-slate-400 mb-2">${item.nameEn}</p>
+
+              <div class="space-y-1.5 text-xs text-slate-700 bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 mb-2">
+                <div class="flex items-center gap-1.5">
+                  <i class="fa-regular fa-clock text-blue-600 w-3.5 shrink-0"></i>
+                  <span><b>时间/时段：</b>${item.time}</span>
+                </div>
+
+                ${item.highlight ? `
+                  <div class="flex items-start gap-1.5 text-slate-800">
+                    <i class="fa-solid fa-star text-amber-500 w-3.5 mt-0.5 shrink-0"></i>
+                    <span><b>特色/职能：</b>${item.highlight}</span>
+                  </div>
+                ` : ''}
+
+                <div class="flex items-center gap-1.5">
+                  <i class="fa-solid fa-notes-medical text-rose-500 w-3.5 shrink-0"></i>
+                  <span class="text-slate-600"><b>周边/配套：</b>${item.hospitalNear}</span>
+                </div>
+
+                ${item.tel ? `
+                  <div class="flex items-center gap-1.5 pt-1 border-t border-slate-200/50">
+                    <i class="fa-solid fa-phone text-blue-600 w-3.5 shrink-0"></i>
+                    <a href="tel:${item.tel}" onclick="event.stopPropagation();" class="text-blue-700 font-semibold underline">电话：${item.tel}</a>
+                  </div>
+                ` : ''}
+              </div>
+
+              <p class="text-[11px] text-slate-500 mb-2.5 leading-relaxed">
+                <i class="fa-regular fa-comment-dots text-slate-400"></i> ${item.tips}
+              </p>
+
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button onclick="event.stopPropagation(); copyToClipboard('${item.addressTh}', '泰文打车地址')" class="py-2.5 px-2 bg-blue-50 hover:bg-blue-100 text-blue-900 rounded-xl text-xs transition flex items-center justify-center gap-1 font-semibold border border-blue-200 active:scale-95">
+                  <i class="fa-solid fa-taxi text-blue-700"></i> 复制泰文打车
+                </button>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}" target="_blank" onclick="event.stopPropagation();" class="py-2.5 px-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs text-center font-semibold transition flex items-center justify-center gap-1 active:scale-95">
+                  <i class="fa-solid fa-diamond-turn-right text-blue-400"></i> 导航前往
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function focusPlaceFromCard(id) {
+      if (window.innerWidth < 768) {
+        toggleMobileView();
+      }
+      setTimeout(() => {
+        const place = places.find(c => c.id === id);
+        const marker = markers.find(m => m.placeId === id);
+        if (place && marker) {
+          map.flyTo([place.lat, place.lng], 14, { duration: 1 });
+          marker.openPopup();
+        }
+      }, 250);
+    }
+
+    function applyFilter() {
+      const search = document.getElementById("searchInput").value.trim().toLowerCase();
+      const district = document.getElementById("districtFilter").value;
+
+      const filtered = places.filter(item => {
+        if (currentPersona === 'gov' && item.type !== 'gov') return false;
+        if (currentPersona === 'malls' && item.type !== 'mall') return false;
+        if (currentPersona === 'schools' && item.type !== 'school') return false;
+        if (currentPersona === 'hospitals' && item.type !== 'hospital') return false;
+        if (currentPersona === 'markets_super' && item.type !== 'market_super') return false;
+        if (currentPersona === 'michelin' && item.type !== 'michelin') return false;
+        if (currentPersona === 'sports' && item.type !== 'sports') return false;
+        if (currentPersona === 'cafes' && item.type !== 'cafe') return false;
+        if (currentPersona === 'markets' && item.type !== 'market') return false;
+
+        const matchesSearch = !search || 
+          item.nameZh.toLowerCase().includes(search) || 
+          item.nameEn.toLowerCase().includes(search) || 
+          (item.highlight && item.highlight.toLowerCase().includes(search)) ||
+          item.tips.toLowerCase().includes(search) ||
+          item.category.toLowerCase().includes(search) ||
+          item.district.toLowerCase().includes(search);
+
+        const matchesDistrict = !district || item.district.includes(district);
+
+        return matchesSearch && matchesDistrict;
+      });
+
+      renderMarkers(filtered);
+      renderCards(filtered);
+    }
+
+    function locateUser() {
+      if (!navigator.geolocation) {
+        alert("手机暂不支持定位功能");
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const uLat = pos.coords.latitude;
+          const uLng = pos.coords.longitude;
+
+          if (userMarker) map.removeLayer(userMarker);
+          userMarker = L.circleMarker([uLat, uLng], {
+            radius: 8,
+            fillColor: "#2563eb",
+            color: "#ffffff",
+            weight: 3,
+            opacity: 1,
+            fillOpacity: 0.9
+          }).addTo(map).bindPopup("<b>您所在的位置</b>").openPopup();
+
+          places.forEach(c => {
+            c.distance = calculateDistance(uLat, uLng, c.lat, c.lng).toFixed(1);
+          });
+          places.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+          applyFilter();
+          alert("已定位成功！所有地点已按与您的距离由近到远重新排序。");
+        },
+        err => {
+          alert("无法获取定位权限，请在手机设置中允许浏览器访问位置。");
+        }
+      );
+    }
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+    function copyToClipboard(text, label) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert(`已复制【${label}】：\n\n${text}\n\n可以直接发给 Grab 司机或出示给双条车司机查看。`);
+      });
+    }
+
+    function openModal() {
+      document.getElementById("feedbackModal").classList.remove("hidden");
+    }
+    function closeModal() {
+      document.getElementById("feedbackModal").classList.add("hidden");
+    }
+    function handleFeedbackSubmit(e) {
+      e.preventDefault();
+      alert("感谢提报！我们会尽快核准更新。");
+      closeModal();
+    }
+
+    window.onload = initMap;
+  </script>
+</body>
+</html>

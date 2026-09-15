@@ -34,8 +34,8 @@
           <i class="fa-solid fa-compass text-sm"></i>
         </div>
         <div>
-          <h1 class="font-bold text-slate-900 text-sm md:text-base leading-tight">清迈旅居生活全景指南</h1>
-          <p class="text-[10px] text-slate-400">130+ 实体地标 · 真实地图直连 · 智能呼叫 Grab/Bolt</p>
+          <h1 class="font-bold text-slate-900 text-sm md:text-base leading-tight">清迈华人旅居生活全景指南</h1>
+          <p class="text-[10px] text-slate-400">18堂会 · 50咖啡 · 30美食 · 25运动 · 21名校 · 智能打车</p>
         </div>
       </div>
       
@@ -49,9 +49,10 @@
       </div>
     </div>
 
-    <!-- 顶部分类导航（完全对应底层数据） -->
+    <!-- 顶部分类导航（含华人教会） -->
     <div class="bg-blue-50/50 border-t border-blue-100/60 px-3 py-1.5 flex items-center gap-1.5 text-xs overflow-x-auto no-scrollbar">
       <button onclick="setPersonaMode('all')" id="tab-all" class="px-3 py-1 rounded-full bg-blue-600 text-white font-medium shadow-xs shrink-0 text-xs">全部点位</button>
+      <button onclick="setPersonaMode('church')" id="tab-church" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">⛪ 基督教会 (18)</button>
       <button onclick="setPersonaMode('cafe')" id="tab-cafe" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">☕ 精选咖啡 (50)</button>
       <button onclick="setPersonaMode('market_super')" id="tab-market_super" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🛒 大型超市 (12)</button>
       <button onclick="setPersonaMode('market')" id="tab-market" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🧺 烟火市集 (10)</button>
@@ -70,7 +71,7 @@
         <input 
           type="text" 
           id="searchInput" 
-          placeholder="搜超市、云南早市、乒乓球、咖啡馆、ABA学校、移民局..." 
+          placeholder="搜法汉堂、CCF、超市、云南早市、乒乓球、ABA学校、移民局..." 
           class="w-full pl-7 pr-3 py-1 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
           oninput="applyFilter()"
         />
@@ -83,6 +84,7 @@
         <option value="湄海">湄海区 (Mae Hia)</option>
         <option value="杭东">杭东走廊 (Hang Dong)</option>
         <option value="长康路">长康路/萍河</option>
+        <option value="瓦特盖特">瓦特盖特/麦考密克</option>
         <option value="三塞">三塞/Central Fest</option>
         <option value="运河路">运河路/湄林</option>
         <option value="沙拉丕">沙拉丕 (Saraphi)</option>
@@ -97,7 +99,7 @@
     <aside id="listView" class="w-full md:w-[490px] h-full bg-white flex flex-col z-10 shrink-0">
       <div class="px-3.5 py-1.5 border-b border-slate-100 flex justify-between items-center text-xs text-slate-500 bg-slate-50">
         <span id="placeCount" class="font-medium">正在渲染全量点位...</span>
-        <span class="text-[11px] text-slate-400">真实坐标 · 无虚构图</span>
+        <span class="text-[11px] text-slate-400">支持一键直达打车软件</span>
       </div>
 
       <div id="placeCardList" class="flex-1 overflow-y-auto divide-y divide-slate-100 p-2.5 space-y-3 pb-24 md:pb-6">
@@ -179,7 +181,7 @@
         </div>
         <div>
           <label class="block font-medium text-slate-700 mb-1">补充详情</label>
-          <textarea required id="fbContent" rows="3" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50" placeholder="营业时间、服务等"></textarea>
+          <textarea required id="fbContent" rows="3" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50" placeholder="营业时间、聚会时段、服务等"></textarea>
         </div>
         <div class="flex justify-end gap-2 pt-1">
           <button type="button" onclick="closeModal()" class="px-3.5 py-1.5 border border-slate-200 rounded-lg text-slate-600">取消</button>
@@ -190,11 +192,228 @@
   </div>
 
   <script>
-    // 130+ 实体地标全集数据库（严格校验分类与定位）
     const places = [
       // ==========================================
-      // 🛒 大型生活超市 (12 处全城覆盖)
+      // ⛪ 基督教会与团契矩阵 (18 处全收录)
       // ==========================================
+      {
+        id: 1, type: "church",
+        nameZh: "清迈华人基督教会 (法汉堂 Faham)",
+        nameEn: "Chiang Mai Chinese Church (Faham)",
+        nameTh: "คริสตจักรจีนเชียงใหม่ (ฟ้าฮ่าม)",
+        addressTh: "352/25 ถนนเจริญราษฎร์ ตำบลวัดเกต อำเภอเมืองเชียงใหม่",
+        lat: 18.8022, lng: 99.0059, district: "瓦特盖特",
+        category: "老牌华人堂 (70年历史)", tel: "053-242-040",
+        time: "周日 10:00 (泰配中) / 13:30 (纯中文主日)",
+        highlight: "周六上午 09:30 长者赞美操与国语团契；下午诗班排练",
+        tips: "清迈华人核心老堂，归属感强，长者活动丰富，午后有纯中文崇拜，距 McCormick 医院 1.0km。"
+      },
+      {
+        id: 2, type: "church",
+        nameZh: "清迈基督徒团契 (CCF) 中文堂",
+        nameEn: "Chiang Mai Christian Fellowship (CCF)",
+        nameTh: "คริสตจักรซีซีเอฟ เชียงใหม่",
+        addressTh: "194/1 หมู่ 3 ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7495, lng: 98.9562, district: "湄海",
+        category: "全龄华人国际堂", tel: "053-273-833",
+        time: "周日 10:00 - 11:30",
+        highlight: "周六上午 10:00 亲子兴趣沙龙；下午青少年敬拜",
+        tips: "西南区枢纽，随迁长辈与陪读家庭密集，大厅宽敞空调好，有大型停车场，距曼谷医院 12分钟车程。"
+      },
+      {
+        id: 3, type: "church",
+        nameZh: "清迈伯特利堂 (华侨基督教会)",
+        nameEn: "Chiang Mai Chinese Christian Church (Bethel)",
+        nameTh: "คริสตจักรจีนเชียงใหม่ เบธเอล",
+        addressTh: "ถนนช้างคลาน ต.ช้างคลาน อ.เมืองเชียงใหม่",
+        lat: 18.7781, lng: 99.0012, district: "长康路",
+        category: "百年华人传统堂", tel: "",
+        time: "周日 09:30 - 11:00",
+        highlight: "周六下午 14:00 长者查经祈祷会、潮州/国语读经茶歇",
+        tips: "长康路核心，本地潮汕老华侨多，长辈无语言障碍，平地无障碍进出，距第一综合医院 1.5km。"
+      },
+      {
+        id: 4, type: "church",
+        nameZh: "清迈主恩堂 (Blessings Church)",
+        nameEn: "Chiang Mai Blessings Church",
+        nameTh: "คริสตจักรพระพรอุปถัมภ์ เชียงใหม่",
+        addressTh: "ตำบลวัดเกต อำเภอเมือง เชียงใหม่",
+        lat: 18.7845, lng: 99.0125, district: "瓦特盖特",
+        category: "华语/粤语旅居堂", tel: "",
+        time: "周日 10:00 - 11:30",
+        highlight: "周六傍晚 17:30 旅居家庭爱筵聚餐与生活互助答疑",
+        tips: "适合讲粤语和普通话的长住旅居朋友，周六常有聚餐，如家人般互助，距曼谷医院 2.5km。"
+      },
+      {
+        id: 5, type: "church",
+        nameZh: "清迈华人家庭团契 (杭东长青与亲子点)",
+        nameEn: "Chiang Mai Chinese Family Fellowship",
+        nameTh: "กลุ่มพันธกิจจีนหางดง",
+        addressTh: "ตำบลหางดง อำเภอหางดง เชียงใหม่",
+        lat: 18.6920, lng: 98.9180, district: "杭东",
+        category: "华人陪读旅居团契", tel: "",
+        time: "周日 10:00 - 11:30",
+        highlight: "周六上午 09:00 杭东早市结伴买菜；下午绘本亲子交流",
+        tips: "杭东随迁老人与陪读家庭的温暖圈子，经常结伴买菜、散步、交流旅居生活。"
+      },
+      {
+        id: 6, type: "church",
+        nameZh: "清迈第一教会 (麦考密克医院旁)",
+        nameEn: "First Church of Chiang Mai (CCT)",
+        nameTh: "คริสตจักรที่หนึ่ง เชียงใหม่",
+        addressTh: "ถนนเจริญราษฎร์ ต.วัดเกต อ.เมืองเชียงใหม่",
+        lat: 18.7915, lng: 99.0042, district: "瓦特盖特",
+        category: "百年宣教宗派名堂", tel: "",
+        time: "周日 09:30 (泰) / 11:00 (英)",
+        highlight: "周六上午 10:00 青年诗班排练；百年花园开放漫步",
+        tips: "医疗宣教士创立的百年老堂，平河畔古树参天，紧邻教会医院，安心静谧。"
+      },
+      {
+        id: 7, type: "church",
+        nameZh: "清迈加略山庇护团契 (Refuge Calvary)",
+        nameEn: "Refuge Fellowship Calvary Chapel",
+        nameTh: "คริสตจักร รีฟิวจ์ เชียงใหม่",
+        addressTh: "ต.หนองควาย อ.หางดง จ.เชียงใหม่",
+        lat: 18.7214, lng: 98.9312, district: "杭东",
+        category: "美式国际堂/全龄友好", tel: "",
+        time: "周日 10:00 - 11:45",
+        highlight: "周六下午 15:30 青少年户外草坪互动；家庭聚餐",
+        tips: "独栋平房庭院无台阶，欧美与华人国际家庭汇聚，少儿托管健全，距杭东综合医院 10分钟。"
+      },
+      {
+        id: 8, type: "church",
+        nameZh: "清迈浸信教会 (Chiang Mai Baptist)",
+        nameEn: "Chiang Mai Baptist Church",
+        nameTh: "คริสตจักรแบ๊พติสต์เชียงใหม่",
+        addressTh: "ถนนมูลเมือง ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7930, lng: 98.9912, district: "古城",
+        category: "传统福音派名堂", tel: "",
+        time: "周日 09:30 - 11:00",
+        highlight: "周六上午 10:00 泰语基础生活对话课/义工辅导",
+        tips: "古城塔佩门附近，交通方便，双条车直达，适合古城常住长辈，距清迈兰医院 1.8km。"
+      },
+      {
+        id: 9, type: "church",
+        nameZh: "生命教会清迈堂 (Life Church)",
+        nameEn: "Life Church Chiang Mai",
+        nameTh: "คริสตจักร ไลฟ์ เชียงใหม่",
+        addressTh: "ถนนศิริมังคลาจารย์ ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7942, lng: 98.9687, district: "宁曼路",
+        category: "现代活力国际堂", tel: "",
+        time: "周日 10:00 - 11:30",
+        highlight: "周六晚 18:00 青年敬拜夜、咖啡社交交流",
+        tips: "宁曼商圈附近，年轻信徒多，提供同传耳机，距清迈兰医院 1.2km。"
+      },
+      {
+        id: 10, type: "church",
+        nameZh: "城市生命教会 (Citylife Church)",
+        nameEn: "Citylife Church Chiang Mai",
+        nameTh: "คริสตจักรซิตี้ไลฟ์",
+        addressTh: "ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8115, lng: 98.9723, district: "宁曼路",
+        category: "国际跨文化堂", tel: "",
+        time: "周日 10:30 - 12:00",
+        highlight: "周六下午 15:00 国际青年查经与英语沙龙",
+        tips: "宣教士与数字游民家庭密集，英文环境纯正，距曼谷医院 15分钟。"
+      },
+      {
+        id: 11, type: "church",
+        nameZh: "万国教会 (All Nations)",
+        nameEn: "All Nations Church Chiang Mai",
+        nameTh: "คริสตจักรออลเนชั่นส์ เชียงใหม่",
+        addressTh: "ถนนห้วยแก้ว ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8058, lng: 98.9610, district: "宁曼路",
+        category: "多文化国际堂", tel: "",
+        time: "周日 10:00 - 11:30",
+        highlight: "国际英语崇拜",
+        tips: "靠近清迈大学与汇萃路，各国旅居家庭混合，环境开阔舒适，距清迈兰医院 2.0km。"
+      },
+      {
+        id: 12, type: "church",
+        nameZh: "圣心主教座堂 (天主堂 Sacred Heart)",
+        nameEn: "Sacred Heart of Jesus Cathedral",
+        nameTh: "อาสนวิหารพระหฤทัย เชียงใหม่",
+        addressTh: "ถนนช้างคลาน ต.ช้างคลาน อ.เมืองเชียงใหม่",
+        lat: 18.7758, lng: 99.0019, district: "长康路",
+        category: "天主教主教座堂", tel: "",
+        time: "周日 08:30 (泰) / 11:00 (英)",
+        highlight: "周六傍晚 18:00 主日提前弥撒 (泰/英)",
+        tips: "天主教核心大教堂，哥特建筑雄伟肃穆，适合天主教背景的长者安静祈祷。"
+      },
+      {
+        id: 13, type: "church",
+        nameZh: "西北大学团契中心 (Payap Fellowship)",
+        nameEn: "Payap Christian Fellowship",
+        nameTh: "คริสตจักรพันธกิจมหาวิทยาลัยพายัพ",
+        addressTh: "มหาวิทยาลัยพายัพ ต.หนองป่าครั่ง อ.เมืองเชียงใหม่",
+        lat: 18.7958, lng: 99.0321, district: "瓦特盖特",
+        category: "大学神学院团契", tel: "",
+        time: "周日 10:00 - 11:30",
+        highlight: "周六下午 14:00 中文神学/圣经研讨沙龙",
+        tips: "紧邻清迈曼谷医院与西北大学，绿地开阔，极适宜就医与校园散步，距 Bangkok Hospital 仅 800米。"
+      },
+      {
+        id: 14, type: "church",
+        nameZh: "山甘烹基督徒团契 (San Kamphaeng)",
+        nameEn: "San Kamphaeng Christian Church",
+        nameTh: "คริสตจักร สันกำแพง",
+        addressTh: "ตำบลสันกำแพง อำเภอสันกำแพง เชียงใหม่",
+        lat: 18.7450, lng: 99.1210, district: "三塞",
+        category: "东郊慢调生活堂", tel: "",
+        time: "周日 09:30 - 11:00",
+        highlight: "周六上午 10:00 乡村庭院手作与田园茶歇",
+        tips: "东郊手工艺村与独栋别墅旅居的长辈常在此聚会，田园闲适安宁，距山甘烹综合医院 3km。"
+      },
+      {
+        id: 15, type: "church",
+        nameZh: "清迈喜乐堂 (Joy Christian Church)",
+        nameEn: "Joy Christian Church Chiang Mai",
+        nameTh: "คริสตจักรความยินดี เชียงใหม่",
+        addressTh: "ตำบลสุเทพ อำเภอเมือง เชียงใหม่",
+        lat: 18.7890, lng: 98.9550, district: "宁曼路",
+        category: "华人温馨家庭堂", tel: "",
+        time: "周日 10:00 - 11:30",
+        highlight: "周六下午 14:30 旅居姐妹查经与生活互助小组",
+        tips: "素帖山脚下的小规模华人温馨堂会，长者与年轻人互动密切，人情味浓，距清迈大学联属医院 1.0km。"
+      },
+      {
+        id: 16, type: "church",
+        nameZh: "清迈纯福音教会 (Full Gospel)",
+        nameEn: "Chiang Mai Full Gospel Church",
+        nameTh: "คริสตจักรฟูลกอสเปิล เชียงใหม่",
+        addressTh: "ตำบลช้างเผือก อำเภอเมือง เชียงใหม่",
+        lat: 18.8080, lng: 98.9880, district: "宁曼路",
+        category: "跨国祈祷特会堂", tel: "",
+        time: "周日 10:00 - 11:45",
+        highlight: "周六早晨 07:00 晨星祈祷会与代祷小组",
+        tips: "大楼设施齐备有电梯，适合注重祈祷、希望代祷的旅居信徒，距清迈兰医院 1.5km。"
+      },
+      {
+        id: 17, type: "church",
+        nameZh: "南邦-清迈走廊宣教团契",
+        nameEn: "Grace Corridor Fellowship Hang Dong",
+        nameTh: "กลุ่มพันธกิจพระคุณ เชียงใหม่",
+        addressTh: "ถนนเชียงใหม่-ฮอด ต.หางดง เชียงใหม่",
+        lat: 18.6850, lng: 98.9110, district: "杭东",
+        category: "南郊国际宣教站", tel: "",
+        time: "周日 10:30 - 12:00",
+        highlight: "周六下午 16:00 户外草地赞美与儿童自然体验",
+        tips: "杭东深处近自然，适合喜欢田园、不想进城拥堵的南区旅居老人与慢调家庭，距杭东综合医院 5分钟。"
+      },
+      {
+        id: 18, type: "church",
+        nameZh: "生命之泉清迈团契 (Spring of Life)",
+        nameEn: "Spring of Life Chiang Mai",
+        nameTh: "คริสตจักรสายน้ำแห่งชีวิต",
+        addressTh: "ตำบลป่าแดด อำเภอเมือง เชียงใหม่",
+        lat: 18.7620, lng: 98.9950, district: "长康路",
+        category: "萍河滨水家庭团契", tel: "",
+        time: "周日 10:00 - 11:30",
+        highlight: "周六下午 15:00 滨河慢走交流与家庭茶聚",
+        tips: "靠近巴达区萍河畔，风景优美环境安静，常有广东与大湾区旅居教友聚会交流，距清迈市中心医院 8分钟。"
+      },
+
+      // ===== 🛒 大型生活超市 (12) =====
       {
         id: 501, type: "market_super",
         nameZh: "Rimping 精品生鲜超市 (Mae Hia 湄海店)",
@@ -340,9 +559,7 @@
         tips: "位于机场往杭东走廊路上，交通顺路，买生鲜排骨蔬菜极实惠。"
       },
 
-      // ==========================================
-      // 🧺 烟火与特色集市 (10 处深度收录)
-      // ==========================================
+      // ===== 🧺 烟火与特色集市 (10) =====
       {
         id: 309, type: "market",
         nameZh: "长康路云南穆斯林早市 (Kad Ban Ho)",
@@ -464,12 +681,10 @@
         tips: "古城内常住居民就近买菜、买新鲜木瓜菠萝和现压果汁的最佳小集市。"
       },
 
-      // ==========================================
-      // 🏅 运动与体育场馆 (20 处全景收录)
-      // ==========================================
+      // ===== 🏅 运动与体育场馆 (20) =====
       {
         id: 101, type: "sports",
-        nameZh: "文马克专业乒乓球馆 (市政体育场内)",
+        nameZh: "文马克专业室内乒乓球馆 (市政体育场内)",
         nameEn: "Boonmark Pingpong Club",
         nameTh: "สนามปิงปอง บุญมาก (สนามกีฬาเทศบาลนครเชียงใหม่)",
         addressTh: "สนามกีฬาเทศบาลนครเชียงใหม่ ถนนสนามกีฬา ต.ศรีภูมิ อ.เมืองเชียงใหม่",
@@ -477,7 +692,7 @@
         category: "专业室内地胶球馆", tel: "090-317-9165",
         time: "每天 13:00 - 21:00",
         highlight: "比赛级双鱼球台、红蓝色专业地胶、散客约40-60铢",
-        tips: "清迈最专业室内地胶乒乓球馆，馆内冷风散热良好，长辈与各国旅居高手下午打擂台。"
+        tips: "清迈最专业室内地胶乒乓球馆，馆内冷风散热良好，长辈与各国旅居高手下午在此打擂台切磋。"
       },
       {
         id: 102, type: "sports",
@@ -708,9 +923,7 @@
         tips: "清迈市区难得的巴西柔术与综合格斗基地，黑带外教执教，实战氛围极好。"
       },
 
-      // ==========================================
-      // 🎓 国际学校与双语学院 (21 所全齐)
-      // ==========================================
+      // ===== 🎓 国际学校 (21) =====
       {
         id: 721, type: "school",
         nameZh: "ABA 双语学院 (Ambassador Bilingual 湄海校区)",
@@ -964,9 +1177,7 @@
         tips: "温馨的基督教国际幼儿园，环境充满关爱，低龄首选。"
       },
 
-      // ==========================================
-      // 🏛️ 移民局与政务使馆 (5 处)
-      // ==========================================
+      // ===== 🏛️ 移民局与政务使馆 (5) =====
       {
         id: 805, type: "gov",
         nameZh: "清迈移民局大尚泰分局 (Central Festival 2楼)",
@@ -1028,9 +1239,7 @@
         tips: "办理在泰正规公司注册、工作证（Work Permit）的总部基地。"
       },
 
-      // ==========================================
-      // 🛍️ 大型综合购物中心 (4 处)
-      // ==========================================
+      // ===== 🛍️ 大型综合购物中心 (4) =====
       {
         id: 901, type: "mall",
         nameZh: "Central Festival 清迈旗舰尚泰商场",
@@ -1080,9 +1289,7 @@
         tips: "充满欧式复古红砖风情的高端街区，晚间经常有摇摆舞派对和现场演奏。"
       },
 
-      // ==========================================
-      // 🏥 重点三甲与私立医院 (4 处)
-      // ==========================================
+      // ===== 🏥 重点三甲与私立医院 (4) =====
       {
         id: 401, type: "hospital",
         nameZh: "清迈麦考密克医院 (McCormick Hospital)",
@@ -1132,9 +1339,7 @@
         tips: "心血管、神经外科泰北最强，医疗学术天花板。"
       },
 
-      // ==========================================
-      // ☕ 精选特色咖啡馆 (50 家全景收录)
-      // ==========================================
+      // ===== ☕ 精选特色咖啡馆 (50) =====
       {
         id: 201, type: "cafe",
         nameZh: "黑森林热带雨林飞瀑餐厅咖啡",
@@ -1315,10 +1520,68 @@
         highlight: "安静不嘈杂、插座密度高、全空调高速WiFi、人体工学椅",
         tips: "长住清迈需要带笔记本电脑办公或阅读人士的宝藏地，环境极其安静舒适。"
       },
+      {
+        id: 216, type: "cafe",
+        nameZh: "Jungle De Cafe (悬崖吊网瀑布刺激咖啡)",
+        nameEn: "Jungle De Cafe Baan Tawai / Pongyang",
+        nameTh: "จังเกิล เดอ คาเฟ่ เชียงใหม่",
+        addressTh: "ต.โป่งแยง อ.แม่ริม เชียงใหม่",
+        lat: 18.9150, lng: 98.8250, district: "运河路",
+        category: "高空瀑布吊网野奢", tel: "089-262-3939",
+        time: "每天 08:30 - 18:00",
+        highlight: "躺在悬空吊网上喝咖啡、真瀑布飞溅身旁、森林过山车旁",
+        tips: "湄林山谷标志性瀑布咖啡，直面原始森林峡谷急流，视听冲击极强。"
+      },
+      {
+        id: 217, type: "cafe",
+        nameZh: "My Secret Cafe in Town (古城秘密花园咖啡)",
+        nameEn: "My Secret Cafe in Town",
+        nameTh: "มาย ซีเคร็ท คาเฟ่ อิน ทาวน์",
+        addressTh: "175/12 ถนนราชดำเนิน ต.พระสิงห์ อ.เมืองเชียงใหม่",
+        lat: 18.7890, lng: 98.9835, district: "古城",
+        category: "帕辛寺后小巷静谧庭院", tel: "081-499-9911",
+        time: "每天 08:30 - 18:00",
+        highlight: "粉色小洋楼、自制新鲜胡萝卜蛋糕、每周二晚现场爵士乐",
+        tips: "藏在帕辛寺旁窄巷里的复古绿意庭院，远离游客主街的喧闹，蛋糕现烤极其可口。"
+      },
+      {
+        id: 218, type: "cafe",
+        nameZh: "Chic 39 Garden (鲜花玻璃屋与窑烤披萨咖啡)",
+        nameEn: "Chic 39 Garden",
+        nameTh: "ชิค 39 การ์เด้น เชียงใหม่",
+        addressTh: "240 หมู่ 4 ต.เหมืองแก้ว อ.แม่ริม เชียงใหม่",
+        lat: 18.8950, lng: 98.9750, district: "运河路",
+        category: "花海玻璃温室餐厅", tel: "092-275-3939",
+        time: "每天 10:00 - 19:30",
+        highlight: "鲜花盛开的透光暖房、柴烧手工窑烤披萨、田园全景",
+        tips: "湄林近郊的浪漫花房，既能品尝手冲咖啡，也能享用柴火烤制的脆皮披萨。"
+      },
+      {
+        id: 219, type: "cafe",
+        nameZh: "Brew Fact (宁曼路极简手冲实验室)",
+        nameEn: "Brew Fact Specialty Coffee",
+        nameTh: "บริว แฟคท์ นิมมาน ซอย 7",
+        addressTh: "ถนนศิริมังคลาจารย์ ซอย 7 ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7955, lng: 98.9710, district: "宁曼路",
+        category: "专业浅烘手冲名店", tel: "089-755-7575",
+        time: "每天 08:00 - 17:00",
+        highlight: "白色极简工业美学、多款全球稀有微批次咖啡豆、冰滴手冲",
+        tips: "咖啡极客云集的小店，咖啡师对水温、研磨度把控细致入微，出品干净透亮。"
+      },
+      {
+        id: 220, type: "cafe",
+        nameZh: "Elefin Farm & Cafe (大象山林漫步生态咖啡)",
+        nameEn: "Elefin Farm & Cafe Hang Dong",
+        nameTh: "เอเลฟิน ฟาร์ม แอนด์ คาเฟ่ เชียงใหม่",
+        addressTh: "128 หมู่ 2 ต.บ้านปง อ.หางดง เชียงใหม่",
+        lat: 18.7550, lng: 98.8450, district: "杭东",
+        category: "大象互动山谷野趣", tel: "098-549-2544",
+        time: "每天 10:00 - 17:00",
+        highlight: "大象自由在山坡漫步、可近距离喂食香蕉合影、远眺山峦",
+        tips: "半开放式非奴役大象生态农庄，坐在露台木栈板上边喝咖啡边看大象在树林觅食。"
+      },
 
-      // ==========================================
-      // 🍴 经典与特色美食 (25 处全景收录)
-      // ==========================================
+      // ===== 🍴 经典与特色美食 (25) =====
       {
         id: 601, type: "restaurant",
         nameZh: "Khao Soi Mae Sai（湄赛泰北咖喱金面）",
@@ -1459,11 +1722,11 @@
       }
     }
 
-    // 严格对应单复数过滤
+    // 标签切换过滤
     function setPersonaMode(mode) {
       currentPersona = mode;
       
-      const allTabs = ['all', 'cafe', 'market_super', 'market', 'sports', 'restaurant', 'school', 'gov', 'mall', 'hospital'];
+      const allTabs = ['all', 'church', 'cafe', 'market_super', 'market', 'sports', 'restaurant', 'school', 'gov', 'mall', 'hospital'];
       allTabs.forEach(m => {
         const btn = document.getElementById(`tab-${m}`);
         if (btn) {
@@ -1478,7 +1741,12 @@
       applyFilter();
     }
 
-    function openRideModal(item) {
+    // ==========================================
+    // 🚗 智能打车分流系统（稳定按ID传参）
+    // ==========================================
+    function openRideModal(id) {
+      const item = places.find(p => p.id === id);
+      if (!item) return;
       activeRideTarget = item;
       document.getElementById("rideDestName").textContent = `目的地：${item.nameZh}`;
       document.getElementById("rideModal").classList.remove("hidden");
@@ -1493,19 +1761,19 @@
       const { lat, lng, nameZh } = activeRideTarget;
       const destName = encodeURIComponent(nameZh);
 
-      const grabAppUrl = `grab://open?screenType=BOOKING&dropoff_latitude=${lat}&dropoff_longitude=${lng}&dropoff_name=${destName}`;
-      const grabWebUrl = `https://r.grab.com/`;
+      const deepLink = `grab://open?screenType=BOOKING&dropoff_latitude=${lat}&dropoff_longitude=${lng}&dropoff_name=${destName}`;
+      const webUrl = `https://r.grab.com/?lat=${lat}&lng=${lng}&name=${destName}`;
 
       const startTime = Date.now();
-      window.location.href = grabAppUrl;
+      window.location.href = deepLink;
 
       setTimeout(() => {
         if (Date.now() - startTime < 1800) {
-          if (confirm("检测到手机可能未安装 Grab App，是否直接打开 Grab 网页版叫车？")) {
-            window.open(grabWebUrl, "_blank");
+          if (confirm("未检测到 Grab App，是否直接打开 Grab 网页版叫车？")) {
+            window.open(webUrl, "_blank");
           }
         }
-      }, 1500);
+      }, 1200);
 
       closeRideModal();
     }
@@ -1514,13 +1782,13 @@
       if (!activeRideTarget) return;
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-      const boltAppUrl = `bolt://`;
+      const deepLink = `bolt://`;
       const storeUrl = isIOS 
         ? "https://apps.apple.com/app/bolt-fast-affordable-rides/id675033630"
         : "https://play.google.com/store/apps/details?id=ee.mtakso.client";
 
       const startTime = Date.now();
-      window.location.href = boltAppUrl;
+      window.location.href = deepLink;
 
       setTimeout(() => {
         if (Date.now() - startTime < 1800) {
@@ -1528,7 +1796,7 @@
             window.open(storeUrl, "_blank");
           }
         }
-      }, 1500);
+      }, 1200);
 
       closeRideModal();
     }
@@ -1550,7 +1818,7 @@
           <div class="text-xs max-w-[270px]">
             <div class="font-bold text-slate-900 text-sm mb-0.5">${item.nameZh}</div>
             <div class="text-blue-800 font-semibold mb-1"><i class="fa-regular fa-clock"></i> ${item.time}</div>
-            <button onclick="openRideModal(${JSON.stringify(item).replace(/"/g, '&quot;')})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 rounded-lg text-xs font-semibold mb-1.5 shadow-xs">
+            <button onclick="openRideModal(${item.id})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 rounded-lg text-xs font-semibold mb-1.5 shadow-xs">
               <i class="fa-solid fa-taxi mr-1"></i> 一键打车前往 (Grab / Bolt)
             </button>
             <a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}" target="_blank" class="block w-full text-center bg-slate-900 text-white py-1.5 rounded-lg text-xs font-semibold">
@@ -1567,7 +1835,7 @@
     function renderCards(dataList) {
       const container = document.getElementById("placeCardList");
       const countEl = document.getElementById("placeCount");
-      countEl.textContent = `共匹配 ${dataList.length} 处地点`;
+      countEl.textContent = `共呈现 ${dataList.length} 处地点`;
 
       if (dataList.length === 0) {
         container.innerHTML = `
@@ -1580,15 +1848,13 @@
       }
 
       container.innerHTML = dataList.map(item => {
-        const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
-        // 动态调用 Google 官方精准地点卡
         const googlePlaceEmbedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(item.nameEn || item.nameZh)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
         const googleReviewsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((item.nameEn || item.nameZh) + ' Chiang Mai')}`;
 
         return `
           <div id="card-${item.id}" onclick="focusPlaceFromCard(${item.id})" class="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-400 transition cursor-pointer shadow-xs active:bg-slate-50 flex flex-col">
             
-            <!-- 官方实时认证位置窗口 (保证真实无失真) -->
+            <!-- 官方实时地点交互窗口 (保证真实坐标与地图) -->
             <div class="w-full h-40 bg-slate-100 relative overflow-hidden shrink-0 border-b border-slate-100">
               <iframe 
                 src="${googlePlaceEmbedUrl}" 
@@ -1597,7 +1863,7 @@
                 referrerpolicy="no-referrer-when-downgrade">
               </iframe>
               <div class="absolute bottom-2 left-2 bg-slate-900/80 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-xs flex items-center gap-1">
-                <i class="fa-brands fa-google text-blue-400"></i> Google 认证地点
+                <i class="fa-brands fa-google text-blue-400"></i> Google 认证位置
               </div>
             </div>
 
@@ -1642,14 +1908,14 @@
                 <i class="fa-regular fa-comment-dots text-slate-400"></i> ${item.tips}
               </p>
 
-              <!-- 直连 Google Maps 官方相册入口 (真实食客与球友晒图) -->
+              <!-- 直连 Google Maps 官方相册 -->
               <a href="${googleReviewsUrl}" target="_blank" onclick="event.stopPropagation();" class="w-full mb-2 bg-slate-100 hover:bg-slate-200 text-slate-800 py-1.5 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-200 transition">
                 <i class="fa-solid fa-camera text-blue-600"></i> 查看 Google Maps 现场照片与评价
               </a>
 
               <!-- 核心按钮组：智能打车 + 地图导航 -->
               <div class="grid grid-cols-2 gap-2">
-                <button onclick="event.stopPropagation(); openRideModal(${itemJson})" class="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs transition flex items-center justify-center gap-1.5 font-semibold shadow-sm active:scale-95">
+                <button onclick="event.stopPropagation(); openRideModal(${item.id})" class="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs transition flex items-center justify-center gap-1.5 font-semibold shadow-sm active:scale-95">
                   <i class="fa-solid fa-taxi"></i> 一键打车前往
                 </button>
                 <a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}" target="_blank" onclick="event.stopPropagation();" class="py-2.5 px-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs text-center font-semibold transition flex items-center justify-center gap-1 active:scale-95">

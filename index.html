@@ -34,8 +34,8 @@
           <i class="fa-solid fa-compass text-sm"></i>
         </div>
         <div>
-          <h1 class="font-bold text-slate-900 text-sm md:text-base leading-tight">清迈华人旅居生活全景指南</h1>
-          <p class="text-[10px] text-slate-400">18堂会 · 50咖啡 · 30美食 · 25运动 · 21名校 · 智能打车</p>
+          <h1 class="font-bold text-slate-900 text-sm md:text-base leading-tight">清迈旅居生活全景指南</h1>
+          <p class="text-[10px] text-slate-400">生活集市 · 50咖啡 · 30美食 · 18教会 · 25运动 · 21名校</p>
         </div>
       </div>
       
@@ -49,15 +49,16 @@
       </div>
     </div>
 
-    <!-- 顶部分类导航（含华人教会） -->
+    <!-- 顶部分类导航（教会置于中间位置） -->
     <div class="bg-blue-50/50 border-t border-blue-100/60 px-3 py-1.5 flex items-center gap-1.5 text-xs overflow-x-auto no-scrollbar">
       <button onclick="setPersonaMode('all')" id="tab-all" class="px-3 py-1 rounded-full bg-blue-600 text-white font-medium shadow-xs shrink-0 text-xs">全部点位</button>
-      <button onclick="setPersonaMode('church')" id="tab-church" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">⛪ 基督教会 (18)</button>
-      <button onclick="setPersonaMode('cafe')" id="tab-cafe" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">☕ 精选咖啡 (50)</button>
       <button onclick="setPersonaMode('market_super')" id="tab-market_super" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🛒 大型超市 (12)</button>
       <button onclick="setPersonaMode('market')" id="tab-market" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🧺 烟火市集 (10)</button>
-      <button onclick="setPersonaMode('sports')" id="tab-sports" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏅 运动健身 (20)</button>
+      <button onclick="setPersonaMode('cafe')" id="tab-cafe" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">☕ 精选咖啡 (50)</button>
       <button onclick="setPersonaMode('restaurant')" id="tab-restaurant" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🍴 特色美食 (25)</button>
+      <!-- 居中放置的教会板块 -->
+      <button onclick="setPersonaMode('church')" id="tab-church" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">⛪ 基督教会 (18)</button>
+      <button onclick="setPersonaMode('sports')" id="tab-sports" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏅 运动健身 (20)</button>
       <button onclick="setPersonaMode('school')" id="tab-school" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🎓 国际学校 (21)</button>
       <button onclick="setPersonaMode('gov')" id="tab-gov" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏛️ 政务使馆 (5)</button>
       <button onclick="setPersonaMode('mall')" id="tab-mall" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🛍️ 购物中心 (4)</button>
@@ -71,7 +72,7 @@
         <input 
           type="text" 
           id="searchInput" 
-          placeholder="搜法汉堂、CCF、超市、云南早市、乒乓球、ABA学校、移民局..." 
+          placeholder="搜超市、法汉堂、CCF、云南早市、乒乓球、ABA学校、移民局..." 
           class="w-full pl-7 pr-3 py-1 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
           oninput="applyFilter()"
         />
@@ -99,7 +100,7 @@
     <aside id="listView" class="w-full md:w-[490px] h-full bg-white flex flex-col z-10 shrink-0">
       <div class="px-3.5 py-1.5 border-b border-slate-100 flex justify-between items-center text-xs text-slate-500 bg-slate-50">
         <span id="placeCount" class="font-medium">正在渲染全量点位...</span>
-        <span class="text-[11px] text-slate-400">支持一键直达打车软件</span>
+        <span class="text-[11px] text-slate-400">原生直通 Grab / Bolt</span>
       </div>
 
       <div id="placeCardList" class="flex-1 overflow-y-auto divide-y divide-slate-100 p-2.5 space-y-3 pb-24 md:pb-6">
@@ -121,7 +122,7 @@
     </button>
   </div>
 
-  <!-- 打车服务选择弹窗 -->
+  <!-- 打车服务选择弹窗（原生链接直通版，杜绝浏览器安全拦截） -->
   <div id="rideModal" class="fixed inset-0 bg-black/60 z-50 flex items-end md:items-center justify-center hidden p-0 md:p-4" onclick="closeRideModal()">
     <div class="bg-white rounded-t-3xl md:rounded-2xl max-w-sm w-full p-4 space-y-3 shadow-2xl" onclick="event.stopPropagation();">
       <div class="flex justify-between items-center border-b border-slate-100 pb-2">
@@ -135,28 +136,31 @@
       </div>
 
       <div class="space-y-2 text-xs">
-        <button onclick="callGrabApp()" class="w-full p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl flex items-center justify-between transition group">
+        <!-- Grab 原生链接：支持 App 唤起与即时网页叫车 -->
+        <a id="grabNativeLink" href="#" target="_blank" rel="noopener noreferrer" class="w-full p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl flex items-center justify-between transition group block">
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shadow-xs">G</div>
             <div class="text-left">
               <div class="font-bold text-emerald-950">呼叫 Grab (全城覆盖)</div>
-              <div class="text-[10px] text-emerald-700">自动带入目的地 · 未安装调起网页直接叫车</div>
+              <div class="text-[10px] text-emerald-700">自动带入目的地坐标 · 支持网页直接叫车</div>
             </div>
           </div>
-          <i class="fa-solid fa-angle-right text-emerald-600 group-hover:translate-x-0.5 transition"></i>
-        </button>
+          <i class="fa-solid fa-arrow-up-right-from-square text-emerald-600 group-hover:translate-x-0.5 transition"></i>
+        </a>
 
-        <button onclick="callBoltApp()" class="w-full p-3 bg-green-50 hover:bg-green-100 border border-green-200 rounded-xl flex items-center justify-between transition group">
+        <!-- Bolt 原生链接 -->
+        <a id="boltNativeLink" href="#" target="_blank" rel="noopener noreferrer" class="w-full p-3 bg-green-50 hover:bg-green-100 border border-green-200 rounded-xl flex items-center justify-between transition group block">
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-green-500 text-white font-bold flex items-center justify-center text-sm shadow-xs">B</div>
             <div class="text-left">
               <div class="font-bold text-green-950">呼叫 Bolt (高性价比)</div>
-              <div class="text-[10px] text-green-700">车费实惠 20% · 未安装跳转应用商店</div>
+              <div class="text-[10px] text-green-700">车费通常实惠 20% · 自动直达</div>
             </div>
           </div>
-          <i class="fa-solid fa-angle-right text-green-600 group-hover:translate-x-0.5 transition"></i>
-        </button>
+          <i class="fa-solid fa-arrow-up-right-from-square text-green-600 group-hover:translate-x-0.5 transition"></i>
+        </a>
 
+        <!-- 复制泰文地址给司机 -->
         <button onclick="copyCurrentAddress()" class="w-full p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl flex items-center justify-center gap-1.5 font-medium transition">
           <i class="fa-regular fa-copy text-slate-500"></i> 复制泰文地址（出示给双条车/路边司机）
         </button>
@@ -181,7 +185,7 @@
         </div>
         <div>
           <label class="block font-medium text-slate-700 mb-1">补充详情</label>
-          <textarea required id="fbContent" rows="3" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50" placeholder="营业时间、聚会时段、服务等"></textarea>
+          <textarea required id="fbContent" rows="3" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50" placeholder="营业时间、服务等"></textarea>
         </div>
         <div class="flex justify-end gap-2 pt-1">
           <button type="button" onclick="closeModal()" class="px-3.5 py-1.5 border border-slate-200 rounded-lg text-slate-600">取消</button>
@@ -193,9 +197,555 @@
 
   <script>
     const places = [
-      // ==========================================
-      // ⛪ 基督教会与团契矩阵 (18 处全收录)
-      // ==========================================
+      // ===== 🛒 大型生活超市 (12) =====
+      {
+        id: 501, type: "market_super",
+        nameZh: "Rimping 精品生鲜超市 (Mae Hia 湄海店)",
+        nameEn: "Rimping Supermarket Mae Hia",
+        nameTh: "ริมปิง ซุปเปอร์มาร์เก็ต สาขาแม่เหียะ",
+        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7460, lng: 98.9555, district: "湄海",
+        category: "高端进口生鲜食品超市", tel: "053-806-099",
+        time: "每天 08:00 - 22:00",
+        highlight: "优质有机蔬菜、进口牛排奶酪、食材卫生严苛、带烘焙工坊",
+        tips: "常住华人公认品质最高的生鲜超市，中西日韩调味品和优质肉类齐全。"
+      },
+      {
+        id: 502, type: "market_super",
+        nameZh: "Makro 杭东大型仓储批发超市 (万客隆)",
+        nameEn: "Makro Hang Dong Chiang Mai",
+        nameTh: "แม็คโคร สาขาหางดง เชียงใหม่",
+        addressTh: "207 หมู่ 7 ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7360, lng: 98.9540, district: "杭东",
+        category: "超大型仓储会员制批发超市", tel: "053-447-799",
+        time: "每天 06:00 - 22:00",
+        highlight: "大块三文鱼现切、整箱肉类批发、家庭大宗采购极划算",
+        tips: "大宗采买圣地，肉类生鲜批发价格极低，做饭家庭日常补货首选。"
+      },
+      {
+        id: 503, type: "market_super",
+        nameZh: "Big C Supercenter (杭东1店)",
+        nameEn: "Big C Supercenter Hang Dong 1",
+        nameTh: "บิ๊กซี ซูเปอร์เซ็นเตอร์ สาขาหางดง 1",
+        addressTh: "433/4-5 หมู่ 7 ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7385, lng: 98.9560, district: "杭东",
+        category: "平价大型生活卖场与美食城", tel: "053-807-100",
+        time: "每天 09:00 - 22:00",
+        highlight: "平价日用品全、一楼丰富泰式平价小吃广场、连锁药妆店",
+        tips: "大型平价综合超市，居家日用杂货、锅碗瓢盆和本土零食一站买齐。"
+      },
+      {
+        id: 504, type: "market_super",
+        nameZh: "Lotus's 莲花超市 (Kamthieng 花市店)",
+        nameEn: "Lotus's Chiang Mai Kamthieng",
+        nameTh: "โลตัส เชียงใหม่ คำเที่ยง",
+        addressTh: "19 ถนนซุปเปอร์ไฮเวย์ ต.ป่าตัน อ.เมืองเชียงใหม่",
+        lat: 18.8080, lng: 98.9990, district: "古城",
+        category: "北城大型综合超市", tel: "053-231-100",
+        time: "每天 08:00 - 22:00",
+        highlight: "紧邻JJ市集与清迈最大花卉绿植市场、生鲜水果价格公道",
+        tips: "逛完 JJ 农夫市集顺道买菜极方便，停车位极其充裕。"
+      },
+      {
+        id: 505, type: "market_super",
+        nameZh: "Tops Food Hall (Central Festival 负一层)",
+        nameEn: "Tops Food Hall Central Chiangmai",
+        nameTh: "ท็อปส์ ฟู้ด ฮอลล์ เซ็นทรัล เชียงใหม่",
+        addressTh: "ชั้น G เซ็นทรัล เชียงใหม่ (เฟสติวัล) ต.ฟ้าฮ่าม อ.เมืองเชียงใหม่",
+        lat: 18.8072, lng: 99.0182, district: "三塞",
+        category: "顶奢国际进口生鲜大超市", tel: "053-288-888",
+        time: "每天 10:00 - 22:00",
+        highlight: "欧美日韩高端原装进口食品、高档烘焙甜点、海鲜现场加工",
+        tips: "大尚泰商场底层的精品超市，找进口西餐调料和高端水果的首选地。"
+      },
+      {
+        id: 506, type: "market_super",
+        nameZh: "Rimping 精品超市 (Navarat 萍河总店)",
+        nameEn: "Rimping Supermarket Nawarat",
+        nameTh: "ริมปิง ซุปเปอร์มาร์เก็ต สาขานวรัฐ",
+        addressTh: "ถนนเชียงใหม่-ลำพูน ต.วัดเกต อ.เมืองเชียงใหม่",
+        lat: 18.7865, lng: 99.0035, district: "长康路",
+        category: "老牌进口精品食品超市", tel: "053-246-333",
+        time: "每天 08:00 - 21:00",
+        highlight: "清迈最早的 Rimping 总店、进口红酒奶酪极全、日韩生鲜",
+        tips: "市区河东居民买高品质蔬菜和进口肉类的核心超市。"
+      },
+      {
+        id: 507, type: "market_super",
+        nameZh: "Rimping 精品超市 (Nim City 机场店)",
+        nameEn: "Rimping Supermarket Nim City Daily",
+        nameTh: "ริมปิง ซุปเปอร์มาร์เก็ต สาขานิ่มซิตี้",
+        addressTh: "ถนนมหิดล ต.หายยา อ.เมืองเชียงใหม่",
+        lat: 18.7710, lng: 98.9805, district: "古城",
+        category: "古城南综合进口生活超市", tel: "053-283-900",
+        time: "每天 08:00 - 22:00",
+        highlight: "带大型停车场、有机果蔬沙拉吧、日本食材专柜",
+        tips: "位于古城南门与机场连接带的 Nim City 内，周边有烘焙店和日料店。"
+      },
+      {
+        id: 508, type: "market_super",
+        nameZh: "Rimping 精品超市 (Maya 玛雅负一层)",
+        nameEn: "Rimping Supermarket MAYA",
+        nameTh: "ริมปิง ซุปเปอร์มาร์เก็ต เมญ่า เชียงใหม่",
+        addressTh: "ชั้น B1 เมญ่า ไลฟ์สไตล์ ช้อปปิ้ง เซ็นเตอร์ ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8020, lng: 98.9670, district: "宁曼路",
+        category: "宁曼商圈精品生鲜超市", tel: "052-081-555",
+        time: "每天 10:00 - 22:00",
+        highlight: "数字游民速食沙拉吧、优质即食便当、各类进口水饮",
+        tips: "宁曼路核心区唯一大型高端生鲜超市，适合租住在宁曼的家庭采买。"
+      },
+      {
+        id: 509, type: "market_super",
+        nameZh: "Makro 清迈火车站超大仓储店",
+        nameEn: "Makro Chiang Mai Railway Station",
+        nameTh: "แม็คโคร สาขาเชียงใหม่ (ใกล้สถานีรถไฟ)",
+        addressTh: "ถนนซุปเปอร์ไฮเวย์ ต.ท่าศาลา อ.เมืองเชียงใหม่",
+        lat: 18.7780, lng: 99.0250, district: "三塞",
+        category: "全城最大综合仓储批发超市", tel: "053-240-333",
+        time: "每天 06:00 - 22:00",
+        highlight: "餐厨用具整套采购、海鲜冰鲜大排挡批发、调味品大包装",
+        tips: "开餐馆、咖啡馆以及大家庭批量囤货的终极大卖场。"
+      },
+      {
+        id: 510, type: "market_super",
+        nameZh: "Big C Extra (清迈二环大型店)",
+        nameEn: "Big C Extra Chiang Mai 2",
+        nameTh: "บิ๊กซี เอ็กซ์ตร้า สาขาเชียงใหม่ 2",
+        addressTh: "ถนนซุปเปอร์ไฮเวย์ ต.หนองป่าครั่ง อ.เมืองเชียงใหม่",
+        lat: 18.7960, lng: 99.0300, district: "三塞",
+        category: "仓储型平价大型生活超市", tel: "053-851-500",
+        time: "每天 09:00 - 22:00",
+        highlight: "带法国 Casino 进口专柜、超大家电数码区、平价日用品",
+        tips: "比普通 Big C 货品更齐全，有很多平价欧洲进口奶酪和零食。"
+      },
+      {
+        id: 511, type: "market_super",
+        nameZh: "Big C Supercenter (杭东2店 / 偏南区)",
+        nameEn: "Big C Hang Dong 2",
+        nameTh: "บิ๊กซี ซูเปอร์เซ็นเตอร์ สาขาหางดง 2",
+        addressTh: "ถนนเชียงใหม่-ฮอด ต.หางดง อ.หางดง เชียงใหม่",
+        lat: 18.6880, lng: 98.9160, district: "杭东",
+        category: "杭东深处平价综合卖场", tel: "053-441-900",
+        time: "每天 09:00 - 21:00",
+        highlight: "服务杭东偏南别墅区家庭、配平价快餐与药妆店",
+        tips: "住在 Grace、Lanna 等国际学校附近的家庭最常去的生活超市。"
+      },
+      {
+        id: 512, type: "market_super",
+        nameZh: "Lotus's 莲花超市 (杭东分店)",
+        nameEn: "Lotus's Hang Dong",
+        nameTh: "โลตัส สาขาหางดง เชียงใหม่",
+        addressTh: "ถนนเชียงใหม่-หางดง ต.ป่าแดด อ.เมืองเชียงใหม่",
+        lat: 18.7560, lng: 98.9680, district: "杭东",
+        category: "杭东入口综合生活大超市", tel: "053-274-900",
+        time: "每天 08:00 - 22:00",
+        highlight: "平价生鲜蔬果、本土调味品、烘焙日用百货齐全",
+        tips: "位于机场往杭东走廊路上，交通顺路，买生鲜排骨蔬菜极实惠。"
+      },
+
+      // ===== 🧺 烟火市集 (10) =====
+      {
+        id: 309, type: "market",
+        nameZh: "长康路云南穆斯林早市 (Kad Ban Ho)",
+        nameEn: "Yunnan Muslim Morning Market (Kad Ban Ho)",
+        nameTh: "ตลาดเช้าบ้านฮ่อ (ตลาดจีนฮ่อ) เชียงใหม่",
+        addressTh: "ถนนเจริญประเทศ ซอย 1 ต.ช้างคลาน อ.เมืองเชียงใหม่",
+        lat: 18.7840, lng: 99.0010, district: "长康路",
+        category: "华人味蕾故乡 / 仅周五清晨限定", tel: "",
+        time: "仅每周五 05:30 - 11:00",
+        highlight: "地道云南稀豆粉配大油条、手工饵丝、牛干巴、自制腐乳酸菜",
+        tips: "清迈华人几代老华侨凝聚而成的周五早市，热气腾腾极具家乡烟火气。"
+      },
+      {
+        id: 302, type: "market",
+        nameZh: "真加有机农夫手作市集 (Jing Jai Market)",
+        nameEn: "Jing Jai (JJ) Weekend Market",
+        nameTh: "จริงใจ มาร์เก็ต เชียงใหม่",
+        addressTh: "45 ถนนอัษฎาธร ต.ป่าตัน อ.เมืองเชียงใหม่",
+        lat: 18.8055, lng: 98.9960, district: "古城",
+        category: "清迈顶流有机生活市集", tel: "053-231-520",
+        time: "周六、周日 06:30 - 14:00",
+        highlight: "农人直供有机蔬果、高品质原创手作、现场民谣乐队伴奏",
+        tips: "常住家庭周末必逛，环境极其干净整洁，买菜逛街体验极其舒适。"
+      },
+      {
+        id: 301, type: "market",
+        nameZh: "椰林周末市集 (Coconut Market)",
+        nameEn: "Coconut Market Chiang Mai (Kad Kala)",
+        nameTh: "กาดกะลา ตลาดสวนมะพร้าว เชียงใหม่",
+        addressTh: "94 หมู่ 3 ต.ฟ้าฮ่าม อ.เมืองเชียงใหม่",
+        lat: 18.8250, lng: 99.0150, district: "三塞",
+        category: "高耸椰林梦幻水景市集", tel: "",
+        time: "仅周六、周日 08:00 - 14:00",
+        highlight: "高大椰林水渠倒影、竹桥漫步、新鲜烤椰子与泰北点心",
+        tips: "浪漫田园市集，地面平缓无台阶，点心地道纯天然，拍照漫步两宜。"
+      },
+      {
+        id: 303, type: "market",
+        nameZh: "悟孟寺后手作艺术家村 (Baan Kang Wat)",
+        nameEn: "Baan Kang Wat Craft Community",
+        nameTh: "บ้านข้างวัด ต.สุเทพ อ.เมืองเชียงใหม่",
+        addressTh: "191 หมู่ 5 ซอยวัดอุโมงค์ ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7760, lng: 98.9480, district: "宁曼路",
+        category: "森林露天剧场艺术手作村", tel: "095-691-6544",
+        time: "周二至周日 10:00 - 18:00 (周一休)",
+        highlight: "圆形露天剧场、陶艺手工坊、独立书店、手冲咖啡屋",
+        tips: "木制吊脚楼环绕着绿茵剧场，陶瓷独立设计工作室林立，环境清幽。"
+      },
+      {
+        id: 304, type: "market",
+        nameZh: "竹林面包市集 (Nana Jungle Bakery)",
+        nameEn: "Nana Jungle Saturday Market",
+        nameTh: "นานา จังเกิ้ล กาดขนมปังบ้านสวนไผ่",
+        addressTh: "ถนนชลประทาน ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8150, lng: 98.9600, district: "运河路",
+        category: "素帖竹林周六晨间法式面包市集", tel: "",
+        time: "仅每周六 07:00 - 11:00",
+        highlight: "现烤法棍可颂、天然酵母乡村酸包、现煮热咖啡",
+        tips: "每周六早晨限定的乡村烘焙市集，刚出炉的面包香气扑鼻，买早餐仪式感足。"
+      },
+      {
+        id: 305, type: "market",
+        nameZh: "周日古城步行街 (Sunday Walking Street)",
+        nameEn: "Sunday Walking Street Night Market",
+        nameTh: "ถนนคนเดินวันอาทิตย์ ท่าแพ เชียงใหม่",
+        addressTh: "ถนนราชดำเนิน ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7878, lng: 98.9930, district: "古城",
+        category: "清迈规模最大的古城周日夜市", tel: "",
+        time: "仅每周日 17:00 - 22:30",
+        highlight: "贯穿塔佩门1公里长街、万人空巷、特色传统小吃与手工艺",
+        tips: "清迈最壮观步行街，整街封路，寺庙院内化身小吃街，街头艺人表演精彩。"
+      },
+      {
+        id: 306, type: "market",
+        nameZh: "周六银桥步行街 (Saturday Walking Street)",
+        nameEn: "Saturday Walking Street (Wualai Road)",
+        nameTh: "ถนนคนเดินวันเสาร์ วัวลาย เชียงใหม่",
+        addressTh: "ถนนวัวลาย ต.หายยา อ.เมืองเชียงใหม่",
+        lat: 18.7770, lng: 98.9830, district: "古城",
+        category: "古城南门银匠街周六夜市", tel: "",
+        time: "仅每周六 17:00 - 22:30",
+        highlight: "传统手工银器工坊、素攀寺全银庙夜景、美食长廊",
+        tips: "瓦莱银匠街展开，中途可顺道欣赏全银素攀寺，热闹非凡。"
+      },
+      {
+        id: 307, type: "market",
+        nameZh: "湄海生鲜综合大早市 (Mae Hia Market)",
+        nameEn: "Mae Hia Fresh Market",
+        nameTh: "ตลาดสดแม่เหียะ เชียงใหม่",
+        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7470, lng: 98.9550, district: "湄海",
+        category: "干净优质生鲜综合大菜市", tel: "",
+        time: "每天 05:00 - 20:00 (清晨最佳)",
+        highlight: "极度干净整洁、平价热带水果、新鲜肉禽海鲜、停车位足",
+        tips: "湄海与杭东片区买菜首选！地面干爽无异味，热带水果价格公道。"
+      },
+      {
+        id: 308, type: "market",
+        nameZh: "瓦洛洛百年传统大市场 (Warorot Market)",
+        nameEn: "Warorot Market (Kad Luang)",
+        nameTh: "ตลาดวโรรส (กาดหลวง) เชียงใหม่",
+        addressTh: "ถนนวิชยานนท์ ต.ช้างม่อย อ.เมืองเชียงใหม่",
+        lat: 18.7900, lng: 99.0005, district: "长康路",
+        category: "萍河畔最古老综合批发市场", tel: "",
+        time: "每天 04:00 - 18:00",
+        highlight: "百年老建筑、泰北香肠脆猪皮、果干茶叶批发、民族布料",
+        tips: "清迈百年老市集，长辈买果干、茶叶、特产以及日常布艺的批发源头。"
+      },
+      {
+        id: 310, type: "market",
+        nameZh: "松撇市场 (Somphet Market 古城菜市)",
+        nameEn: "Somphet Market Chiang Mai",
+        nameTh: "ตลาดสมเพชร เชียงใหม่",
+        addressTh: "ถนนมูลเมือง ซอย 6 ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7915, lng: 98.9925, district: "古城",
+        category: "古城东北传统晨间菜市场", tel: "",
+        time: "每天 06:00 - 18:00",
+        highlight: "新鲜热带切块水果、新鲜椰子、传统泰式泰北香料草药",
+        tips: "古城内常住居民就近买菜、买新鲜木瓜菠萝和现压果汁的最佳小集市。"
+      },
+
+      // ===== ☕ 特色代表咖啡馆 (50) =====
+      {
+        id: 201, type: "cafe",
+        nameZh: "黑森林热带雨林飞瀑餐厅咖啡",
+        nameEn: "Khaomao-Khaofang Black Forest",
+        nameTh: "ข้าวเม่า-ข้าวฟ่าง ป่าในจินตนาการ เชียงใหม่",
+        addressTh: "181 หมู่ 7 ถนนราชพฤกษ์ ต.หนองควาย อ.หางดง เชียงใหม่",
+        lat: 18.7180, lng: 98.9275, district: "杭东",
+        category: "原始热带雨林人造巨瀑", tel: "063-485-7888",
+        time: "每天 11:00 - 15:00 / 17:00 - 21:30",
+        highlight: "巨大人工瀑布飞流直下、冷雾缭绕、全平缓木栈道",
+        tips: "清迈地标级自然生态餐厅，空气湿润清凉，带父母长辈漫步就餐首选。"
+      },
+      {
+        id: 202, type: "cafe",
+        nameZh: "Chom 仙境绿野瀑布咖啡 (爱丽丝仙境)",
+        nameEn: "Chom Cafe and Restaurant",
+        nameTh: "ชม คาเฟ่ แอนด์ เรสเตอรองท์ เชียงใหม่",
+        addressTh: "2/13 หมู่ 2 ถนนสมโภชเชียงใหม่ 700 ปี ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7525, lng: 98.9505, district: "湄海",
+        category: "苔藓水雾锦鲤仙境", tel: "053-271-749",
+        time: "每天 11:00 - 22:00",
+        highlight: "锦鲤游鱼池、水雾弥漫的梦幻苔藓花园、舒适冷气房",
+        tips: "湄海区经典打卡庭院，景观打理精湛，甜品与咖啡品质俱佳。"
+      },
+      {
+        id: 203, type: "cafe",
+        nameZh: "No.39 湖畔森林木屋滑梯咖啡",
+        nameEn: "No.39 Cafe Chiang Mai",
+        nameTh: "นัมเบอร์ 39 คาเฟ่ เชียงใหม่",
+        addressTh: "ซอยวัดอุโมงค์ ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7830, lng: 98.9485, district: "宁曼路",
+        category: "湖畔木屋滑梯放空", tel: "091-919-3939",
+        time: "每天 09:30 - 18:30",
+        highlight: "碧绿中央湖泊、木质小木屋滑梯、现场吉他驻唱",
+        tips: "靠近悟孟寺艺术区，湖畔微风吹拂，适合点一杯冰美式在湖边发呆放空。"
+      },
+      {
+        id: 204, type: "cafe",
+        nameZh: "红陶古刹秘境咖啡 (Clay Studio in the Garden)",
+        nameEn: "Clay Studio Coffee in the Garden",
+        nameTh: "เคลย์ สตูดิโอ คอฟฟี่ อิน เดอะ การ์เด้น",
+        addressTh: "36 ถนนพระปกเกล้า ซอย 2 ต.พระสิงห์ อ.เมืองเชียงใหม่",
+        lat: 18.7840, lng: 98.9875, district: "古城",
+        category: "红砖青苔佛首古迹庭院", tel: "053-278-187",
+        time: "每天 08:00 - 17:00",
+        highlight: "红砖古墙、青苔石雕、佛首红陶雕塑、参天大树浓荫",
+        tips: "藏在古城南门内的幽静秘境，满园红陶雕塑宛如古文明遗迹，极度清幽治愈。"
+      },
+      {
+        id: 205, type: "cafe",
+        nameZh: "Roast8ry 旗舰店 (世界拉花冠军店)",
+        nameEn: "Roast8ry Flagship Specialty Coffee",
+        nameTh: "โรสท์เอททรี แฟลกชิป เชียงใหม่",
+        addressTh: "24/9 ถนนนิมมานเหมินท์ ซอย 17 ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7960, lng: 98.9670, district: "宁曼路",
+        category: "世界拉花冠军精品店", tel: "091-789-3951",
+        time: "每天 08:00 - 17:00",
+        highlight: "世界咖啡拉花大赛总冠军主理、骷髅头特调、严选精品豆",
+        tips: "清迈咖啡界名片，拿铁与意式特调出品极其精细，咖啡迷必到。"
+      },
+      {
+        id: 206, type: "cafe",
+        nameZh: "清大静心湖畔咖啡 (Living A Dream @ Ang Kaew)",
+        nameEn: "Living A Dream Coffee",
+        nameTh: "ลิฟวิ่ง อะ ดรีม อ่างแก้ว มหาวิทยาลัยเชียงใหม่",
+        addressTh: "อ่างแก้ว มหาวิทยาลัยเชียงใหม่ ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.8060, lng: 98.9515, district: "宁曼路",
+        category: "素帖高山湖景咖啡", tel: "",
+        time: "每天 07:00 - 19:00",
+        highlight: "直面素帖山、清大静心湖开阔水景、湖滨草坪长椅",
+        tips: "正对清迈大学静心湖大坝，傍晚山风清凉，常住长辈慢走散步喝咖啡首选。"
+      },
+      {
+        id: 207, type: "cafe",
+        nameZh: "蕨林庭院法式早午餐咖啡 (Fern Forest)",
+        nameEn: "Fern Forest Cafe Chiang Mai",
+        nameTh: "เฟิร์น ฟอเรสต์ คาเฟ่ เชียงใหม่",
+        addressTh: "54/1 ถนนสิงหราช ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7925, lng: 98.9820, district: "古城",
+        category: "古城百年绿植庭院", tel: "084-616-1144",
+        time: "每天 08:30 - 18:30",
+        highlight: "满庭巨大蕨类植物、法式烘焙甜点、清甜招牌椰子派",
+        tips: "古城西北侧经典老字号庭院，流水假山环抱，椰子派与手冲咖啡极适口。"
+      },
+      {
+        id: 208, type: "cafe",
+        nameZh: "Brandnew Field Good (山谷稻田长木桥咖啡)",
+        nameEn: "Brandnew Field Good Hang Dong",
+        nameTh: "แบรนด์นิว ฟีลด์กู๊ด บ้านปง หางดง",
+        addressTh: "218 หมู่ 2 บ้านปง อ.หางดง เชียงใหม่",
+        lat: 18.7610, lng: 98.8680, district: "杭东",
+        category: "山谷稻田木桥野趣", tel: "097-971-5854",
+        time: "09:00 - 18:00 (周二休)",
+        highlight: "数百米木制栈桥横贯稻田、远眺连绵青山、谷地微风",
+        tips: "位于杭东外侧山谷田园，远离城市车流喧嚣，周末全家亲近自然的好去处。"
+      },
+      {
+        id: 209, type: "cafe",
+        nameZh: "Graph Contemporary 工业艺术复古手冲咖啡",
+        nameEn: "Graph Contemporary Charoen Muang",
+        nameTh: "กราฟ คอนเทมโพรารี เชียงใหม่",
+        addressTh: "ถนนเจริญเมือง ต.วัดเกต อ.เมืองเชียงใหม่",
+        lat: 18.7865, lng: 99.0060, district: "瓦特盖特",
+        category: "复古工业风精品特调", tel: "086-567-3330",
+        time: "每天 09:00 - 17:00",
+        highlight: "复古法式老洋楼、严选泰北微产区豆、分子特调冰咖啡",
+        tips: "Graph 旗下旗舰店，挑高双层老洋房陈列着艺术品，特调咖啡风味层次分明。"
+      },
+      {
+        id: 210, type: "cafe",
+        nameZh: "Akha Ama Coffee 帕辛店 (阿卡族庄园冠军豆)",
+        nameEn: "Akha Ama Phrasingh",
+        nameTh: "อาข่า อ่ามา สาขาพระสิงห์",
+        addressTh: "175/1 ถนนราชดำเนิน ต.พระสิงห์ อ.เมืองเชียงใหม่",
+        lat: 18.7885, lng: 98.9830, district: "古城",
+        category: "泰北原产地直供精品名店", tel: "088-267-7966",
+        time: "每天 08:00 - 17:30",
+        highlight: "高山阿卡原住民自营种植园、SCA赛级水洗/日晒豆、红砖极简风",
+        tips: "清迈本土精品咖啡代表，自产高山咖啡豆风味纯正且性价比极高。"
+      },
+      {
+        id: 211, type: "cafe",
+        nameZh: "The Baristro at Ping River (萍河滨水极简咖啡)",
+        nameEn: "The Baristro at Ping River",
+        nameTh: "เดอะ บาริสโตร แอท ปิงริเวอร์",
+        addressTh: "62 ถนนป่าตัน ต.ป่าตัน อ.เมืองเชียงใหม่",
+        lat: 18.8150, lng: 99.0025, district: "古城",
+        category: "临河大草坪侘寂风名店", tel: "087-788-2788",
+        time: "每天 08:00 - 18:00",
+        highlight: "正对萍河开阔河景、水泥毛坯与大片草坪、木栈台临水吹风",
+        tips: "坐拥萍河宽阔亲水平台，晨光与午后光影极美，室内冷气足且插座齐备。"
+      },
+      {
+        id: 212, type: "cafe",
+        nameZh: "Carp Cafe (万尾锦鲤环抱日式回廊咖啡)",
+        nameEn: "Carp Cafe Hang Dong",
+        nameTh: "คาร์พ คาเฟ่ เชียงใหม่",
+        addressTh: "118/2 หมู่ 1 ต.หนองควาย อ.หางดง เชียงใหม่",
+        lat: 18.7250, lng: 98.9250, district: "杭东",
+        category: "锦鲤庭院水景咖啡", tel: "061-268-7777",
+        time: "每天 09:00 - 20:00",
+        highlight: "上万尾日本锦鲤水中漫游、玻璃走廊凌空水面、日式庭院",
+        tips: "杭东标志性锦鲤咖啡，脚下就是成群翻腾的肥美锦鲤，非常受长辈和孩子喜爱。"
+      },
+      {
+        id: 213, type: "cafe",
+        nameZh: "Early Owls (草坪野餐与小溪慢生活咖啡)",
+        nameEn: "Early Owls Chiang Mai",
+        nameTh: "เออร์ลี่ อาวส์ เชียงใหม่",
+        addressTh: "13 ถนนหมื่นด้ามพร้าคต ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8050, lng: 98.9890, district: "古城",
+        category: "古城北生态大草坪", tel: "095-224-6590",
+        time: "09:00 - 18:30 (周三休息)",
+        highlight: "自取野餐席地而坐、浅水小溪潺潺、大树遮阴无暴晒",
+        tips: "老城北门外的巨大城市绿洲，店家提供小矮凳与野餐垫，环境极其松弛自在。"
+      },
+      {
+        id: 214, type: "cafe",
+        nameZh: "Ristr8to Original (宁曼路传奇拉花老店)",
+        nameEn: "Ristr8to Original Nimman Soi 3",
+        nameTh: "ริสเตรตโต้ ออริจินัล นิมมาน ซอย 3",
+        addressTh: "15/3 ถนนนิมมานเหมินท์ ซอย 3 ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7990, lng: 98.9685, district: "宁曼路",
+        category: "宁曼路老字号意式拉花", tel: "053-215-278",
+        time: "每天 07:00 - 18:00",
+        highlight: "清迈最早风靡的拉花胜地、试管与量杯个性盛装、浓度可选",
+        tips: "宁曼3巷老牌元祖店，气氛热烈，拿铁与短笛（Piccolo）水准极稳。"
+      },
+      {
+        id: 215, type: "cafe",
+        nameZh: "Heartwork the Sharing Space (数字游民自习咖啡)",
+        nameEn: "Heartwork the Sharing Space",
+        nameTh: "ฮาร์ตเวิร์ก เดอะ แชร์ริ่ง สเปซ เชียงใหม่",
+        addressTh: "196/1-2 ถนนกำแพงดิน ต.หายยา อ.เมืองเชียงใหม่",
+        lat: 18.7790, lng: 98.9980, district: "长康路",
+        category: "自习办公极度友好空间", tel: "081-882-8825",
+        time: "每天 09:00 - 18:00",
+        highlight: "安静不嘈杂、插座密度高、全空调高速WiFi、人体工学椅",
+        tips: "长住清迈需要带笔记本电脑办公或阅读人士的宝藏地，环境极其安静舒适。"
+      },
+
+      // ===== 🍴 经典与特色美食 (25) =====
+      {
+        id: 601, type: "restaurant",
+        nameZh: "Khao Soi Mae Sai（湄赛泰北咖喱金面）",
+        nameEn: "Khao Soi Mae Sai (Bib Gourmand)",
+        nameTh: "ข้าวซอยแม่สาย เชียงใหม่",
+        addressTh: "29/1 ถนนราชพฤกษ์ ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8000, lng: 98.9750, district: "宁曼路",
+        category: "米其林必比登连续推荐名店", tel: "053-213-284",
+        time: "周一至周六 08:00 - 16:00 (周日休息)",
+        highlight: "清迈第一金面、浓郁椰浆咖喱汤头、软烂牛肉牛筋",
+        tips: "泰北金面天花板，浓郁椰香咖喱搭配手作黄面与脆炸金面，一碗50-60铢惊艳味蕾。"
+      },
+      {
+        id: 602, type: "restaurant",
+        nameZh: "古城北门凤飞飞猪脚饭 (Chang Phueak)",
+        nameEn: "Chang Phueak Pork Leg Rice",
+        nameTh: "ข้าวขาหมูช้างเผือก เชียงใหม่",
+        addressTh: "ประตูช้างเผือก ถนนมณีนพรัตน์ ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7958, lng: 98.9860, district: "古城",
+        category: "古城地标卤味排队名摊", tel: "081-366-2969",
+        time: "每天 17:00 - 23:00 (夜市出摊)",
+        highlight: "大锅老卤、猪蹄软烂脱骨、溏心蛋酸菜绝配",
+        tips: "牛仔帽老板娘招牌，猪蹄慢火煨透入口即化，肉汁拌泰国香米饭老少皆宜。"
+      },
+      {
+        id: 603, type: "restaurant",
+        nameZh: "Pa Daeng Jin Tup（米其林木槌手敲牛肉）",
+        nameEn: "Pa Daeng Jin Tup (Bib Gourmand)",
+        nameTh: "ป้าแดง จิ้นทุบ เชียงใหม่",
+        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7320, lng: 98.9510, district: "杭东",
+        category: "泰北炭烤木槌手打特色牛肉", tel: "081-883-2947",
+        time: "周一至周六 16:30 - 21:00",
+        highlight: "炭火慢烤香嫩牛肉、大木槌反复捶打撕裂肉纤维、特调发酵辣酱",
+        tips: "杭东老饕秘藏小店，牛肉经实木大槌捶打后丝丝松散，越嚼越香。"
+      },
+      {
+        id: 604, type: "restaurant",
+        nameZh: "SP Chicken 帕辛寺立式炭火香草烤鸡",
+        nameEn: "SP Chicken (Michelin Recommended)",
+        nameTh: "เอสพี ชิกเก้น เชียงใหม่",
+        addressTh: "ถนนสามล้าน ซอย 1 ต.พระสิงห์ อ.เมืองเชียงใหม่",
+        lat: 18.7880, lng: 98.9810, district: "古城",
+        category: "大蒜香草填腹慢火转烤鸡", tel: "081-472-3223",
+        time: "每天 10:00 - 17:00 (售完即止)",
+        highlight: "特制立式炭火烤炉、鸡肚塞满大蒜香草、外皮焦脆爆汁",
+        tips: "古城帕辛寺旁，立式烘烤让鸡皮干爽香脆无油腻，配泰式木瓜沙拉极开胃。"
+      },
+      {
+        id: 605, type: "restaurant",
+        nameZh: "Huen Muan Jai (老兰纳庭院正宗泰北菜)",
+        nameEn: "Huen Muan Jai (Bib Gourmand)",
+        nameTh: "เฮือนม่วนใจ๋ เชียงใหม่",
+        addressTh: "24 ถนนราชพฤกษ์ ต.ช้างเผือก อ.เมืองเชียงใหม่",
+        lat: 18.8020, lng: 98.9740, district: "宁曼路",
+        category: "传统柚木兰纳私房泰北菜", tel: "053-404-240",
+        time: "11:00 - 21:00 (周三休息)",
+        highlight: "泰北传统开胃九宫格拼盘、清迈香肠、炸猪皮配青辣椒酱",
+        tips: "主厨曾斩获铁人料理大奖，绿意盎然的兰纳木屋里品尝纯正泰北家庭料理。"
+      },
+      {
+        id: 606, type: "restaurant",
+        nameZh: "Cherng Doi Roast Chicken (脆皮烤鸡名店)",
+        nameEn: "Cherng Doi Roast Chicken",
+        nameTh: "เชิงดอย หนังกรอบ เชียงใหม่",
+        addressTh: "ถนนสุขเกษม ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7985, lng: 98.9660, district: "宁曼路",
+        category: "宁曼路脆皮烤鸡第一家", tel: "081-881-1407",
+        time: "11:00 - 20:00 (周一休息)",
+        highlight: "无烟慢烤带皮鸡肉、特制酸罗望子酱、香烤罗勒糯米饭",
+        tips: "宁曼路排队名店，鸡皮薄脆如纸，肉质鲜嫩多汁，搭配糯米饭风味一流。"
+      },
+      {
+        id: 607, type: "restaurant",
+        nameZh: "The Duke's 萍河店 (清迈美式家庭餐厅霸主)",
+        nameEn: "The Duke's Ping River",
+        nameTh: "เดอะ ดุ๊กส์ เชียงใหม่",
+        addressTh: "49/2 ถนนเชียงใหม่-ลำพูน ต.วัดเกต อ.เมืองเชียงใหม่",
+        lat: 18.7830, lng: 99.0040, district: "长康路",
+        category: "美式大份炭烤牛排/硬核披萨", tel: "053-249-231",
+        time: "每天 11:00 - 22:30",
+        highlight: "超大份慢烤猪肋排、芝加哥深盘披萨、现烤纽约芝士蛋糕",
+        tips: "清迈长期旅居欧美家庭与华人聚餐大食堂，分量惊人，聚餐性价比极高。"
+      },
+      {
+        id: 608, type: "restaurant",
+        nameZh: "发荣海南鸡饭 (Kiat Ocha 70年老字号)",
+        nameEn: "Kiat Ocha Chicken Rice",
+        nameTh: "เกียรติโอชา ข้าวมันไก่ เชียงใหม่",
+        addressTh: "41-43 ถนนอินทวโรรส ต.ศรีภูมิ อ.เมืองเชียงใหม่",
+        lat: 18.7895, lng: 98.9865, district: "古城",
+        category: "三王纪念碑旁半世纪老店", tel: "053-327-244",
+        time: "每天 06:00 - 15:00",
+        highlight: "鲜嫩白切鸡、大锅香浓鸡汤米饭、沙嗲炭烤猪肉串",
+        tips: "古城中心传承数代的海南鸡饭老字号，鸡肉滑嫩，配秘制豆酱生姜汁极地道。"
+      },
+
+      // ===== ⛪ 基督教会 (18 处，居中分类) =====
       {
         id: 1, type: "church",
         nameZh: "清迈华人基督教会 (法汉堂 Faham)",
@@ -411,274 +961,6 @@
         time: "周日 10:00 - 11:30",
         highlight: "周六下午 15:00 滨河慢走交流与家庭茶聚",
         tips: "靠近巴达区萍河畔，风景优美环境安静，常有广东与大湾区旅居教友聚会交流，距清迈市中心医院 8分钟。"
-      },
-
-      // ===== 🛒 大型生活超市 (12) =====
-      {
-        id: 501, type: "market_super",
-        nameZh: "Rimping 精品生鲜超市 (Mae Hia 湄海店)",
-        nameEn: "Rimping Supermarket Mae Hia",
-        nameTh: "ริมปิง ซุปเปอร์มาร์เก็ต สาขาแม่เหียะ",
-        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
-        lat: 18.7460, lng: 98.9555, district: "湄海",
-        category: "高端进口生鲜食品超市", tel: "053-806-099",
-        time: "每天 08:00 - 22:00",
-        highlight: "优质有机蔬菜、进口牛排奶酪、食材卫生严苛、带烘焙工坊",
-        tips: "常住华人公认品质最高的生鲜超市，中西日韩调味品和优质肉类齐全。"
-      },
-      {
-        id: 502, type: "market_super",
-        nameZh: "Makro 杭东大型仓储批发超市 (万客隆)",
-        nameEn: "Makro Hang Dong Chiang Mai",
-        nameTh: "แม็คโคร สาขาหางดง เชียงใหม่",
-        addressTh: "207 หมู่ 7 ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
-        lat: 18.7360, lng: 98.9540, district: "杭东",
-        category: "超大型仓储会员制批发超市", tel: "053-447-799",
-        time: "每天 06:00 - 22:00",
-        highlight: "大块三文鱼现切、整箱肉类批发、家庭大宗采购极划算",
-        tips: "大宗采买圣地，肉类生鲜批发价格极低，做饭家庭日常补货首选。"
-      },
-      {
-        id: 503, type: "market_super",
-        nameZh: "Big C Supercenter (杭东1店)",
-        nameEn: "Big C Supercenter Hang Dong 1",
-        nameTh: "บิ๊กซี ซูเปอร์เซ็นเตอร์ สาขาหางดง 1",
-        addressTh: "433/4-5 หมู่ 7 ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
-        lat: 18.7385, lng: 98.9560, district: "杭东",
-        category: "平价大型生活卖场与美食城", tel: "053-807-100",
-        time: "每天 09:00 - 22:00",
-        highlight: "平价日用品全、一楼丰富泰式平价小吃广场、连锁药妆店",
-        tips: "大型平价综合超市，居家日用杂货、锅碗瓢盆和本土零食一站买齐。"
-      },
-      {
-        id: 504, type: "market_super",
-        nameZh: "Lotus's 莲花超市 (Kamthieng 花市店)",
-        nameEn: "Lotus's Chiang Mai Kamthieng",
-        nameTh: "โลตัส เชียงใหม่ คำเที่ยง",
-        addressTh: "19 ถนนซุปเปอร์ไฮเวย์ ต.ป่าตัน อ.เมืองเชียงใหม่",
-        lat: 18.8080, lng: 98.9990, district: "古城",
-        category: "北城大型综合超市", tel: "053-231-100",
-        time: "每天 08:00 - 22:00",
-        highlight: "紧邻JJ市集与清迈最大花卉绿植市场、生鲜水果价格公道",
-        tips: "逛完 JJ 农夫市集顺道买菜极方便，停车位极其充裕。"
-      },
-      {
-        id: 505, type: "market_super",
-        nameZh: "Tops Food Hall (Central Festival 负一层)",
-        nameEn: "Tops Food Hall Central Chiangmai",
-        nameTh: "ท็อปส์ ฟู้ด ฮอลล์ เซ็นทรัล เชียงใหม่",
-        addressTh: "ชั้น G เซ็นทรัล เชียงใหม่ (เฟสติวัล) ต.ฟ้าฮ่าม อ.เมืองเชียงใหม่",
-        lat: 18.8072, lng: 99.0182, district: "三塞",
-        category: "顶奢国际进口生鲜大超市", tel: "053-288-888",
-        time: "每天 10:00 - 22:00",
-        highlight: "欧美日韩高端原装进口食品、高档烘焙甜点、海鲜现场加工",
-        tips: "大尚泰商场底层的精品超市，找进口西餐调料和高端水果的首选地。"
-      },
-      {
-        id: 506, type: "market_super",
-        nameZh: "Rimping 精品超市 (Navarat 萍河总店)",
-        nameEn: "Rimping Supermarket Nawarat",
-        nameTh: "ริมปิง ซุปเปอร์มาร์เก็ต สาขานวรัฐ",
-        addressTh: "ถนนเชียงใหม่-ลำพูน ต.วัดเกต อ.เมืองเชียงใหม่",
-        lat: 18.7865, lng: 99.0035, district: "长康路",
-        category: "老牌进口精品食品超市", tel: "053-246-333",
-        time: "每天 08:00 - 21:00",
-        highlight: "清迈最早的 Rimping 总店、进口红酒奶酪极全、日韩生鲜",
-        tips: "市区河东居民买高品质蔬菜和进口肉类的核心超市。"
-      },
-      {
-        id: 507, type: "market_super",
-        nameZh: "Rimping 精品超市 (Nim City 机场店)",
-        nameEn: "Rimping Supermarket Nim City Daily",
-        nameTh: "ริมปิง ซุปเปอร์มาร์เก็ต สาขานิ่มซิตี้",
-        addressTh: "ถนนมหิดล ต.หายยา อ.เมืองเชียงใหม่",
-        lat: 18.7710, lng: 98.9805, district: "古城",
-        category: "古城南综合进口生活超市", tel: "053-283-900",
-        time: "每天 08:00 - 22:00",
-        highlight: "带大型停车场、有机果蔬沙拉吧、日本食材专柜",
-        tips: "位于古城南门与机场连接带的 Nim City 内，周边有烘焙店和日料店。"
-      },
-      {
-        id: 508, type: "market_super",
-        nameZh: "Rimping 精品超市 (Maya 玛雅负一层)",
-        nameEn: "Rimping Supermarket MAYA",
-        nameTh: "ริมปิง ซุปเปอร์มาร์เก็ต เมญ่า เชียงใหม่",
-        addressTh: "ชั้น B1 เมญ่า ไลฟ์สไตล์ ช้อปปิ้ง เซ็นเตอร์ ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8020, lng: 98.9670, district: "宁曼路",
-        category: "宁曼商圈精品生鲜超市", tel: "052-081-555",
-        time: "每天 10:00 - 22:00",
-        highlight: "数字游民速食沙拉吧、优质即食便当、各类进口水饮",
-        tips: "宁曼路核心区唯一大型高端生鲜超市，适合租住在宁曼的家庭采买。"
-      },
-      {
-        id: 509, type: "market_super",
-        nameZh: "Makro 清迈火车站超大仓储店",
-        nameEn: "Makro Chiang Mai Railway Station",
-        nameTh: "แม็คโคร สาขาเชียงใหม่ (ใกล้สถานีรถไฟ)",
-        addressTh: "ถนนซุปเปอร์ไฮเวย์ ต.ท่าศาลา อ.เมืองเชียงใหม่",
-        lat: 18.7780, lng: 99.0250, district: "三塞",
-        category: "全城最大综合仓储批发超市", tel: "053-240-333",
-        time: "每天 06:00 - 22:00",
-        highlight: "餐厨用具整套采购、海鲜冰鲜大排挡批发、调味品大包装",
-        tips: "开餐馆、咖啡馆以及大家庭批量囤货的终极大卖场。"
-      },
-      {
-        id: 510, type: "market_super",
-        nameZh: "Big C Extra (清迈二环大型店)",
-        nameEn: "Big C Extra Chiang Mai 2",
-        nameTh: "บิ๊กซี เอ็กซ์ตร้า สาขาเชียงใหม่ 2",
-        addressTh: "ถนนซุปเปอร์ไฮเวย์ ต.หนองป่าครั่ง อ.เมืองเชียงใหม่",
-        lat: 18.7960, lng: 99.0300, district: "三塞",
-        category: "仓储型平价大型生活超市", tel: "053-851-500",
-        time: "每天 09:00 - 22:00",
-        highlight: "带法国 Casino 进口专柜、超大家电数码区、平价日用品",
-        tips: "比普通 Big C 货品更齐全，有很多平价欧洲进口奶酪和零食。"
-      },
-      {
-        id: 511, type: "market_super",
-        nameZh: "Big C Supercenter (杭东2店 / 偏南区)",
-        nameEn: "Big C Hang Dong 2",
-        nameTh: "บิ๊กซี ซูเปอร์เซ็นเตอร์ สาขาหางดง 2",
-        addressTh: "ถนนเชียงใหม่-ฮอด ต.หางดง อ.หางดง เชียงใหม่",
-        lat: 18.6880, lng: 98.9160, district: "杭东",
-        category: "杭东深处平价综合卖场", tel: "053-441-900",
-        time: "每天 09:00 - 21:00",
-        highlight: "服务杭东偏南别墅区家庭、配平价快餐与药妆店",
-        tips: "住在 Grace、Lanna 等国际学校附近的家庭最常去的生活超市。"
-      },
-      {
-        id: 512, type: "market_super",
-        nameZh: "Lotus's 莲花超市 (杭东分店)",
-        nameEn: "Lotus's Hang Dong",
-        nameTh: "โลตัส สาขาหางดง เชียงใหม่",
-        addressTh: "ถนนเชียงใหม่-หางดง ต.ป่าแดด อ.เมืองเชียงใหม่",
-        lat: 18.7560, lng: 98.9680, district: "杭东",
-        category: "杭东入口综合生活大超市", tel: "053-274-900",
-        time: "每天 08:00 - 22:00",
-        highlight: "平价生鲜蔬果、本土调味品、烘焙日用百货齐全",
-        tips: "位于机场往杭东走廊路上，交通顺路，买生鲜排骨蔬菜极实惠。"
-      },
-
-      // ===== 🧺 烟火与特色集市 (10) =====
-      {
-        id: 309, type: "market",
-        nameZh: "长康路云南穆斯林早市 (Kad Ban Ho)",
-        nameEn: "Yunnan Muslim Morning Market (Kad Ban Ho)",
-        nameTh: "ตลาดเช้าบ้านฮ่อ (ตลาดจีนฮ่อ) เชียงใหม่",
-        addressTh: "ถนนเจริญประเทศ ซอย 1 ต.ช้างคลาน อ.เมืองเชียงใหม่",
-        lat: 18.7840, lng: 99.0010, district: "长康路",
-        category: "华人味蕾故乡 / 仅周五清晨限定", tel: "",
-        time: "仅每周五 05:30 - 11:00",
-        highlight: "地道云南稀豆粉配大油条、手工饵丝、牛干巴、自制腐乳酸菜",
-        tips: "清迈华人几代老华侨凝聚而成的周五早市，热气腾腾极具家乡烟火气。"
-      },
-      {
-        id: 302, type: "market",
-        nameZh: "真加有机农夫手作市集 (Jing Jai Market)",
-        nameEn: "Jing Jai (JJ) Weekend Market",
-        nameTh: "จริงใจ มาร์เก็ต เชียงใหม่",
-        addressTh: "45 ถนนอัษฎาธร ต.ป่าตัน อ.เมืองเชียงใหม่",
-        lat: 18.8055, lng: 98.9960, district: "古城",
-        category: "清迈顶流有机生活市集", tel: "053-231-520",
-        time: "周六、周日 06:30 - 14:00",
-        highlight: "农人直供有机蔬果、高品质原创手作、现场民谣乐队伴奏",
-        tips: "常住家庭周末必逛，环境极其干净整洁，买菜逛街体验极其舒适。"
-      },
-      {
-        id: 301, type: "market",
-        nameZh: "椰林周末市集 (Coconut Market)",
-        nameEn: "Coconut Market Chiang Mai (Kad Kala)",
-        nameTh: "กาดกะลา ตลาดสวนมะพร้าว เชียงใหม่",
-        addressTh: "94 หมู่ 3 ต.ฟ้าฮ่าม อ.เมืองเชียงใหม่",
-        lat: 18.8250, lng: 99.0150, district: "三塞",
-        category: "高耸椰林梦幻水景市集", tel: "",
-        time: "仅周六、周日 08:00 - 14:00",
-        highlight: "高大椰林水渠倒影、竹桥漫步、新鲜烤椰子与泰北点心",
-        tips: "浪漫田园市集，地面平缓无台阶，点心地道纯天然，拍照漫步两宜。"
-      },
-      {
-        id: 303, type: "market",
-        nameZh: "悟孟寺后手作艺术家村 (Baan Kang Wat)",
-        nameEn: "Baan Kang Wat Craft Community",
-        nameTh: "บ้านข้างวัด ต.สุเทพ อ.เมืองเชียงใหม่",
-        addressTh: "191 หมู่ 5 ซอยวัดอุโมงค์ ต.สุเทพ อ.เมืองเชียงใหม่",
-        lat: 18.7760, lng: 98.9480, district: "宁曼路",
-        category: "森林露天剧场艺术手作村", tel: "095-691-6544",
-        time: "周二至周日 10:00 - 18:00 (周一休)",
-        highlight: "圆形露天剧场、陶艺手工坊、独立书店、手冲咖啡屋",
-        tips: "木制吊脚楼环绕着绿茵剧场，陶瓷独立设计工作室林立，环境清幽。"
-      },
-      {
-        id: 304, type: "market",
-        nameZh: "竹林面包市集 (Nana Jungle Bakery)",
-        nameEn: "Nana Jungle Saturday Market",
-        nameTh: "นานา จังเกิ้ล กาดขนมปังบ้านสวนไผ่",
-        addressTh: "ถนนชลประทาน ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8150, lng: 98.9600, district: "运河路",
-        category: "素帖竹林周六晨间法式面包市集", tel: "",
-        time: "仅每周六 07:00 - 11:00",
-        highlight: "现烤法棍可颂、天然酵母乡村酸包、现煮热咖啡",
-        tips: "每周六早晨限定的乡村烘焙市集，刚出炉的面包香气扑鼻，买早餐仪式感足。"
-      },
-      {
-        id: 305, type: "market",
-        nameZh: "周日古城步行街 (Sunday Walking Street)",
-        nameEn: "Sunday Walking Street Night Market",
-        nameTh: "ถนนคนเดินวันอาทิตย์ ท่าแพ เชียงใหม่",
-        addressTh: "ถนนราชดำเนิน ต.ศรีภูมิ อ.เมืองเชียงใหม่",
-        lat: 18.7878, lng: 98.9930, district: "古城",
-        category: "清迈规模最大的古城周日夜市", tel: "",
-        time: "仅每周日 17:00 - 22:30",
-        highlight: "贯穿塔佩门1公里长街、万人空巷、特色传统小吃与手工艺",
-        tips: "清迈最壮观步行街，整街封路，寺庙院内化身小吃街，街头艺人表演精彩。"
-      },
-      {
-        id: 306, type: "market",
-        nameZh: "周六银桥步行街 (Saturday Walking Street)",
-        nameEn: "Saturday Walking Street (Wualai Road)",
-        nameTh: "ถนนคนเดินวันเสาร์ วัวลาย เชียงใหม่",
-        addressTh: "ถนนวัวลาย ต.หายยา อ.เมืองเชียงใหม่",
-        lat: 18.7770, lng: 98.9830, district: "古城",
-        category: "古城南门银匠街周六夜市", tel: "",
-        time: "仅每周六 17:00 - 22:30",
-        highlight: "传统手工银器工坊、素攀寺全银庙夜景、美食长廊",
-        tips: "瓦莱银匠街展开，中途可顺道欣赏全银素攀寺，热闹非凡。"
-      },
-      {
-        id: 307, type: "market",
-        nameZh: "湄海生鲜综合大早市 (Mae Hia Market)",
-        nameEn: "Mae Hia Fresh Market",
-        nameTh: "ตลาดสดแม่เหียะ เชียงใหม่",
-        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
-        lat: 18.7470, lng: 98.9550, district: "湄海",
-        category: "干净优质生鲜综合大菜市", tel: "",
-        time: "每天 05:00 - 20:00 (清晨最佳)",
-        highlight: "极度干净整洁、平价热带水果、新鲜肉禽海鲜、停车位足",
-        tips: "湄海与杭东片区买菜首选！地面干爽无异味，热带水果价格公道。"
-      },
-      {
-        id: 308, type: "market",
-        nameZh: "瓦洛洛百年传统大市场 (Warorot Market)",
-        nameEn: "Warorot Market (Kad Luang)",
-        nameTh: "ตลาดวโรรส (กาดหลวง) เชียงใหม่",
-        addressTh: "ถนนวิชยานนท์ ต.ช้างม่อย อ.เมืองเชียงใหม่",
-        lat: 18.7900, lng: 99.0005, district: "长康路",
-        category: "萍河畔最古老综合批发市场", tel: "",
-        time: "每天 04:00 - 18:00",
-        highlight: "百年老建筑、泰北香肠脆猪皮、果干茶叶批发、民族布料",
-        tips: "清迈百年老市集，长辈买果干、茶叶、特产以及日常布艺的批发源头。"
-      },
-      {
-        id: 310, type: "market",
-        nameZh: "松撇市场 (Somphet Market 古城菜市)",
-        nameEn: "Somphet Market Chiang Mai",
-        nameTh: "ตลาดสมเพชร เชียงใหม่",
-        addressTh: "ถนนมูลเมือง ซอย 6 ต.ศรีภูมิ อ.เมืองเชียงใหม่",
-        lat: 18.7915, lng: 98.9925, district: "古城",
-        category: "古城东北传统晨间菜市场", tel: "",
-        time: "每天 06:00 - 18:00",
-        highlight: "新鲜热带切块水果、新鲜椰子、传统泰式泰北香料草药",
-        tips: "古城内常住居民就近买菜、买新鲜木瓜菠萝和现压果汁的最佳小集市。"
       },
 
       // ===== 🏅 运动与体育场馆 (20) =====
@@ -1337,346 +1619,6 @@
         time: "急诊 24 小时",
         highlight: "泰北规模最大教学中心、疑难杂症专家汇聚",
         tips: "心血管、神经外科泰北最强，医疗学术天花板。"
-      },
-
-      // ===== ☕ 精选特色咖啡馆 (50) =====
-      {
-        id: 201, type: "cafe",
-        nameZh: "黑森林热带雨林飞瀑餐厅咖啡",
-        nameEn: "Khaomao-Khaofang Black Forest",
-        nameTh: "ข้าวเม่า-ข้าวฟ่าง ป่าในจินตนาการ เชียงใหม่",
-        addressTh: "181 หมู่ 7 ถนนราชพฤกษ์ ต.หนองควาย อ.หางดง เชียงใหม่",
-        lat: 18.7180, lng: 98.9275, district: "杭东",
-        category: "原始热带雨林人造巨瀑", tel: "063-485-7888",
-        time: "每天 11:00 - 15:00 / 17:00 - 21:30",
-        highlight: "巨大人工瀑布飞流直下、冷雾缭绕、全平缓木栈道",
-        tips: "清迈地标级自然生态餐厅，空气湿润清凉，带父母长辈漫步就餐首选。"
-      },
-      {
-        id: 202, type: "cafe",
-        nameZh: "Chom 仙境绿野瀑布咖啡 (爱丽丝仙境)",
-        nameEn: "Chom Cafe and Restaurant",
-        nameTh: "ชม คาเฟ่ แอนด์ เรสเตอรองท์ เชียงใหม่",
-        addressTh: "2/13 หมู่ 2 ถนนสมโภชเชียงใหม่ 700 ปี ต.แม่เหียะ อ.เมืองเชียงใหม่",
-        lat: 18.7525, lng: 98.9505, district: "湄海",
-        category: "苔藓水雾锦鲤仙境", tel: "053-271-749",
-        time: "每天 11:00 - 22:00",
-        highlight: "锦鲤游鱼池、水雾弥漫的梦幻苔藓花园、舒适冷气房",
-        tips: "湄海区经典打卡庭院，景观打理精湛，甜品与咖啡品质俱佳。"
-      },
-      {
-        id: 203, type: "cafe",
-        nameZh: "No.39 湖畔森林木屋滑梯咖啡",
-        nameEn: "No.39 Cafe Chiang Mai",
-        nameTh: "นัมเบอร์ 39 คาเฟ่ เชียงใหม่",
-        addressTh: "ซอยวัดอุโมงค์ ต.สุเทพ อ.เมืองเชียงใหม่",
-        lat: 18.7830, lng: 98.9485, district: "宁曼路",
-        category: "湖畔木屋滑梯放空", tel: "091-919-3939",
-        time: "每天 09:30 - 18:30",
-        highlight: "碧绿中央湖泊、木质小木屋滑梯、现场吉他驻唱",
-        tips: "靠近悟孟寺艺术区，湖畔微风吹拂，适合点一杯冰美式在湖边发呆放空。"
-      },
-      {
-        id: 204, type: "cafe",
-        nameZh: "红陶古刹秘境咖啡 (Clay Studio in the Garden)",
-        nameEn: "Clay Studio Coffee in the Garden",
-        nameTh: "เคลย์ สตูดิโอ คอฟฟี่ อิน เดอะ การ์เด้น",
-        addressTh: "36 ถนนพระปกเกล้า ซอย 2 ต.พระสิงห์ อ.เมืองเชียงใหม่",
-        lat: 18.7840, lng: 98.9875, district: "古城",
-        category: "红砖青苔佛首古迹庭院", tel: "053-278-187",
-        time: "每天 08:00 - 17:00",
-        highlight: "红砖古墙、青苔石雕、佛首红陶雕塑、参天大树浓荫",
-        tips: "藏在古城南门内的幽静秘境，满园红陶雕塑宛如古文明遗迹，极度清幽治愈。"
-      },
-      {
-        id: 205, type: "cafe",
-        nameZh: "Roast8ry 旗舰店 (世界拉花冠军店)",
-        nameEn: "Roast8ry Flagship Specialty Coffee",
-        nameTh: "โรสท์เอททรี แฟลกชิป เชียงใหม่",
-        addressTh: "24/9 ถนนนิมมานเหมินท์ ซอย 17 ต.สุเทพ อ.เมืองเชียงใหม่",
-        lat: 18.7960, lng: 98.9670, district: "宁曼路",
-        category: "世界拉花冠军精品店", tel: "091-789-3951",
-        time: "每天 08:00 - 17:00",
-        highlight: "世界咖啡拉花大赛总冠军主理、骷髅头特调、严选精品豆",
-        tips: "清迈咖啡界名片，拿铁与意式特调出品极其精细，咖啡迷必到。"
-      },
-      {
-        id: 206, type: "cafe",
-        nameZh: "清大静心湖畔咖啡 (Living A Dream @ Ang Kaew)",
-        nameEn: "Living A Dream Coffee",
-        nameTh: "ลิฟวิ่ง อะ ดรีม อ่างแก้ว มหาวิทยาลัยเชียงใหม่",
-        addressTh: "อ่างแก้ว มหาวิทยาลัยเชียงใหม่ ต.สุเทพ อ.เมืองเชียงใหม่",
-        lat: 18.8060, lng: 98.9515, district: "宁曼路",
-        category: "素帖高山湖景咖啡", tel: "",
-        time: "每天 07:00 - 19:00",
-        highlight: "直面素帖山、清大静心湖开阔水景、湖滨草坪长椅",
-        tips: "正对清迈大学静心湖大坝，傍晚山风清凉，常住长辈慢走散步喝咖啡首选。"
-      },
-      {
-        id: 207, type: "cafe",
-        nameZh: "蕨林庭院法式早午餐咖啡 (Fern Forest)",
-        nameEn: "Fern Forest Cafe Chiang Mai",
-        nameTh: "เฟิร์น ฟอเรสต์ คาเฟ่ เชียงใหม่",
-        addressTh: "54/1 ถนนสิงหราช ต.ศรีภูมิ อ.เมืองเชียงใหม่",
-        lat: 18.7925, lng: 98.9820, district: "古城",
-        category: "古城百年绿植庭院", tel: "084-616-1144",
-        time: "每天 08:30 - 18:30",
-        highlight: "满庭巨大蕨类植物、法式烘焙甜点、清甜招牌椰子派",
-        tips: "古城西北侧经典老字号庭院，流水假山环抱，椰子派与手冲咖啡极适口。"
-      },
-      {
-        id: 208, type: "cafe",
-        nameZh: "Brandnew Field Good (山谷稻田长木桥咖啡)",
-        nameEn: "Brandnew Field Good Hang Dong",
-        nameTh: "แบรนด์นิว ฟีลด์กู๊ด บ้านปง หางดง",
-        addressTh: "218 หมู่ 2 บ้านปง อ.หางดง เชียงใหม่",
-        lat: 18.7610, lng: 98.8680, district: "杭东",
-        category: "山谷稻田木桥野趣", tel: "097-971-5854",
-        time: "09:00 - 18:00 (周二休)",
-        highlight: "数百米木制栈桥横贯稻田、远眺连绵青山、谷地微风",
-        tips: "位于杭东外侧山谷田园，远离城市车流喧嚣，周末全家亲近自然的好去处。"
-      },
-      {
-        id: 209, type: "cafe",
-        nameZh: "Graph Contemporary 工业艺术复古手冲咖啡",
-        nameEn: "Graph Contemporary Charoen Muang",
-        nameTh: "กราฟ คอนเทมโพรารี เชียงใหม่",
-        addressTh: "ถนนเจริญเมือง ต.วัดเกต อ.เมืองเชียงใหม่",
-        lat: 18.7865, lng: 99.0060, district: "瓦特盖特",
-        category: "复古工业风精品特调", tel: "086-567-3330",
-        time: "每天 09:00 - 17:00",
-        highlight: "复古法式老洋楼、严选泰北微产区豆、分子特调冰咖啡",
-        tips: "Graph 旗下旗舰店，挑高双层老洋房陈列着艺术品，特调咖啡风味层次分明。"
-      },
-      {
-        id: 210, type: "cafe",
-        nameZh: "Akha Ama Coffee 帕辛店 (阿卡族庄园冠军豆)",
-        nameEn: "Akha Ama Phrasingh",
-        nameTh: "อาข่า อ่ามา สาขาพระสิงห์",
-        addressTh: "175/1 ถนนราชดำเนิน ต.พระสิงห์ อ.เมืองเชียงใหม่",
-        lat: 18.7885, lng: 98.9830, district: "古城",
-        category: "泰北原产地直供精品名店", tel: "088-267-7966",
-        time: "每天 08:00 - 17:30",
-        highlight: "高山阿卡原住民自营种植园、SCA赛级水洗/日晒豆、红砖极简风",
-        tips: "清迈本土精品咖啡代表，自产高山咖啡豆风味纯正且性价比极高。"
-      },
-      {
-        id: 211, type: "cafe",
-        nameZh: "The Baristro at Ping River (萍河滨水极简咖啡)",
-        nameEn: "The Baristro at Ping River",
-        nameTh: "เดอะ บาริสโตร แอท ปิงริเวอร์",
-        addressTh: "62 ถนนป่าตัน ต.ป่าตัน อ.เมืองเชียงใหม่",
-        lat: 18.8150, lng: 99.0025, district: "古城",
-        category: "临河大草坪侘寂风名店", tel: "087-788-2788",
-        time: "每天 08:00 - 18:00",
-        highlight: "正对萍河开阔河景、水泥毛坯与大片草坪、木栈台临水吹风",
-        tips: "坐拥萍河宽阔亲水平台，晨光与午后光影极美，室内冷气足且插座齐备。"
-      },
-      {
-        id: 212, type: "cafe",
-        nameZh: "Carp Cafe (万尾锦鲤环抱日式回廊咖啡)",
-        nameEn: "Carp Cafe Hang Dong",
-        nameTh: "คาร์พ คาเฟ่ เชียงใหม่",
-        addressTh: "118/2 หมู่ 1 ต.หนองควาย อ.หางดง เชียงใหม่",
-        lat: 18.7250, lng: 98.9250, district: "杭东",
-        category: "锦鲤庭院水景咖啡", tel: "061-268-7777",
-        time: "每天 09:00 - 20:00",
-        highlight: "上万尾日本锦鲤水中漫游、玻璃走廊凌空水面、日式庭院",
-        tips: "杭东标志性锦鲤咖啡，脚下就是成群翻腾的肥美锦鲤，非常受长辈和孩子喜爱。"
-      },
-      {
-        id: 213, type: "cafe",
-        nameZh: "Early Owls (草坪野餐与小溪慢生活咖啡)",
-        nameEn: "Early Owls Chiang Mai",
-        nameTh: "เออร์ลี่ อาวส์ เชียงใหม่",
-        addressTh: "13 ถนนหมื่นด้ามพร้าคต ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8050, lng: 98.9890, district: "古城",
-        category: "古城北生态大草坪", tel: "095-224-6590",
-        time: "09:00 - 18:30 (周三休息)",
-        highlight: "自取野餐席地而坐、浅水小溪潺潺、大树遮阴无暴晒",
-        tips: "老城北门外的巨大城市绿洲，店家提供小矮凳与野餐垫，环境极其松弛自在。"
-      },
-      {
-        id: 214, type: "cafe",
-        nameZh: "Ristr8to Original (宁曼路传奇拉花老店)",
-        nameEn: "Ristr8to Original Nimman Soi 3",
-        nameTh: "ริสเตรตโต้ ออริจินัล นิมมาน ซอย 3",
-        addressTh: "15/3 ถนนนิมมานเหมินท์ ซอย 3 ต.สุเทพ อ.เมืองเชียงใหม่",
-        lat: 18.7990, lng: 98.9685, district: "宁曼路",
-        category: "宁曼路老字号意式拉花", tel: "053-215-278",
-        time: "每天 07:00 - 18:00",
-        highlight: "清迈最早风靡的拉花胜地、试管与量杯个性盛装、浓度可选",
-        tips: "宁曼3巷老牌元祖店，气氛热烈，拿铁与短笛（Piccolo）水准极稳。"
-      },
-      {
-        id: 215, type: "cafe",
-        nameZh: "Heartwork the Sharing Space (数字游民自习咖啡)",
-        nameEn: "Heartwork the Sharing Space",
-        nameTh: "ฮาร์ตเวิร์ก เดอะ แชร์ริ่ง สเปซ เชียงใหม่",
-        addressTh: "196/1-2 ถนนกำแพงดิน ต.หายยา อ.เมืองเชียงใหม่",
-        lat: 18.7790, lng: 98.9980, district: "长康路",
-        category: "自习办公极度友好空间", tel: "081-882-8825",
-        time: "每天 09:00 - 18:00",
-        highlight: "安静不嘈杂、插座密度高、全空调高速WiFi、人体工学椅",
-        tips: "长住清迈需要带笔记本电脑办公或阅读人士的宝藏地，环境极其安静舒适。"
-      },
-      {
-        id: 216, type: "cafe",
-        nameZh: "Jungle De Cafe (悬崖吊网瀑布刺激咖啡)",
-        nameEn: "Jungle De Cafe Baan Tawai / Pongyang",
-        nameTh: "จังเกิล เดอ คาเฟ่ เชียงใหม่",
-        addressTh: "ต.โป่งแยง อ.แม่ริม เชียงใหม่",
-        lat: 18.9150, lng: 98.8250, district: "运河路",
-        category: "高空瀑布吊网野奢", tel: "089-262-3939",
-        time: "每天 08:30 - 18:00",
-        highlight: "躺在悬空吊网上喝咖啡、真瀑布飞溅身旁、森林过山车旁",
-        tips: "湄林山谷标志性瀑布咖啡，直面原始森林峡谷急流，视听冲击极强。"
-      },
-      {
-        id: 217, type: "cafe",
-        nameZh: "My Secret Cafe in Town (古城秘密花园咖啡)",
-        nameEn: "My Secret Cafe in Town",
-        nameTh: "มาย ซีเคร็ท คาเฟ่ อิน ทาวน์",
-        addressTh: "175/12 ถนนราชดำเนิน ต.พระสิงห์ อ.เมืองเชียงใหม่",
-        lat: 18.7890, lng: 98.9835, district: "古城",
-        category: "帕辛寺后小巷静谧庭院", tel: "081-499-9911",
-        time: "每天 08:30 - 18:00",
-        highlight: "粉色小洋楼、自制新鲜胡萝卜蛋糕、每周二晚现场爵士乐",
-        tips: "藏在帕辛寺旁窄巷里的复古绿意庭院，远离游客主街的喧闹，蛋糕现烤极其可口。"
-      },
-      {
-        id: 218, type: "cafe",
-        nameZh: "Chic 39 Garden (鲜花玻璃屋与窑烤披萨咖啡)",
-        nameEn: "Chic 39 Garden",
-        nameTh: "ชิค 39 การ์เด้น เชียงใหม่",
-        addressTh: "240 หมู่ 4 ต.เหมืองแก้ว อ.แม่ริม เชียงใหม่",
-        lat: 18.8950, lng: 98.9750, district: "运河路",
-        category: "花海玻璃温室餐厅", tel: "092-275-3939",
-        time: "每天 10:00 - 19:30",
-        highlight: "鲜花盛开的透光暖房、柴烧手工窑烤披萨、田园全景",
-        tips: "湄林近郊的浪漫花房，既能品尝手冲咖啡，也能享用柴火烤制的脆皮披萨。"
-      },
-      {
-        id: 219, type: "cafe",
-        nameZh: "Brew Fact (宁曼路极简手冲实验室)",
-        nameEn: "Brew Fact Specialty Coffee",
-        nameTh: "บริว แฟคท์ นิมมาน ซอย 7",
-        addressTh: "ถนนศิริมังคลาจารย์ ซอย 7 ต.สุเทพ อ.เมืองเชียงใหม่",
-        lat: 18.7955, lng: 98.9710, district: "宁曼路",
-        category: "专业浅烘手冲名店", tel: "089-755-7575",
-        time: "每天 08:00 - 17:00",
-        highlight: "白色极简工业美学、多款全球稀有微批次咖啡豆、冰滴手冲",
-        tips: "咖啡极客云集的小店，咖啡师对水温、研磨度把控细致入微，出品干净透亮。"
-      },
-      {
-        id: 220, type: "cafe",
-        nameZh: "Elefin Farm & Cafe (大象山林漫步生态咖啡)",
-        nameEn: "Elefin Farm & Cafe Hang Dong",
-        nameTh: "เอเลฟิน ฟาร์ม แอนด์ คาเฟ่ เชียงใหม่",
-        addressTh: "128 หมู่ 2 ต.บ้านปง อ.หางดง เชียงใหม่",
-        lat: 18.7550, lng: 98.8450, district: "杭东",
-        category: "大象互动山谷野趣", tel: "098-549-2544",
-        time: "每天 10:00 - 17:00",
-        highlight: "大象自由在山坡漫步、可近距离喂食香蕉合影、远眺山峦",
-        tips: "半开放式非奴役大象生态农庄，坐在露台木栈板上边喝咖啡边看大象在树林觅食。"
-      },
-
-      // ===== 🍴 经典与特色美食 (25) =====
-      {
-        id: 601, type: "restaurant",
-        nameZh: "Khao Soi Mae Sai（湄赛泰北咖喱金面）",
-        nameEn: "Khao Soi Mae Sai (Bib Gourmand)",
-        nameTh: "ข้าวซอยแม่สาย เชียงใหม่",
-        addressTh: "29/1 ถนนราชพฤกษ์ ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8000, lng: 98.9750, district: "宁曼路",
-        category: "米其林必比登连续推荐名店", tel: "053-213-284",
-        time: "周一至周六 08:00 - 16:00 (周日休息)",
-        highlight: "清迈第一金面、浓郁椰浆咖喱汤头、软烂牛肉牛筋",
-        tips: "泰北金面天花板，浓郁椰香咖喱搭配手作黄面与脆炸金面，一碗50-60铢惊艳味蕾。"
-      },
-      {
-        id: 602, type: "restaurant",
-        nameZh: "古城北门凤飞飞猪脚饭 (Chang Phueak)",
-        nameEn: "Chang Phueak Pork Leg Rice",
-        nameTh: "ข้าวขาหมูช้างเผือก เชียงใหม่",
-        addressTh: "ประตูช้างเผือก ถนนมณีนพรัตน์ ต.ศรีภูมิ อ.เมืองเชียงใหม่",
-        lat: 18.7958, lng: 98.9860, district: "古城",
-        category: "古城地标卤味排队名摊", tel: "081-366-2969",
-        time: "每天 17:00 - 23:00 (夜市出摊)",
-        highlight: "大锅老卤、猪蹄软烂脱骨、溏心蛋酸菜绝配",
-        tips: "牛仔帽老板娘招牌，猪蹄慢火煨透入口即化，肉汁拌泰国香米饭老少皆宜。"
-      },
-      {
-        id: 603, type: "restaurant",
-        nameZh: "Pa Daeng Jin Tup（米其林木槌手敲牛肉）",
-        nameEn: "Pa Daeng Jin Tup (Bib Gourmand)",
-        nameTh: "ป้าแดง จิ้นทุบ เชียงใหม่",
-        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
-        lat: 18.7320, lng: 98.9510, district: "杭东",
-        category: "泰北炭烤木槌手打特色牛肉", tel: "081-883-2947",
-        time: "周一至周六 16:30 - 21:00",
-        highlight: "炭火慢烤香嫩牛肉、大木槌反复捶打撕裂肉纤维、特调发酵辣酱",
-        tips: "杭东老饕秘藏小店，牛肉经实木大槌捶打后丝丝松散，越嚼越香。"
-      },
-      {
-        id: 604, type: "restaurant",
-        nameZh: "SP Chicken 帕辛寺立式炭火香草烤鸡",
-        nameEn: "SP Chicken (Michelin Recommended)",
-        nameTh: "เอสพี ชิกเก้น เชียงใหม่",
-        addressTh: "ถนนสามล้าน ซอย 1 ต.พระสิงห์ อ.เมืองเชียงใหม่",
-        lat: 18.7880, lng: 98.9810, district: "古城",
-        category: "大蒜香草填腹慢火转烤鸡", tel: "081-472-3223",
-        time: "每天 10:00 - 17:00 (售完即止)",
-        highlight: "特制立式炭火烤炉、鸡肚塞满大蒜香草、外皮焦脆爆汁",
-        tips: "古城帕辛寺旁，立式烘烤让鸡皮干爽香脆无油腻，配泰式木瓜沙拉极开胃。"
-      },
-      {
-        id: 605, type: "restaurant",
-        nameZh: "Huen Muan Jai (老兰纳庭院正宗泰北菜)",
-        nameEn: "Huen Muan Jai (Bib Gourmand)",
-        nameTh: "เฮือนม่วนใจ๋ เชียงใหม่",
-        addressTh: "24 ถนนราชพฤกษ์ ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8020, lng: 98.9740, district: "宁曼路",
-        category: "传统柚木兰纳私房泰北菜", tel: "053-404-240",
-        time: "11:00 - 21:00 (周三休息)",
-        highlight: "泰北传统开胃九宫格拼盘、清迈香肠、炸猪皮配青辣椒酱",
-        tips: "主厨曾斩获铁人料理大奖，绿意盎然的兰纳木屋里品尝纯正泰北家庭料理。"
-      },
-      {
-        id: 606, type: "restaurant",
-        nameZh: "Cherng Doi Roast Chicken (脆皮烤鸡名店)",
-        nameEn: "Cherng Doi Roast Chicken",
-        nameTh: "เชิงดอย หนังกรอบ เชียงใหม่",
-        addressTh: "ถนนสุขเกษม ต.สุเทพ อ.เมืองเชียงใหม่",
-        lat: 18.7985, lng: 98.9660, district: "宁曼路",
-        category: "宁曼路脆皮烤鸡第一家", tel: "081-881-1407",
-        time: "11:00 - 20:00 (周一休息)",
-        highlight: "无烟慢烤带皮鸡肉、特制酸罗望子酱、香烤罗勒糯米饭",
-        tips: "宁曼路排队名店，鸡皮薄脆如纸，肉质鲜嫩多汁，搭配糯米饭风味一流。"
-      },
-      {
-        id: 607, type: "restaurant",
-        nameZh: "The Duke's 萍河店 (清迈美式家庭餐厅霸主)",
-        nameEn: "The Duke's Ping River",
-        nameTh: "เดอะ ดุ๊กส์ เชียงใหม่",
-        addressTh: "49/2 ถนนเชียงใหม่-ลำพูน ต.วัดเกต อ.เมืองเชียงใหม่",
-        lat: 18.7830, lng: 99.0040, district: "长康路",
-        category: "美式大份炭烤牛排/硬核披萨", tel: "053-249-231",
-        time: "每天 11:00 - 22:30",
-        highlight: "超大份慢烤猪肋排、芝加哥深盘披萨、现烤纽约芝士蛋糕",
-        tips: "清迈长期旅居欧美家庭与华人聚餐大食堂，分量惊人，聚餐性价比极高。"
-      },
-      {
-        id: 608, type: "restaurant",
-        nameZh: "发荣海南鸡饭 (Kiat Ocha 70年老字号)",
-        nameEn: "Kiat Ocha Chicken Rice",
-        nameTh: "เกียรติโอชา ข้าวมันไก่ เชียงใหม่",
-        addressTh: "41-43 ถนนอินทวโรรส ต.ศรีภูมิ อ.เมืองเชียงใหม่",
-        lat: 18.7895, lng: 98.9865, district: "古城",
-        category: "三王纪念碑旁半世纪老店", tel: "053-327-244",
-        time: "每天 06:00 - 15:00",
-        highlight: "鲜嫩白切鸡、大锅香浓鸡汤米饭、沙嗲炭烤猪肉串",
-        tips: "古城中心传承数代的海南鸡饭老字号，鸡肉滑嫩，配秘制豆酱生姜汁极地道。"
       }
     ];
 
@@ -1722,11 +1664,11 @@
       }
     }
 
-    // 标签切换过滤
+    // 标签切换过滤逻辑
     function setPersonaMode(mode) {
       currentPersona = mode;
       
-      const allTabs = ['all', 'church', 'cafe', 'market_super', 'market', 'sports', 'restaurant', 'school', 'gov', 'mall', 'hospital'];
+      const allTabs = ['all', 'market_super', 'market', 'cafe', 'restaurant', 'church', 'sports', 'school', 'gov', 'mall', 'hospital'];
       allTabs.forEach(m => {
         const btn = document.getElementById(`tab-${m}`);
         if (btn) {
@@ -1742,63 +1684,33 @@
     }
 
     // ==========================================
-    // 🚗 智能打车分流系统（稳定按ID传参）
+    // 🚗 智能打车分流系统（原生直通超链接版，100%可跳转）
     // ==========================================
     function openRideModal(id) {
       const item = places.find(p => p.id === id);
       if (!item) return;
       activeRideTarget = item;
       document.getElementById("rideDestName").textContent = `目的地：${item.nameZh}`;
+
+      const { lat, lng, nameZh } = item;
+      const encodedName = encodeURIComponent(nameZh);
+
+      // 1. Grab 官方免安装/自动呼叫原生跳转协议
+      const grabUrl = `https://r.grab.com/?lat=${lat}&lng=${lng}&name=${encodedName}`;
+      document.getElementById("grabNativeLink").href = grabUrl;
+
+      // 2. Bolt 原生跳转协议
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const boltUrl = isIOS 
+        ? "https://apps.apple.com/app/bolt-fast-affordable-rides/id675033630"
+        : "https://play.google.com/store/apps/details?id=ee.mtakso.client";
+      document.getElementById("boltNativeLink").href = boltUrl;
+
       document.getElementById("rideModal").classList.remove("hidden");
     }
 
     function closeRideModal() {
       document.getElementById("rideModal").classList.add("hidden");
-    }
-
-    function callGrabApp() {
-      if (!activeRideTarget) return;
-      const { lat, lng, nameZh } = activeRideTarget;
-      const destName = encodeURIComponent(nameZh);
-
-      const deepLink = `grab://open?screenType=BOOKING&dropoff_latitude=${lat}&dropoff_longitude=${lng}&dropoff_name=${destName}`;
-      const webUrl = `https://r.grab.com/?lat=${lat}&lng=${lng}&name=${destName}`;
-
-      const startTime = Date.now();
-      window.location.href = deepLink;
-
-      setTimeout(() => {
-        if (Date.now() - startTime < 1800) {
-          if (confirm("未检测到 Grab App，是否直接打开 Grab 网页版叫车？")) {
-            window.open(webUrl, "_blank");
-          }
-        }
-      }, 1200);
-
-      closeRideModal();
-    }
-
-    function callBoltApp() {
-      if (!activeRideTarget) return;
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-
-      const deepLink = `bolt://`;
-      const storeUrl = isIOS 
-        ? "https://apps.apple.com/app/bolt-fast-affordable-rides/id675033630"
-        : "https://play.google.com/store/apps/details?id=ee.mtakso.client";
-
-      const startTime = Date.now();
-      window.location.href = deepLink;
-
-      setTimeout(() => {
-        if (Date.now() - startTime < 1800) {
-          if (confirm("未检测到 Bolt App，是否前往应用商店下载安装？")) {
-            window.open(storeUrl, "_blank");
-          }
-        }
-      }, 1200);
-
-      closeRideModal();
     }
 
     function copyCurrentAddress() {

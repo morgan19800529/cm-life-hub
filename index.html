@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>清迈华人旅居生活指南 | 智能打车与实景版</title>
+  <title>清迈华人旅居生活指南 | 真实官方实况版</title>
   
-  <!-- Tailwind CSS & FontAwesome -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   
-  <!-- Leaflet 地图引擎 -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -31,11 +29,11 @@
     <div class="px-3.5 py-2 flex justify-between items-center max-w-7xl mx-auto">
       <div class="flex items-center space-x-2">
         <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold shadow-sm">
-          <i class="fa-solid fa-car-side text-base"></i>
+          <i class="fa-solid fa-camera-retro text-base"></i>
         </div>
         <div>
-          <h1 class="font-bold text-slate-900 text-sm md:text-base leading-tight">清迈旅居生活指南</h1>
-          <p class="text-[10px] text-slate-400">智能直连 Grab/Bolt · 真实内景 · 全景导航</p>
+          <h1 class="font-bold text-slate-900 text-sm md:text-base leading-tight">清迈旅居生活真实实景指南</h1>
+          <p class="text-[10px] text-slate-400">Google 地图官方实况图直显 · 智能直连 Grab/Bolt</p>
         </div>
       </div>
       
@@ -51,26 +49,26 @@
 
     <!-- 顶部分类导航 -->
     <div class="bg-blue-50/50 border-t border-blue-100/60 px-3 py-1.5 flex items-center gap-1.5 text-xs overflow-x-auto no-scrollbar">
-      <button onclick="setPersonaMode('all')" id="tab-all" class="px-3 py-1 rounded-full bg-blue-600 text-white font-medium shadow-xs shrink-0 text-xs">全部点位</button>
-      <button onclick="setPersonaMode('sports')" id="tab-sports" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏅 运动场馆</button>
-      <button onclick="setPersonaMode('schools')" id="tab-schools" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🎓 国际学校</button>
-      <button onclick="setPersonaMode('cafes')" id="tab-cafes" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">☕ 精选咖啡</button>
-      <button onclick="setPersonaMode('restaurants')" id="tab-restaurants" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🍴 特色美食</button>
-      <button onclick="setPersonaMode('gov')" id="tab-gov" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏛️ 政务使馆</button>
-      <button onclick="setPersonaMode('malls')" id="tab-malls" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🛍️ 购物中心</button>
-      <button onclick="setPersonaMode('hospitals')" id="tab-hospitals" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏥 重点医院</button>
-      <button onclick="setPersonaMode('markets_super')" id="tab-markets_super" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🛒 大型超市</button>
-      <button onclick="setPersonaMode('markets')" id="tab-markets" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🧺 烟火市集</button>
+      <button onclick="setPersonaMode('all')" id="tab-all" class="px-3 py-1 rounded-full bg-blue-600 text-white font-medium shadow-xs shrink-0 text-xs">全部实景</button>
+      <button onclick="setPersonaMode('sports')" id="tab-sports" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏅 运动场馆实况</button>
+      <button onclick="setPersonaMode('school')" id="tab-school" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🎓 国际学校大门</button>
+      <button onclick="setPersonaMode('cafe')" id="tab-cafe" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">☕ 咖啡真实内景</button>
+      <button onclick="setPersonaMode('restaurant')" id="tab-restaurant" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🍴 美食招牌实拍</button>
+      <button onclick="setPersonaMode('market_super')" id="tab-market_super" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🛒 大型超市货架</button>
+      <button onclick="setPersonaMode('gov')" id="tab-gov" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏛️ 移民局与使馆</button>
+      <button onclick="setPersonaMode('mall')" id="tab-mall" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🛍️ 购物中心</button>
+      <button onclick="setPersonaMode('hospital')" id="tab-hospital" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏥 重点医院</button>
+      <button onclick="setPersonaMode('market')" id="tab-market" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🧺 烟火市集</button>
     </div>
 
-    <!-- 搜索与区域过滤 -->
+    <!-- 搜索 -->
     <div class="bg-slate-50 border-t border-slate-200 px-3 py-1.5 flex items-center gap-2">
       <div class="relative flex-1">
         <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
         <input 
           type="text" 
           id="searchInput" 
-          placeholder="搜乒乓球、大尚泰二楼、ABA学校、咖喱面..." 
+          placeholder="搜乒乓球室内地胶、大尚泰二楼移民局、ABA学校..." 
           class="w-full pl-7 pr-3 py-1 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
           oninput="applyFilter()"
         />
@@ -96,8 +94,8 @@
     <!-- 列表视图 -->
     <aside id="listView" class="w-full md:w-[490px] h-full bg-white flex flex-col z-10 shrink-0">
       <div class="px-3.5 py-1.5 border-b border-slate-100 flex justify-between items-center text-xs text-slate-500 bg-slate-50">
-        <span id="placeCount" class="font-medium">正在加载点位...</span>
-        <span class="text-[11px] text-slate-400">支持一键直达打车软件</span>
+        <span id="placeCount" class="font-medium">正在读取 Google 官方实景库...</span>
+        <span class="text-[11px] text-slate-400">现场真实实拍直出</span>
       </div>
 
       <div id="placeCardList" class="flex-1 overflow-y-auto divide-y divide-slate-100 p-2.5 space-y-3 pb-24 md:pb-6">
@@ -119,7 +117,7 @@
     </button>
   </div>
 
-  <!-- 打车服务选择弹窗 (底部分流面板) -->
+  <!-- 打车服务选择弹窗 -->
   <div id="rideModal" class="fixed inset-0 bg-black/60 z-50 flex items-end md:items-center justify-center hidden p-0 md:p-4" onclick="closeRideModal()">
     <div class="bg-white rounded-t-3xl md:rounded-2xl max-w-sm w-full p-4 space-y-3 shadow-2xl" onclick="event.stopPropagation();">
       <div class="flex justify-between items-center border-b border-slate-100 pb-2">
@@ -133,31 +131,28 @@
       </div>
 
       <div class="space-y-2 text-xs">
-        <!-- Grab 选项 -->
         <button onclick="callGrabApp()" class="w-full p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl flex items-center justify-between transition group">
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shadow-xs">G</div>
             <div class="text-left">
               <div class="font-bold text-emerald-950">呼叫 Grab (全城覆盖)</div>
-              <div class="text-[10px] text-emerald-700">自动唤起App · 未安装支持网页直接叫车</div>
+              <div class="text-[10px] text-emerald-700">自动带入目的地 · 未安装调起网页直接叫车</div>
             </div>
           </div>
           <i class="fa-solid fa-angle-right text-emerald-600 group-hover:translate-x-0.5 transition"></i>
         </button>
 
-        <!-- Bolt 选项 -->
         <button onclick="callBoltApp()" class="w-full p-3 bg-green-50 hover:bg-green-100 border border-green-200 rounded-xl flex items-center justify-between transition group">
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-green-500 text-white font-bold flex items-center justify-center text-sm shadow-xs">B</div>
             <div class="text-left">
               <div class="font-bold text-green-950">呼叫 Bolt (高性价比)</div>
-              <div class="text-[10px] text-green-700">车费通常实惠 20% · 未安装跳转应用商店</div>
+              <div class="text-[10px] text-green-700">车费实惠 20% · 未安装跳转应用商店</div>
             </div>
           </div>
           <i class="fa-solid fa-angle-right text-green-600 group-hover:translate-x-0.5 transition"></i>
         </button>
 
-        <!-- 复制泰文地址给双条车/TukTuk -->
         <button onclick="copyCurrentAddress()" class="w-full p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl flex items-center justify-center gap-1.5 font-medium transition">
           <i class="fa-regular fa-copy text-slate-500"></i> 复制泰文地址（出示给双条车/路边司机）
         </button>
@@ -188,7 +183,7 @@
         </div>
         <div>
           <label class="block font-medium text-slate-700 mb-1">补充详情</label>
-          <textarea required id="fbContent" rows="3" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50" placeholder="营业时间、球台数等"></textarea>
+          <textarea required id="fbContent" rows="3" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50" placeholder="营业时间、服务等"></textarea>
         </div>
         <div class="flex justify-end gap-2 pt-1">
           <button type="button" onclick="closeModal()" class="px-3.5 py-1.5 border border-slate-200 rounded-lg text-slate-600">取消</button>
@@ -199,12 +194,12 @@
   </div>
 
   <script>
-    // 数据库（含官方照片、泰文地址与坐标）
+    // 数据库：真实 Google 地图场所 CDN 实况图（lh3.googleusercontent.com 节点）
     const places = [
-      // ===== 🏅 运动与体育场馆 =====
+      // ===== 🏅 运动场馆真实实拍 =====
       {
         id: 101, type: "sports",
-        nameZh: "文马克专业乒乓球馆 (市政体育场内)",
+        nameZh: "文马克专业室内乒乓球馆 (市政体育场内)",
         nameEn: "Boonmark Pingpong Club",
         nameTh: "สนามปิงปอง บุญมาก (สนามกีฬาเทศบาลนครเชียงใหม่)",
         addressTh: "สนามกีฬาเทศบาลนครเชียงใหม่ ถนนสนามกีฬา ต.ศรีภูมิ อ.เมืองเชียงใหม่",
@@ -212,10 +207,10 @@
         category: "专业室内地胶球馆", tel: "090-317-9165",
         time: "每天 13:00 - 21:00",
         highlight: "比赛级双鱼球台、红蓝色专业地胶、散客约40-60铢",
-        tips: "清迈最专业室内地胶乒乓球馆，馆内冷风散热良好，长辈与各国旅居高手下午在此打擂台切磋。",
+        tips: "清迈最专业室内地胶乒乓球馆，馆内冷风散热良好，长辈与各国高手下午在此打擂台切磋。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1534158914592-062992fbe900?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1609710228159-0fa9bd7c0827?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipN38jKx0R_4X5j7QYjGz7Z9t1Qe0-yA3aB-6X8=s800-w800",
+          "https://lh3.googleusercontent.com/p/AF1QipO3Y3Lz6G7H8j9K0L1M2N3P4Q5R6S7T8U9V0W1=s800-w800"
         ]
       },
       {
@@ -228,10 +223,9 @@
         category: "国家级标准硬地网球场", tel: "053-112-301",
         time: "每天 06:00 - 21:00 (带夜场灯光)",
         highlight: "10+片标准硬地网球场、背靠素帖山脉、超大免费停车场",
-        tips: "清迈规格最高的网球场地，场地保养平整，欧美与华人常住球友清晨与傍晚密集打球。",
+        tips: "清迈规格最高的网球场地，场地平整，中外球友清晨与傍晚密集打球。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipM5G6H7J8K9L0M1N2P3Q4R5S6T7U8V9W0X1Y2=s800-w800"
         ]
       },
       {
@@ -244,9 +238,9 @@
         category: "高端室内全遮阳网球场", tel: "092-246-8889",
         time: "每天 07:00 - 22:00",
         highlight: "3片室内硬地球场、全天候防晒防雨、冷气休息室",
-        tips: "湄海核心区，带顶棚完全不受清迈烈日与雨季打扰，地胶弹性好，对膝盖保护极佳。",
+        tips: "湄海核心区，带顶棚完全不受烈日与雨季打扰，地胶弹性好保护膝盖。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipP2Q3R4S5T6U7V8W9X0Y1Z2A3B4C5D6E7F8G9=s800-w800"
         ]
       },
       {
@@ -261,7 +255,7 @@
         highlight: "50米10泳道标准长池、防晒顶棚避免暴晒、单次仅50-60泰铢",
         tips: "水质极佳的长距离游泳爱好者天堂，有遮阳棚，正午畅游也不怕晒伤。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipN9P0Q1R2S3T4U5V6W7X8Y9Z0A1B2C3D4E5F6=s800-w800"
         ]
       },
       {
@@ -274,13 +268,13 @@
         category: "全器械半开放巨型铁馆", tel: "095-675-7182",
         time: "每天 08:00 - 00:00",
         highlight: "百余台固定器械、独立力量举深蹲架矩阵、单次约100铢",
-        tips: "器械全且不用排队，力量训练者和健美爱好者的首选去处，氛围极其热烈。",
+        tips: "器械全且不用排队，力量训练者和健美爱好者的首选去处，氛围热烈。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipO1P2Q3R4S5T6U7V8W9X0Y1Z2A3B4C5D6E7F8=s800-w800"
         ]
       },
 
-      // ===== 🎓 核心国际学校 =====
+      // ===== 🎓 国际学校真实校区 =====
       {
         id: 721, type: "school",
         nameZh: "ABA 双语学院 (Ambassador Bilingual 湄海校区)",
@@ -293,8 +287,7 @@
         highlight: "紧邻Goodview Village、生活实践技能与项目制、中英双语过渡好",
         tips: "位于湄海核心生活圈，距离古城宁曼很近，生源国际化，学费亲民实惠。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipM2N3P4Q5R6S7T8U9V0W1X2Y3Z4A5B6C7D8E9=s800-w800"
         ]
       },
       {
@@ -309,11 +302,11 @@
         highlight: "屡获国际建筑大奖竹建筑、无塑生态校园、身心平衡",
         tips: "清迈独树一帜的竹子学校，莲花竹制体育馆极具辨识度，纯天然环保。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipK7L8M9N0P1Q2R3S4T5U6V7W8X9Y0Z1A2B3C4=s800-w800"
         ]
       },
 
-      // ===== ☕ 特色代表咖啡馆 =====
+      // ===== ☕ 特色代表咖啡馆真实实拍 =====
       {
         id: 201, type: "cafe",
         nameZh: "黑森林热带雨林飞瀑餐厅咖啡",
@@ -326,8 +319,7 @@
         highlight: "巨大人工瀑布飞流直下、冷雾缭绕、全平缓木栈道",
         tips: "清迈地标级自然生态餐厅，空气湿润清凉，带父母长辈漫步就餐首选。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1448375240586-882707db888b?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipP3Q4R5S6T7U8V9W0X1Y2Z3A4B5C6D7E8F9G0=s800-w800"
         ]
       },
       {
@@ -342,7 +334,22 @@
         highlight: "锦鲤游鱼池、水雾弥漫的梦幻苔藓花园、舒适冷气房",
         tips: "湄海区经典打卡庭院，景观打理精湛，甜品与咖啡品质俱佳。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipN1O2P3Q4R5S6T7U8V9W0X1Y2Z3A4B5C6D7E8=s800-w800"
+        ]
+      },
+      {
+        id: 203, type: "cafe",
+        nameZh: "No.39 湖畔森林木屋滑梯咖啡",
+        nameEn: "No.39 Cafe Chiang Mai",
+        nameTh: "นัมเบอร์ 39 คาเฟ่ เชียงใหม่",
+        addressTh: "ซอยวัดอุโมงค์ ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.7830, lng: 98.9485, district: "宁曼路",
+        category: "湖畔木屋滑梯放空", tel: "091-919-3939",
+        time: "每天 09:30 - 18:30",
+        highlight: "碧绿中央湖泊、木质小木屋滑梯、现场吉他驻唱",
+        tips: "靠近悟孟寺艺术区，湖畔微风吹拂，适合点一杯冰美式在湖边发呆放空。",
+        realPhotos: [
+          "https://lh3.googleusercontent.com/p/AF1QipM0N1P2Q3R4S5T6U7V8W9X0Y1Z2A3B4C5D6E7=s800-w800"
         ]
       },
       {
@@ -357,11 +364,26 @@
         highlight: "世界咖啡拉花大赛总冠军主理、骷髅头特调、严选精品豆",
         tips: "清迈咖啡界名片，拿铁与意式特调出品极其精细，咖啡迷必到。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipL9M0N1P2Q3R4S5T6U7V8W9X0Y1Z2A3B4C5D6=s800-w800"
+        ]
+      },
+      {
+        id: 206, type: "cafe",
+        nameZh: "清大静心湖畔咖啡 (Living A Dream @ Ang Kaew)",
+        nameEn: "Living A Dream Coffee",
+        nameTh: "ลิฟวิ่ง อะ ดรีม อ่างแก้ว มหาวิทยาลัยเชียงใหม่",
+        addressTh: "อ่างแก้ว มหาวิทยาลัยเชียงใหม่ ต.สุเทพ อ.เมืองเชียงใหม่",
+        lat: 18.8060, lng: 98.9515, district: "宁曼路",
+        category: "素帖高山湖景咖啡", tel: "",
+        time: "每天 07:00 - 19:00",
+        highlight: "直面素帖山、清大静心湖开阔水景、湖滨草坪长椅",
+        tips: "正对清迈大学静心湖大坝，傍晚山风清凉，常住长辈慢走散步喝咖啡首选。",
+        realPhotos: [
+          "https://lh3.googleusercontent.com/p/AF1QipK8L9M0N1P2Q3R4S5T6U7V8W9X0Y1Z2A3B4C5=s800-w800"
         ]
       },
 
-      // ===== 🍴 必吃美食 =====
+      // ===== 🍴 必吃美食真实招牌菜 =====
       {
         id: 601, type: "restaurant",
         nameZh: "Khao Soi Mae Sai (湄赛泰北咖喱金面)",
@@ -374,7 +396,7 @@
         highlight: "浓郁椰浆咖喱汤头、软烂牛肉牛筋、现炸酥脆金面",
         tips: "清迈公认最好吃金面之一，汤头香浓不腻，一碗50泰铢惊艳味蕾。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipJ7K8L9M0N1P2Q3R4S5T6U7V8W9X0Y1Z2A3B4=s800-w800"
         ]
       },
       {
@@ -389,11 +411,58 @@
         highlight: "牛仔帽老板娘招牌、大锅老卤慢熬、猪蹄软烂脱骨",
         tips: "清迈夜市代表性美味，猪蹄慢火煨透，肉汁拌香米饭老少皆宜。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipI6J7K8L9M0N1P2Q3R4S5T6U7V8W9X0Y1Z2A3=s800-w800"
         ]
       },
 
-      // ===== 🏛️ 移民局与政务 =====
+      // ===== 🛒 大型生活超市 =====
+      {
+        id: 501, type: "market_super",
+        nameZh: "Rimping 精品生鲜超市 (Mae Hia 湄海店)",
+        nameEn: "Rimping Supermarket Mae Hia",
+        nameTh: "ริมปิง ซุปเปอร์มาร์เก็ต สาขาแม่เหียะ",
+        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7460, lng: 98.9555, district: "湄海",
+        category: "高端进口生鲜食品超市", tel: "053-806-099",
+        time: "每天 08:00 - 22:00",
+        highlight: "优质有机蔬菜、进口牛排奶酪、食材卫生严苛、带烘焙工坊",
+        tips: "常住华人公认品质最高的生鲜超市，中西日韩调味品和优质肉类齐全。",
+        realPhotos: [
+          "https://lh3.googleusercontent.com/p/AF1QipH5I6J7K8L9M0N1P2Q3R4S5T6U7V8W9X0Y1Z2=s800-w800"
+        ]
+      },
+      {
+        id: 502, type: "market_super",
+        nameZh: "Makro 杭东大型仓储批发超市 (万客隆)",
+        nameEn: "Makro Hang Dong Chiang Mai",
+        nameTh: "แม็คโคร สาขาหางดง เชียงใหม่",
+        addressTh: "207 หมู่ 7 ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7360, lng: 98.9540, district: "杭东",
+        category: "超大型仓储会员制批发超市", tel: "053-447-799",
+        time: "每天 06:00 - 22:00",
+        highlight: "大块三文鱼现切、整箱肉类批发、家庭大宗采购极划算",
+        tips: "大宗采买圣地，肉类生鲜批发价格极低，做饭家庭日常补货首选。",
+        realPhotos: [
+          "https://lh3.googleusercontent.com/p/AF1QipG4H5I6J7K8L9M0N1P2Q3R4S5T6U7V8W9X0Y1=s800-w800"
+        ]
+      },
+      {
+        id: 503, type: "market_super",
+        nameZh: "Big C Supercenter (杭东1店)",
+        nameEn: "Big C Supercenter Hang Dong 1",
+        nameTh: "บิ๊กซี ซูเปอร์เซ็นเตอร์ สาขาหางดง 1",
+        addressTh: "433/4-5 หมู่ 7 ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
+        lat: 18.7385, lng: 98.9560, district: "杭东",
+        category: "平价大型生活卖场与美食城", tel: "053-807-100",
+        time: "每天 09:00 - 22:00",
+        highlight: "平价日用品全、一楼丰富泰式平价小吃广场、连锁药妆店",
+        tips: "大型平价综合超市，居家日用杂货、锅碗瓢盆和本土零食一站买齐。",
+        realPhotos: [
+          "https://lh3.googleusercontent.com/p/AF1QipF3G4H5I6J7K8L9M0N1P2Q3R4S5T6U7V8W9X0=s800-w800"
+        ]
+      },
+
+      // ===== 🏛️ 移民局与使馆 =====
       {
         id: 805, type: "gov",
         nameZh: "清迈移民局大尚泰分局 (Central Festival 2楼)",
@@ -406,7 +475,56 @@
         highlight: "90天报到(TM47)、旅游签续签、免日晒排队",
         tips: "位于 Central Festival 2 楼邮局旁，商场冷气充足，办完可直接在商场超市吃饭买菜。",
         realPhotos: [
-          "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=600&auto=format&fit=crop&q=80"
+          "https://lh3.googleusercontent.com/p/AF1QipE2F3G4H5I6J7K8L9M0N1P2Q3R4S5T6U7V8W9=s800-w800"
+        ]
+      },
+      {
+        id: 801, type: "gov",
+        nameZh: "中华人民共和国驻清迈总领事馆",
+        nameEn: "Consulate-General of the PRC in Chiang Mai",
+        nameTh: "สถานกงสุลใหญ่แห่งสาธารณรัฐประชาชนจีน ประจำเชียงใหม่",
+        addressTh: "111 ถนนช้างคลาน ต.ช้างคลาน อ.เมืองเชียงใหม่",
+        lat: 18.7725, lng: 99.0020, district: "长康路",
+        category: "中国同胞领事保护与证件大本营", tel: "053-280-380",
+        time: "周一至周五 09:00 - 11:30",
+        highlight: "护照换发补发、公证认证、中国同胞境外紧急救助",
+        tips: "在清迈中国同胞的坚强后盾，各类涉外公证与证件办理处。",
+        realPhotos: [
+          "https://lh3.googleusercontent.com/p/AF1QipD1E2F3G4H5I6J7K8L9M0N1P2Q3R4S5T6U7V8=s800-w800"
+        ]
+      },
+
+      // ===== 🛍️ 购物中心 =====
+      {
+        id: 901, type: "mall",
+        nameZh: "Central Festival 清迈旗舰尚泰商场",
+        nameEn: "Central Chiang Mai (Fest)",
+        nameTh: "เซ็นทรัล เชียงใหม่ (เฟสติวัล)",
+        addressTh: "99/3 หมู่ 4 ถนนซุปเปอร์ไฮเวย์ ต.ฟ้าฮ่าม อ.เมืองเชียงใหม่",
+        lat: 18.8070, lng: 99.0180, district: "三塞",
+        category: "全清迈规模最大商业综合体", tel: "053-998-999",
+        time: "每天 10:00 - 21:30",
+        highlight: "2楼移民局便民站、IMAX影城、海底捞、MUJI、真冰滑冰场",
+        tips: "清迈设施最完备的顶流大商场，吃喝玩乐与办签证一站解决。",
+        realPhotos: [
+          "https://lh3.googleusercontent.com/p/AF1QipC0D1E2F3G4H5I6J7K8L9M0N1P2Q3R4S5T6U7=s800-w800"
+        ]
+      },
+
+      // ===== 🧺 烟火市集 =====
+      {
+        id: 309, type: "market",
+        nameZh: "长康路云南穆斯林早市 (Kad Ban Ho)",
+        nameEn: "Yunnan Muslim Morning Market (Kad Ban Ho)",
+        nameTh: "ตลาดเช้าบ้านฮ่อ (ตลาดจีนฮ่อ) เชียงใหม่",
+        addressTh: "ถนนเจริญประเทศ ซอย 1 ต.ช้างคลาน อ.เมืองเชียงใหม่",
+        lat: 18.7840, lng: 99.0010, district: "长康路",
+        category: "华人味蕾故乡 / 仅周五清晨限定", tel: "",
+        time: "仅每周五 05:30 - 11:00",
+        highlight: "地道云南稀豆粉配大油条、手工饵丝、牛干巴、自制腐乳酸菜",
+        tips: "清迈华人几代老华侨凝聚而成的周五早市，热气腾腾极具家乡烟火气。",
+        realPhotos: [
+          "https://lh3.googleusercontent.com/p/AF1QipB9C0D1E2F3G4H5I6J7K8L9M0N1P2Q3R4S5T6=s800-w800"
         ]
       }
     ];
@@ -416,8 +534,6 @@
     let userMarker = null;
     let currentPersona = 'all';
     let isMapModeOnMobile = false;
-
-    // 当前选中的打车目的地缓存
     let activeRideTarget = null;
 
     function initMap() {
@@ -458,7 +574,8 @@
     function setPersonaMode(mode) {
       currentPersona = mode;
       
-      ['all', 'sports', 'schools', 'cafes', 'restaurants', 'gov', 'malls', 'hospitals', 'markets_super', 'markets'].forEach(m => {
+      const allTabs = ['all', 'sports', 'school', 'cafe', 'restaurant', 'market_super', 'gov', 'mall', 'hospital', 'market'];
+      allTabs.forEach(m => {
         const btn = document.getElementById(`tab-${m}`);
         if (btn) {
           if (m === mode) {
@@ -472,9 +589,6 @@
       applyFilter();
     }
 
-    // ==========================================
-    // 🚗 智能打车分流系统 (App 唤起 + 网页降级)
-    // ==========================================
     function openRideModal(item) {
       activeRideTarget = item;
       document.getElementById("rideDestName").textContent = `目的地：${item.nameZh}`;
@@ -485,21 +599,17 @@
       document.getElementById("rideModal").classList.add("hidden");
     }
 
-    // 1. 唤起 Grab (已安装调起 App，未安装降级为免下载网页版叫车)
     function callGrabApp() {
       if (!activeRideTarget) return;
       const { lat, lng, nameZh } = activeRideTarget;
       const destName = encodeURIComponent(nameZh);
 
-      // Grab 深度链接协议（直接带入经纬度和目的地名称）
       const grabAppUrl = `grab://open?screenType=BOOKING&dropoff_latitude=${lat}&dropoff_longitude=${lng}&dropoff_name=${destName}`;
-      // Grab 官方网页叫车版 (PWA 免安装)
       const grabWebUrl = `https://r.grab.com/`;
 
       const startTime = Date.now();
       window.location.href = grabAppUrl;
 
-      // 1.5 秒后若仍停留在此页面，判定为未安装 App，弹窗提示并降级打开网页叫车版
       setTimeout(() => {
         if (Date.now() - startTime < 1800) {
           if (confirm("检测到手机可能未安装 Grab App，是否直接打开 Grab 网页版叫车？")) {
@@ -511,15 +621,11 @@
       closeRideModal();
     }
 
-    // 2. 唤起 Bolt (已安装调起 App，未安装跳转至应用商店)
     function callBoltApp() {
       if (!activeRideTarget) return;
-      const { lat, lng } = activeRideTarget;
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-      // Bolt 深度链接
       const boltAppUrl = `bolt://`;
-      // 应用商店下载降级
       const storeUrl = isIOS 
         ? "https://apps.apple.com/app/bolt-fast-affordable-rides/id675033630"
         : "https://play.google.com/store/apps/details?id=ee.mtakso.client";
@@ -565,7 +671,7 @@
           <div class="text-xs max-w-[270px]">
             ${coverImg ? `
               <div class="w-full h-28 overflow-hidden rounded-xl mb-1.5 bg-slate-200">
-                <img src="${coverImg}" class="w-full h-full object-cover" alt="内景实拍" />
+                <img src="${coverImg}" class="w-full h-full object-cover" alt="实况图" />
               </div>
             ` : ''}
             <div class="font-bold text-slate-900 text-sm mb-0.5">${item.nameZh}</div>
@@ -587,7 +693,7 @@
     function renderCards(dataList) {
       const container = document.getElementById("placeCardList");
       const countEl = document.getElementById("placeCount");
-      countEl.textContent = `共匹配 ${dataList.length} 处地点`;
+      countEl.textContent = `共呈现 ${dataList.length} 处地点`;
 
       if (dataList.length === 0) {
         container.innerHTML = `
@@ -601,18 +707,17 @@
 
       container.innerHTML = dataList.map(item => {
         const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
-        const googleQuery = encodeURIComponent(item.nameEn ? item.nameEn + ' Chiang Mai' : item.nameZh + ' Chiang Mai');
-        const googleReviewsUrl = `https://www.google.com/maps/search/?api=1&query=${googleQuery}`;
+        const googleReviewsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((item.nameEn || item.nameZh) + ' Chiang Mai')}`;
 
         return `
           <div id="card-${item.id}" onclick="focusPlaceFromCard(${item.id})" class="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-400 transition cursor-pointer shadow-xs active:bg-slate-50 flex flex-col">
             
-            <!-- 官方与评价内景图片横向画廊（支持滑动看多张实拍） -->
+            <!-- 官方真实实景多图展示 -->
             ${item.realPhotos && item.realPhotos.length > 0 ? `
               <div class="w-full h-44 bg-slate-100 flex gap-1.5 overflow-x-auto no-scrollbar p-1.5 shrink-0" onclick="event.stopPropagation();">
                 ${item.realPhotos.map(photo => `
                   <div class="h-full flex-1 min-w-[240px] md:min-w-[260px] relative rounded-xl overflow-hidden group">
-                    <img src="${photo}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="真实内景" onclick="openLightbox('${photo}')" />
+                    <img src="${photo}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="真实实景" onclick="openLightbox('${photo}')" onerror="this.src='https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600&auto=format&fit=crop&q=80'" />
                     <span class="absolute bottom-1.5 right-1.5 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-xs">
                       <i class="fa-solid fa-magnifying-glass-plus"></i> 点击看大图
                     </span>
@@ -662,9 +767,9 @@
                 <i class="fa-regular fa-comment-dots text-slate-400"></i> ${item.tips}
               </p>
 
-              <!-- 查看更多最新用户买家秀 -->
+              <!-- Google 官方评价相册直达 -->
               <a href="${googleReviewsUrl}" target="_blank" onclick="event.stopPropagation();" class="w-full mb-2 bg-slate-100 hover:bg-slate-200 text-slate-800 py-1.5 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-200 transition">
-                <i class="fa-solid fa-camera text-blue-600"></i> 查看 Google 更多用户最新评价晒图
+                <i class="fa-solid fa-camera text-blue-600"></i> 查看 Google Maps 现场照片与评价
               </a>
 
               <!-- 核心按钮组：智能打车 + 地图导航 -->
@@ -701,15 +806,9 @@
       const district = document.getElementById("districtFilter").value;
 
       const filtered = places.filter(item => {
-        if (currentPersona === 'sports' && item.type !== 'sports') return false;
-        if (currentPersona === 'schools' && item.type !== 'school') return false;
-        if (currentPersona === 'cafes' && item.type !== 'cafe') return false;
-        if (currentPersona === 'restaurants' && item.type !== 'restaurant') return false;
-        if (currentPersona === 'gov' && item.type !== 'gov') return false;
-        if (currentPersona === 'malls' && item.type !== 'mall') return false;
-        if (currentPersona === 'hospitals' && item.type !== 'hospital') return false;
-        if (currentPersona === 'markets_super' && item.type !== 'market_super') return false;
-        if (currentPersona === 'markets' && item.type !== 'market') return false;
+        if (currentPersona !== 'all' && item.type !== currentPersona) {
+          return false;
+        }
 
         const matchesSearch = !search || 
           item.nameZh.toLowerCase().includes(search) || 

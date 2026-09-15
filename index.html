@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  
+  <!-- 强制浏览器实时拉取最新版本，禁止强缓存锁死 -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
   <title>清迈华人旅居生活全景指南 | Chiang Mai Living Hub</title>
   
   <!-- Tailwind CSS & FontAwesome -->
@@ -49,14 +55,14 @@
       </div>
     </div>
 
-    <!-- 顶部分类导航（教会置于中间位置） -->
+    <!-- 顶部分类导航（教会居中排布） -->
     <div class="bg-blue-50/50 border-t border-blue-100/60 px-3 py-1.5 flex items-center gap-1.5 text-xs overflow-x-auto no-scrollbar">
       <button onclick="setPersonaMode('all')" id="tab-all" class="px-3 py-1 rounded-full bg-blue-600 text-white font-medium shadow-xs shrink-0 text-xs">全部点位</button>
       <button onclick="setPersonaMode('market_super')" id="tab-market_super" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🛒 大型超市 (12)</button>
       <button onclick="setPersonaMode('market')" id="tab-market" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🧺 烟火市集 (10)</button>
       <button onclick="setPersonaMode('cafe')" id="tab-cafe" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">☕ 精选咖啡 (50)</button>
       <button onclick="setPersonaMode('restaurant')" id="tab-restaurant" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🍴 特色美食 (25)</button>
-      <!-- 居中放置的教会板块 -->
+      <!-- 居中放置的教会模块 -->
       <button onclick="setPersonaMode('church')" id="tab-church" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">⛪ 基督教会 (18)</button>
       <button onclick="setPersonaMode('sports')" id="tab-sports" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🏅 运动健身 (20)</button>
       <button onclick="setPersonaMode('school')" id="tab-school" class="px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 font-medium shadow-xs shrink-0 text-xs">🎓 国际学校 (21)</button>
@@ -100,7 +106,7 @@
     <aside id="listView" class="w-full md:w-[490px] h-full bg-white flex flex-col z-10 shrink-0">
       <div class="px-3.5 py-1.5 border-b border-slate-100 flex justify-between items-center text-xs text-slate-500 bg-slate-50">
         <span id="placeCount" class="font-medium">正在渲染全量点位...</span>
-        <span class="text-[11px] text-slate-400">原生直通 Grab / Bolt</span>
+        <span class="text-[11px] text-slate-400">稳定直通 Grab / Bolt</span>
       </div>
 
       <div id="placeCardList" class="flex-1 overflow-y-auto divide-y divide-slate-100 p-2.5 space-y-3 pb-24 md:pb-6">
@@ -122,7 +128,7 @@
     </button>
   </div>
 
-  <!-- 打车服务选择弹窗（原生链接直通版，杜绝浏览器安全拦截） -->
+  <!-- 打车服务选择弹窗 -->
   <div id="rideModal" class="fixed inset-0 bg-black/60 z-50 flex items-end md:items-center justify-center hidden p-0 md:p-4" onclick="closeRideModal()">
     <div class="bg-white rounded-t-3xl md:rounded-2xl max-w-sm w-full p-4 space-y-3 shadow-2xl" onclick="event.stopPropagation();">
       <div class="flex justify-between items-center border-b border-slate-100 pb-2">
@@ -136,33 +142,38 @@
       </div>
 
       <div class="space-y-2 text-xs">
-        <!-- Grab 原生链接：支持 App 唤起与即时网页叫车 -->
-        <a id="grabNativeLink" href="#" target="_blank" rel="noopener noreferrer" class="w-full p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl flex items-center justify-between transition group block">
+        <!-- 1. 呼叫 Grab -->
+        <button onclick="callGrab()" class="w-full p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl flex items-center justify-between transition text-left active:scale-95">
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shadow-xs">G</div>
-            <div class="text-left">
+            <div>
               <div class="font-bold text-emerald-950">呼叫 Grab (全城覆盖)</div>
-              <div class="text-[10px] text-emerald-700">自动带入目的地坐标 · 支持网页直接叫车</div>
+              <div class="text-[10px] text-emerald-700">自动唤起App带入定位 · 未安装前往下载</div>
             </div>
           </div>
-          <i class="fa-solid fa-arrow-up-right-from-square text-emerald-600 group-hover:translate-x-0.5 transition"></i>
-        </a>
+          <i class="fa-solid fa-angle-right text-emerald-600"></i>
+        </button>
 
-        <!-- Bolt 原生链接 -->
-        <a id="boltNativeLink" href="#" target="_blank" rel="noopener noreferrer" class="w-full p-3 bg-green-50 hover:bg-green-100 border border-green-200 rounded-xl flex items-center justify-between transition group block">
+        <!-- 2. 呼叫 Bolt -->
+        <button onclick="callBolt()" class="w-full p-3 bg-green-50 hover:bg-green-100 border border-green-200 rounded-xl flex items-center justify-between transition text-left active:scale-95">
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-green-500 text-white font-bold flex items-center justify-center text-sm shadow-xs">B</div>
-            <div class="text-left">
+            <div>
               <div class="font-bold text-green-950">呼叫 Bolt (高性价比)</div>
-              <div class="text-[10px] text-green-700">车费通常实惠 20% · 自动直达</div>
+              <div class="text-[10px] text-green-700">车费通常实惠 20% · 自动唤起</div>
             </div>
           </div>
-          <i class="fa-solid fa-arrow-up-right-from-square text-green-600 group-hover:translate-x-0.5 transition"></i>
-        </a>
+          <i class="fa-solid fa-angle-right text-green-600"></i>
+        </button>
 
-        <!-- 复制泰文地址给司机 -->
-        <button onclick="copyCurrentAddress()" class="w-full p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl flex items-center justify-center gap-1.5 font-medium transition">
-          <i class="fa-regular fa-copy text-slate-500"></i> 复制泰文地址（出示给双条车/路边司机）
+        <!-- 3. Google Maps 打车比价聚合 (全环境兜底) -->
+        <button onclick="callGoogleRide()" class="w-full p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-900 rounded-xl flex items-center justify-center gap-1.5 font-medium transition text-xs active:scale-95">
+          <i class="fa-brands fa-google text-blue-600"></i> 通过 Google 地图比价叫车 (聚合通道)
+        </button>
+
+        <!-- 4. 复制泰文地址给现场司机 -->
+        <button onclick="copyCurrentAddress()" class="w-full p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl flex items-center justify-center gap-1.5 font-medium transition active:scale-95">
+          <i class="fa-regular fa-copy text-slate-500"></i> 复制泰文地址（出示给双条车/TukTuk）
         </button>
       </div>
     </div>
@@ -745,7 +756,7 @@
         tips: "古城中心传承数代的海南鸡饭老字号，鸡肉滑嫩，配秘制豆酱生姜汁极地道。"
       },
 
-      // ===== ⛪ 基督教会 (18 处，居中分类) =====
+      // ===== ⛪ 基督教会 (18) =====
       {
         id: 1, type: "church",
         nameZh: "清迈华人基督教会 (法汉堂 Faham)",
@@ -961,664 +972,6 @@
         time: "周日 10:00 - 11:30",
         highlight: "周六下午 15:00 滨河慢走交流与家庭茶聚",
         tips: "靠近巴达区萍河畔，风景优美环境安静，常有广东与大湾区旅居教友聚会交流，距清迈市中心医院 8分钟。"
-      },
-
-      // ===== 🏅 运动与体育场馆 (20) =====
-      {
-        id: 101, type: "sports",
-        nameZh: "文马克专业室内乒乓球馆 (市政体育场内)",
-        nameEn: "Boonmark Pingpong Club",
-        nameTh: "สนามปิงปอง บุญมาก (สนามกีฬาเทศบาลนครเชียงใหม่)",
-        addressTh: "สนามกีฬาเทศบาลนครเชียงใหม่ ถนนสนามกีฬา ต.ศรีภูมิ อ.เมืองเชียงใหม่",
-        lat: 18.8004, lng: 98.9899, district: "古城",
-        category: "专业室内地胶球馆", tel: "090-317-9165",
-        time: "每天 13:00 - 21:00",
-        highlight: "比赛级双鱼球台、红蓝色专业地胶、散客约40-60铢",
-        tips: "清迈最专业室内地胶乒乓球馆，馆内冷风散热良好，长辈与各国旅居高手下午在此打擂台切磋。"
-      },
-      {
-        id: 102, type: "sports",
-        nameZh: "清迈大学综合体育中心·乒乓球馆 (2号馆)",
-        nameEn: "CMU Sports Center Gymnasium 2",
-        nameTh: "อาคารพลศึกษา 2 มหาวิทยาลัยเชียงใหม่",
-        addressTh: "มหาวิทยาลัยเชียงใหม่ ถนนสุเทพ ต.สุเทพ อ.เมืองเชียงใหม่",
-        lat: 18.7950, lng: 98.9520, district: "宁曼路",
-        category: "大学综合体育中心", tel: "053-941-000",
-        time: "周一至周五 16:00 - 21:30 / 周末开放",
-        highlight: "8张标准比赛乒乓球台、挑高通风开阔、按次约50铢",
-        tips: "位于清迈大学主校区素帖山脚下，空气极佳，打完球可顺便在校园静心湖漫步。"
-      },
-      {
-        id: 103, type: "sports",
-        nameZh: "700年体育场国家级综合网球中心",
-        nameEn: "700th Anniversary Complex Tennis Courts",
-        nameTh: "สนามเทนนิส สนามกีฬาสมโภชเชียงใหม่ 700 ปี",
-        addressTh: "ถนนเลียบคลองชลประทาน ต.ดอนแก้ว อ.แม่ริม เชียงใหม่",
-        lat: 18.8415, lng: 98.9612, district: "运河路",
-        category: "国家级标准硬地网球场", tel: "053-112-301",
-        time: "每天 06:00 - 21:00 (带夜场灯光)",
-        highlight: "10+片标准硬地网球场、背靠素帖山脉、超大免费停车场",
-        tips: "清迈规格最高的网球场地，场地保养平整，欧美与华人常住球友清晨与傍晚密集打球。"
-      },
-      {
-        id: 104, type: "sports",
-        nameZh: "Rally 室内全遮阳网球馆 (Mae Hia 湄海)",
-        nameEn: "Rally Tennis Court Mae Hia",
-        nameTh: "แรลลี่ เทนนิส คอร์ท แม่เหียะ",
-        addressTh: "10/10 หมู่ 4 ต.แม่เหียะ อ.เมืองเชียงใหม่",
-        lat: 18.7435, lng: 98.9510, district: "湄海",
-        category: "高端室内全遮阳网球场", tel: "092-246-8889",
-        time: "每天 07:00 - 22:00",
-        highlight: "3片室内硬地球场、全天候防晒防雨、冷气休息室",
-        tips: "湄海核心区，带顶棚完全不受清迈烈日与雨季打扰，地胶弹性好，对膝盖保护极佳。"
-      },
-      {
-        id: 105, type: "sports",
-        nameZh: "金卡纳英式网球俱乐部 (Gymkhana Club)",
-        nameEn: "Gymkhana Sports Club Tennis Courts",
-        nameTh: "สโมสรยิมคาน่าเชียงใหม่",
-        addressTh: "ถนนราษฎร์อุทิศ ต.วัดเกต อ.เมืองเชียงใหม่",
-        lat: 18.7750, lng: 99.0090, district: "长康路",
-        category: "百年历史会员制俱乐部", tel: "053-241-073",
-        time: "每天 06:30 - 20:00",
-        highlight: "2片硬地网球场、百年古树草坪环抱、英式茶室露台",
-        tips: "始于1898年的百年历史俱乐部，打完球可在古木掩映的凉亭喝茶吹风，极其悠闲。"
-      },
-      {
-        id: 106, type: "sports",
-        nameZh: "700年体育场奥林匹克游泳馆 (50米标准长池)",
-        nameEn: "700 Year Stadium Olympic Pool",
-        nameTh: "สระว่ายน้ำ สนามกีฬาสมโภชเชียงใหม่ 700 ปี",
-        addressTh: "ถนนเลียบคลองชลประทาน ต.ดอนแก้ว อ.แม่ริม เชียงใหม่",
-        lat: 18.8398, lng: 98.9625, district: "运河路",
-        category: "国家级标准竞赛泳池", tel: "053-112-302",
-        time: "周二至周日 08:30 - 20:00 (周一维护)",
-        highlight: "50米10泳道标准长池、防晒顶棚避免暴晒、单次仅50-60泰铢",
-        tips: "水质极佳的长距离游泳爱好者天堂，有遮阳棚，正午畅游也不怕晒伤。"
-      },
-      {
-        id: 107, type: "sports",
-        nameZh: "兰纳乡村高尔夫度假泳池 (Lanna Sports Pool)",
-        nameEn: "Lanna Golf Club Swimming Pool",
-        nameTh: "สระว่ายน้ำ สนามกอล์ฟลานนา เชียงใหม่",
-        addressTh: "ถนนโชตนา ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8280, lng: 98.9780, district: "古城",
-        category: "高尔夫草坪露天度假泳池", tel: "053-221-744",
-        time: "每天 08:00 - 19:00",
-        highlight: "25米标准露天水池、大片高尔夫绿茵环绕、水质清静人少",
-        tips: "环境极其开阔安静，水温舒适，非常适合长辈慢游养生放松腰膝关节。"
-      },
-      {
-        id: 108, type: "sports",
-        nameZh: "清迈匹克球俱乐部 (Chiang Mai Pickleball)",
-        nameEn: "Chiang Mai Pickleball Club (Wualai)",
-        nameTh: "เชียงใหม่ พิคเคิลบอล คลับ ถนนวัวลาย",
-        addressTh: "177 ถนนวัวลาย ต.หายยา อ.เมืองเชียงใหม่",
-        lat: 18.7765, lng: 98.9835, district: "古城",
-        category: "新兴潮流匹克球据点", tel: "",
-        time: "每天 08:00 - 21:00",
-        highlight: "专业硬地匹克球场地、规则简单易学、运动量适中对膝盖友好",
-        tips: "目前风靡欧美旅居圈的轻量运动，全龄段家庭和长辈都能轻松上手。"
-      },
-      {
-        id: 109, type: "sports",
-        nameZh: "North Arena 综合体育公园 (湄海/杭东)",
-        nameEn: "North Arena Sport Club Chiang Mai",
-        nameTh: "นอร์ธ อารีน่า สปอร์ตคลับ เชียงใหม่",
-        addressTh: "ถนนเลียบคลองชลประทาน ต.แม่เหียะ อ.เมืองเชียงใหม่",
-        lat: 18.7380, lng: 98.9480, district: "湄海",
-        category: "西南区大型综合体育场馆", tel: "053-111-999",
-        time: "每天 08:00 - 23:00",
-        highlight: "多片标准实木室内羽毛球场、乒乓球台、室内足球场",
-        tips: "湄海与杭东南区规模最大的综合运动馆，常有长住家庭相约包场打羽球和乒乓。"
-      },
-      {
-        id: 110, type: "sports",
-        nameZh: "清迈羽毛球俱乐部 (Chiang Mai Badminton)",
-        nameEn: "Chiang Mai Badminton Club",
-        nameTh: "สนามแบดมินตันเชียงใหม่",
-        addressTh: "ถนนวัวลาย ต.หายยา อ.เมืองเชียงใหม่",
-        lat: 18.7750, lng: 98.9810, district: "古城",
-        category: "专业室内羽毛球馆", tel: "",
-        time: "每天 09:00 - 23:00",
-        highlight: "12片实木地板球场、防眩目高照度灯光、华人双打拼场多",
-        tips: "古城南门银匠路旁，地板弹性好保护膝盖，很多旅居家庭在此每周固定打双打。"
-      },
-      {
-        id: 111, type: "sports",
-        nameZh: "Renegade 国际台球俱乐部 (美式九球/斯诺克)",
-        nameEn: "Renegade Craft Beer & Billiards",
-        nameTh: "เรเนเกด บิลเลียด เชียงใหม่",
-        addressTh: "ถนนมูลเมือง ซอย 9 ต.ศรีภูมิ อ.เมืองเชียงใหม่",
-        lat: 18.7928, lng: 98.9918, district: "古城",
-        category: "专业美式台球吧", tel: "081-992-8821",
-        time: "每天 14:00 - 00:00",
-        highlight: "Diamond与Rasson赛级球台、Aramith水晶球、无烟空调环境",
-        tips: "清迈球台保养最好的台球馆，冷气充足无烟味，各国旅居高手经常在此切磋。"
-      },
-      {
-        id: 112, type: "sports",
-        nameZh: "JC 斯诺克俱乐部 (JC Snooker Club)",
-        nameEn: "JC Snooker Club Chiang Mai",
-        nameTh: "เจซี สนุ๊กเกอร์ คลับ เชียงใหม่",
-        addressTh: "ถนนช้างเผือก ต.ศรีภูมิ อ.เมืองเชียงใหม่",
-        lat: 18.8035, lng: 98.9860, district: "古城",
-        category: "地道英式斯诺克馆", tel: "",
-        time: "每天 12:00 - 01:00",
-        highlight: "8张标准英式12尺大台、全新台呢平整平直、全冷气开放",
-        tips: "古城北门传统斯诺克老馆，走球线极准，长住长辈与斯诺克老手聚集。"
-      },
-      {
-        id: 113, type: "sports",
-        nameZh: "Go Gym 巨型健身中心 (清迈最大硬核铁馆)",
-        nameEn: "Go Gym Chiang Mai",
-        nameTh: "โก ยิม เชียงใหม่",
-        addressTh: "ถนนซุปเปอร์ไฮเวย์ ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8150, lng: 98.9950, district: "古城",
-        category: "全器械半开放巨型铁馆", tel: "095-675-7182",
-        time: "每天 08:00 - 00:00",
-        highlight: "百余台固定器械、独立力量举深蹲架矩阵、单次约100铢",
-        tips: "清迈硬核健身圣地，器械极全永不排队，价格亲民，各国力量训练者首选。"
-      },
-      {
-        id: 114, type: "sports",
-        nameZh: "Dang 泰拳训练馆 (Dang Muay Thai)",
-        nameEn: "Dang Muay Thai Chiang Mai",
-        nameTh: "แดง มวยไทย เชียงใหม่",
-        addressTh: "ถนนอารักษ์ ต.พระสิงห์ อ.เมืองเชียงใหม่",
-        lat: 18.7885, lng: 98.9790, district: "古城",
-        category: "古城口碑泰拳格斗馆", tel: "081-026-6404",
-        time: "周一至周六 08:00-10:00 / 16:00-19:00",
-        highlight: "专业擂台一对一打靶、教练对新手耐心、减脂塑形体能极好",
-        tips: "古城西门内口碑泰拳馆，小班制针对性强，既能强健心肺也能系统学防身打靶。"
-      },
-      {
-        id: 115, type: "sports",
-        nameZh: "Gold Hillside 健身房 (宁曼路性价比老牌)",
-        nameEn: "Gold's Hillside Gym Nimman",
-        nameTh: "โกลด์ ฮิลล์ไซด์ ยิม นิมมาน",
-        addressTh: "ชั้นใต้ดิน คอนโดฮิลล์ไซด์ 2 ถนนนิมมานเหมินท์ ต.สุเทพ อ.เมืองเชียงใหม่",
-        lat: 18.7980, lng: 98.9680, district: "宁曼路",
-        category: "地下复古全空调健身房", tel: "053-225-888",
-        time: "每天 07:00 - 21:00",
-        highlight: "位于宁曼路2巷旁、单次仅70-90铢、全空调避暑练铁",
-        tips: "宁曼路长住自由职业者最喜爱的地下铁馆，价格便宜，哑铃器械非常顺手。"
-      },
-      {
-        id: 116, type: "sports",
-        nameZh: "CrossFit Chiang Mai (清迈首家CF认证馆)",
-        nameEn: "CrossFit Chiang Mai",
-        nameTh: "ครอสฟิต เชียงใหม่",
-        addressTh: "ถนนซุปเปอร์ไฮเวย์ ต.ฟ้าฮ่าม อ.เมืองเชียงใหม่",
-        lat: 18.8110, lng: 99.0080, district: "三塞",
-        category: "功能性体能高强度训练馆", tel: "082-690-0080",
-        time: "周一至周六 07:00 - 19:00",
-        highlight: "国际认证教练带教、举重攀绳壶铃操课、体能爆发力训练",
-        tips: "清迈最正统的 CrossFit 场馆，社群文化极强，欧美与华人爱好者众多。"
-      },
-      {
-        id: 117, type: "sports",
-        nameZh: "Maxx Fitness (Maya 商场顶层豪华景观)",
-        nameEn: "Maxx Fitness MAYA Lifestyle",
-        nameTh: "แม็กซ์ ฟิตเนส เมญ่า เชียงใหม่",
-        addressTh: "ชั้น 5 เมญ่า ไลฟ์สไตล์ ช้อปปิ้ง เซ็นเตอร์ ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8022, lng: 98.9672, district: "宁曼路",
-        category: "商场高端全景健身俱乐部", tel: "052-081-088",
-        time: "每天 06:00 - 22:00",
-        highlight: "直面素帖山落地大窗跑步机、全进口LifeFitness器械、桑拿淋浴",
-        tips: "边跑步边俯瞰素帖山美景，环境奢华干净，商场停车与洗漱极其便利。"
-      },
-      {
-        id: 118, type: "sports",
-        nameZh: "O2 Gym (杭东路超宽敞大铁馆)",
-        nameEn: "O2 Gym Chiang Mai",
-        nameTh: "โอทู ยิม ถนนหางดง",
-        addressTh: "ถนนเชียงใหม่-หางดง ต.ป่าแดด อ.เมืองเชียงใหม่",
-        lat: 18.7580, lng: 98.9700, district: "杭东",
-        category: "超高挑空通风大型健身中心", tel: "053-271-222",
-        time: "每天 07:00 - 22:00",
-        highlight: "宽敞开阔不压抑、单次约90铢、月卡亲民实惠、固定器械齐全",
-        tips: "杭东入口处的大型铁馆，通风良好，很多长住老手在此打卡练器械。"
-      },
-      {
-        id: 119, type: "sports",
-        nameZh: "Santai 传统泰拳营 (三甘烹世界冠军馆)",
-        nameEn: "Santai Muay Thai Gym",
-        nameTh: "สันกำแพง มวยไทยยิม",
-        addressTh: "ต.สันกำแพง อ.สันกำแพง เชียงใหม่",
-        lat: 18.7410, lng: 99.1180, district: "三塞",
-        category: "正统伦披尼冠军执教泰拳营", tel: "082-528-6059",
-        time: "周一至周六 06:00-08:00 / 16:00-19:00",
-        highlight: "传统老派泰拳技术教学、世界金腰带教练手靶、包食宿训练",
-        tips: "全球拳迷慕名而来的泰拳圣地，技术细腻严谨，适合深度体验纯正泰拳文化。"
-      },
-      {
-        id: 120, type: "sports",
-        nameZh: "Chiang Mai Fight Academy (CMFA 实战格斗)",
-        nameEn: "Chiang Mai Fight Academy (CMFA)",
-        nameTh: "เชียงใหม่ ไฟท์ อะคาเดมี่",
-        addressTh: "ถนนช้างเผือก ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8090, lng: 98.9850, district: "古城",
-        category: "泰拳与巴西柔术综合格斗馆", tel: "089-633-1122",
-        time: "每天 09:00 - 20:00",
-        highlight: "BJJ巴西柔术道服课、无道服抓握缠斗、小班实战对抗",
-        tips: "清迈市区难得的巴西柔术与综合格斗基地，黑带外教执教，实战氛围极好。"
-      },
-
-      // ===== 🎓 国际学校 (21) =====
-      {
-        id: 721, type: "school",
-        nameZh: "ABA 双语学院 (Ambassador Bilingual 湄海校区)",
-        nameEn: "Ambassador Bilingual Academy (ABA Mae Hia)",
-        nameTh: "สถาบันสองภาษา แอมบาสเดอร์ แม่เหียะ เชียงใหม่",
-        addressTh: "133 หมู่ 2 ต.แม่เหียะ อ.เมืองเชียงใหม่ (Behind Goodview Village)",
-        lat: 18.7510, lng: 98.9460, district: "湄海",
-        category: "美式项目制 + 核心主科纯英文授课", tel: "081-950-6659",
-        time: "周一至周五 08:00 - 16:30",
-        highlight: "紧邻Goodview Village、生活实践技能与项目制、中英双语过渡好",
-        tips: "位于湄海核心生活圈，距离古城宁曼很近，生源国际化，学费亲民实惠。"
-      },
-      {
-        id: 701, type: "school",
-        nameZh: "清迈国际学校 (CMIS 历史名校)",
-        nameEn: "Chiang Mai International School (CMIS)",
-        nameTh: "โรงเรียนนานาชาติเชียงใหม่",
-        addressTh: "13 ถนนเชษฐา ต.วัดเกต อ.เมืองเชียงใหม่",
-        lat: 18.7935, lng: 99.0080, district: "瓦特盖特",
-        category: "老牌美式AP名校 / 基督教宣教渊源", tel: "053-242-027",
-        time: "周一至周五 07:30 - 15:30",
-        highlight: "始于1954年、WASC认证、升学学术严谨排位紧张",
-        tips: "清迈历史最久的老牌美式名校，地处市区，大学升学表现优异。"
-      },
-      {
-        id: 702, type: "school",
-        nameZh: "普林国际学校 (Prem Tinsulanonda / PTIS)",
-        nameEn: "Prem Tinsulanonda International School",
-        nameTh: "โรงเรียนนานาชาติเปรม ติณสูลานนท์ เชียงใหม่",
-        addressTh: "234 หมู่ 3 ต.ห้วยทราย อ.แม่ริม เชียงใหม่",
-        lat: 18.9410, lng: 98.9320, district: "运河路",
-        category: "全IB豪华寄宿庄园名校", tel: "053-301-500",
-        time: "周一至周五 08:00 - 16:00 (寄宿制)",
-        highlight: "100英亩森林庄园、全IB全龄段、专业高尔夫与网球学院",
-        tips: "硬件环境堪比顶级度假村，素帖山北麓生态大校，注重全人格培养。"
-      },
-      {
-        id: 703, type: "school",
-        nameZh: "兰纳国际学校 (Lanna International / LIST)",
-        nameEn: "Lanna International School Thailand",
-        nameTh: "โรงเรียนนานาชาติลานนา เชียงใหม่",
-        addressTh: "399 หมู่ 2 ต.บ้านแหวน อ.หางดง เชียงใหม่",
-        lat: 18.6940, lng: 98.9220, district: "杭东",
-        category: "英式剑桥IGCSE & A-Level名校", tel: "052-000-838",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "30余年纯正英制、FOBISIA会员、杭东全新现代化校区",
-        tips: "杭东走廊核心英式名校，英籍师资比例高，目标英联邦高校首选。"
-      },
-      {
-        id: 704, type: "school",
-        nameZh: "恩光国际学校 (Grace International / GIS)",
-        nameEn: "Grace International School (GIS)",
-        nameTh: "โรงเรียนนานาชาติเกรซ เชียงใหม่",
-        addressTh: "88 หมู่ 3 ต.หารแก้ว อ.หางดง เชียงใหม่",
-        lat: 18.6720, lng: 98.9080, district: "杭东",
-        category: "基督教美制国际学校", tel: "052-088-777",
-        time: "周一至周五 07:45 - 15:15",
-        highlight: "美式圣经世界观、学风淳朴敬虔、学费极具亲和力",
-        tips: "全球宣教机构支持创办，极注重孩子品格操守，基督徒家庭首选。"
-      },
-      {
-        id: 705, type: "school",
-        nameZh: "潘雅登国际学校 (Panyaden / 莲花竹校)",
-        nameEn: "Panyaden International School",
-        nameTh: "โรงเรียนนานาชาติปัญญาเด่น เชียงใหม่",
-        addressTh: "218 หมู่ 2 ต.น้ำแพร่ อ.หางดง เชียงใหม่",
-        lat: 18.7020, lng: 98.9030, district: "杭东",
-        category: "全竹构绿色生态 / 英式+IB Diploma", tel: "053-441-460",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "屡获国际建筑大奖竹建筑、无塑生态校园、身心平衡",
-        tips: "清迈独树一帜的竹子学校，莲花竹制体育馆极具辨识度，纯天然环保。"
-      },
-      {
-        id: 706, type: "school",
-        nameZh: "纳空帕亚国际学校 (Nakornpayap / NIS)",
-        nameEn: "Nakornpayap International School (NIS)",
-        nameTh: "โรงเรียนนานาชาตินครพายัพ เชียงใหม่",
-        addressTh: "240 หมู่ 6 ต.สันผีเสื้อ อ.เมืองเชียงใหม่",
-        lat: 18.8350, lng: 98.9950, district: "运河路",
-        category: "老牌世俗美式AP综合国际学校", tel: "053-110-680",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "始于1993年、加州Common Core课程、WASC认证、性价比高",
-        tips: "非宗教背景，对国际生包容度高，课外体育艺术活动多。"
-      },
-      {
-        id: 707, type: "school",
-        nameZh: "协和国际学校 (Unity Concord / UCIS)",
-        nameEn: "Unity Concord International School",
-        nameTh: "โรงเรียนนานาชาติ ยูนิตี้ คอนคอร์ด เชียงใหม่",
-        addressTh: "272 หมู่ 2 ต.หนองผึ้ง อ.สารภี เชียงใหม่",
-        lat: 18.7450, lng: 99.0280, district: "沙拉丕",
-        category: "超大型现代化美式AP国际学校", tel: "052-135-061",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "全套美制AP与STEM实验室、强大英语强化(ESL)支持",
-        tips: "ESL英语辅导体系成熟，适合新落地的陪读家庭快速过渡。"
-      },
-      {
-        id: 708, type: "school",
-        nameZh: "基督教德国国际学校 (CDSC)",
-        nameEn: "Christian German School Chiang Mai (CDSC)",
-        nameTh: "โรงเรียนนานาชาติคริสเตียนเยอรมัน เชียงใหม่",
-        addressTh: "83/1 หมู่ 2 ต.หนองผึ้ง อ.สารภี เชียงใหม่",
-        lat: 18.7320, lng: 99.0250, district: "沙拉丕",
-        category: "严谨德制DIA / 基督教背景名校", tel: "053-816-624",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "德国海外认证名校、德/英/泰三语、德国高中毕业证(DIA)",
-        tips: "小班精英制教学，师生关系温馨，学生毕业可无缝申请欧洲顶尖高校。"
-      },
-      {
-        id: 709, type: "school",
-        nameZh: "新加坡国际学校清迈分校 (SISB)",
-        nameEn: "Singapore International School (SISB)",
-        nameTh: "โรงเรียนนานาชาติสิงคโปร์เชียงใหม่",
-        addressTh: "149 หมู่ 2 ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8180, lng: 98.9720, district: "宁曼路",
-        category: "新加坡数理 + 剑桥课程", tel: "052-010-888",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "著名新加坡数学教材、英语/中文/泰语三语并进、数理扎实",
-        tips: "重视数理基础，中文课比重大，特别适合注重孩子学术功底的华人家庭。"
-      },
-      {
-        id: 710, type: "school",
-        nameZh: "美太平洋国际学校 (APIS 主校区)",
-        nameEn: "American Pacific International School",
-        nameTh: "โรงเรียนนานาชาติอเมริกันแปซิฟิก เชียงใหม่",
-        addressTh: "158/1 หมู่ 3 ต.บ้านปง อ.หางดง เชียงใหม่",
-        lat: 18.7520, lng: 98.8830, district: "杭东",
-        category: "美式教育 + 全IB寄宿生态名校", tel: "053-365-303",
-        time: "周一至周五 08:00 - 16:00 (寄宿)",
-        highlight: "素帖山南麓自然校区、全套IB课程、马术与户外探索",
-        tips: "校区幽静开阔，体育设施丰富，全寄宿管理培养孩子自律独立。"
-      },
-      {
-        id: 711, type: "school",
-        nameZh: "梅里顿英国国际学校 (Meritton British)",
-        nameEn: "Meritton British International School",
-        nameTh: "โรงเรียนนานาชาติเมริทตัน บริติช เชียงใหม่",
-        addressTh: "168 หมู่ 7 ต.ป่าแดด อ.เมืองเชียงใหม่",
-        lat: 18.7490, lng: 98.9810, district: "湄海",
-        category: "剑桥英制 + 价值观品格教育 (VbE)", tel: "053-131-119",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "剑桥Primary & Secondary、英国VbE价值观认证、小班教学",
-        tips: "位于湄海与长康交界，交通便利，注重品格塑造，低龄段口碑好。"
-      },
-      {
-        id: 712, type: "school",
-        nameZh: "华丽国际学校 (Varee Chiangmai / VCIS)",
-        nameEn: "Varee Chiangmai International School",
-        nameTh: "โรงเรียนนานาชาติวารีเชียงใหม่",
-        addressTh: "59 หมู่ 6 ถนนมหิดล ต.หนองหอย อ.เมืองเชียงใหม่",
-        lat: 18.7660, lng: 99.0180, district: "长康路",
-        category: "老牌英式剑桥IGCSE & A-Level名校", tel: "053-140-232",
-        time: "周一至周五 07:45 - 15:30",
-        highlight: "办学历史久、马希敦干道交通便利、性价比优异",
-        tips: "英制课程严谨规范，学费相对亲民，升学成绩亮眼。"
-      },
-      {
-        id: 713, type: "school",
-        nameZh: "美中国际学校 (ACIS)",
-        nameEn: "Americana Chinese International School",
-        nameTh: "โรงเรียนนานาชาติอเมริคาน่า ไชนีส เชียงใหม่",
-        addressTh: "194 หมู่ 3 ต.หนองผึ้ง อ.สารภี เชียงใหม่",
-        lat: 18.7390, lng: 99.0290, district: "沙拉丕",
-        category: "现代化美制AP + 强化汉语双轨", tel: "052-135-069",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "全新科技校园、加州体系、高标准每日中文强化课",
-        tips: "美制课程融合正统中文教育，免除家长对中文断档的担忧。"
-      },
-      {
-        id: 714, type: "school",
-        nameZh: "兰实大学双语学校 (SBS Chiangmai)",
-        nameEn: "Satit Bilingual School of Rangsit",
-        nameTh: "โรงเรียนสาธิตแห่งมหาวิทยาลัยรังสิต เชียงใหม่",
-        addressTh: "222 หมู่ 2 ถนนเชียงใหม่-หางดง ต.บ้านแหวน อ.หางดง เชียงใหม่",
-        lat: 18.6910, lng: 98.9240, district: "杭东",
-        category: "剑桥双语双轨国际学校", tel: "053-442-208",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "剑桥体系与双语班双轨、依托大学资源、性价比高",
-        tips: "坐落杭东核心圈，课程选择灵活，师资投入大。"
-      },
-      {
-        id: 715, type: "school",
-        nameZh: "英国和谐国际学校 (BCIS)",
-        nameEn: "British Concordance International School",
-        nameTh: "โรงเรียนนานาชาติบริติช คอนคอร์ดานซ์ เชียงใหม่",
-        addressTh: "ต.หารแก้ว อ.หางดง เชียงใหม่",
-        lat: 18.6650, lng: 98.9050, district: "杭东",
-        category: "英式剑桥全新现代化国际学校", tel: "052-135-088",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "英式国家课程、现代化设施、关怀式小班育人",
-        tips: "杭东南区全新国际学校，适合居住在杭东偏南别墅区的家庭。"
-      },
-      {
-        id: 716, type: "school",
-        nameZh: "雪松国际基督教学校 (Cedar)",
-        nameEn: "Chiang Mai Cedar International School",
-        nameTh: "โรงเรียนนานาชาติซีดาร์ เชียงใหม่",
-        addressTh: "ต.ออนใต้ อ.สันกำแพง เชียงใหม่",
-        lat: 18.7290, lng: 99.1350, district: "三塞",
-        category: "美式A.C.E.基督教个性化小班学校", tel: "062-638-8162",
-        time: "周一至周五 08:00 - 15:00",
-        highlight: "美式A.C.E.教程、个性化自主节奏、圣经品格塑造",
-        tips: "位于山甘烹田园，学风敬虔纯朴，学费亲民实惠。"
-      },
-      {
-        id: 717, type: "school",
-        nameZh: "ABS 双语国际学校 (Ambassador Bilingual)",
-        nameEn: "Ambassador Bilingual School (ABS)",
-        nameTh: "โรงเรียนสองภาษา แอมบาสเดอร์ เชียงใหม่",
-        addressTh: "222 หมู่ 2 ถนนซุปเปอร์ไฮเวย์ ต.หนองผึ้ง อ.สารภี เชียงใหม่",
-        lat: 18.7350, lng: 99.0310, district: "沙拉丕",
-        category: "老牌泰美双轨高性价比双语学校", tel: "053-336-840",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "美国加州核心课程融合泰制、规模宏大学费极亲民",
-        tips: "沙拉丕超级公路旁平价名校，华人和泰国家庭基数大，ESL力度足。"
-      },
-      {
-        id: 718, type: "school",
-        nameZh: "北方国际蒙特梭利学校 (NIMS)",
-        nameEn: "Northern International Montessori School",
-        nameTh: "โรงเรียนนานาชาติ นอร์ทเทิร์น มอนเตสซอรี่ เชียงใหม่",
-        addressTh: "ต.หนองควาย อ.หางดง เชียงใหม่",
-        lat: 18.7240, lng: 98.9280, district: "杭东",
-        category: "正统国际蒙特梭利 (AMI) 幼小名校", tel: "081-885-8888",
-        time: "周一至周五 08:30 - 15:00",
-        highlight: "纯正AMI教具、混龄教学、田园自然探索生态",
-        tips: "杭东蒙氏名校，以儿童为中心，保护专注力与自驱力。"
-      },
-      {
-        id: 719, type: "school",
-        nameZh: "温菲尔德法国国际学校 (WFIS)",
-        nameEn: "Windfield French International School",
-        nameTh: "โรงเรียนนานาชาติ วินด์ฟิลด์ ฝรั่งเศส เชียงใหม่",
-        addressTh: "ต.หนองควาย อ.หางดง เชียงใหม่",
-        lat: 18.7150, lng: 98.9210, district: "杭东",
-        category: "清迈唯一法制AEFE + IB国际双轨", tel: "053-111-888",
-        time: "周一至周五 08:00 - 15:30",
-        highlight: "法国教育部认证(AEFE)、法/英/泰三语、IB体系贯通",
-        tips: "法英双母语培养环境，欧洲旅居家庭高度聚集。"
-      },
-      {
-        id: 720, type: "school",
-        nameZh: "哈拿基督教国际幼儿园 (HCIK)",
-        nameEn: "Hana Christian International Kindergarten",
-        nameTh: "โรงเรียนอนุบาลนานาชาติคริสเตียนฮานา เชียงใหม่",
-        addressTh: "55 หมู่ 12 ต.หนองควาย อ.หางดง เชียงใหม่",
-        lat: 18.7280, lng: 98.9320, district: "杭东",
-        category: "美制Common Core + 基督教有爱幼教", tel: "053-336-848",
-        time: "周一至周五 08:00 - 15:30 (1-6岁)",
-        highlight: "以基督爱为中心、美国共同核心标准、温馨小班",
-        tips: "温馨的基督教国际幼儿园，环境充满关爱，低龄首选。"
-      },
-
-      // ===== 🏛️ 移民局与政务使馆 (5) =====
-      {
-        id: 805, type: "gov",
-        nameZh: "清迈移民局大尚泰分局 (Central Festival 2楼)",
-        nameEn: "Chiang Mai Immigration (Central Festival 2F)",
-        nameTh: "จุดบริการตรวจคนเข้าเมืองจังหวัดเชียงใหม่ (เซ็นทรัล เฟสติวัล ชั้น 2)",
-        addressTh: "ชั้น 2 เซ็นทรัล เชียงใหม่ (เฟสติวัล) ถนนซุปเปอร์ไฮเวย์ ต.ฟ้าฮ่าม อ.เมืองเชียงใหม่",
-        lat: 18.8075, lng: 99.0175, district: "三塞",
-        category: "商场冷气空调便民移民站", tel: "053-201-755",
-        time: "周一至周五 09:00 - 17:00",
-        highlight: "90天报到(TM47)、旅游签续签、免日晒排队",
-        tips: "位于 Central Festival 2 楼邮局旁，商场冷气充足，办完可直接在商场超市吃饭买菜。"
-      },
-      {
-        id: 801, type: "gov",
-        nameZh: "中华人民共和国驻清迈总领事馆",
-        nameEn: "Consulate-General of the PRC in Chiang Mai",
-        nameTh: "สถานกงสุลใหญ่แห่งสาธารณรัฐประชาชนจีน ประจำเชียงใหม่",
-        addressTh: "111 ถนนช้างคลาน ต.ช้างคลาน อ.เมืองเชียงใหม่",
-        lat: 18.7725, lng: 99.0020, district: "长康路",
-        category: "中国同胞领事保护与证件大本营", tel: "053-280-380",
-        time: "周一至周五 09:00 - 11:30",
-        highlight: "护照换发补发、公证认证、中国同胞境外紧急救助",
-        tips: "在清迈中国同胞的坚强后盾，各类涉外公证与证件办理处。"
-      },
-      {
-        id: 802, type: "gov",
-        nameZh: "清迈移民局总局 (机场总办处)",
-        nameEn: "Chiang Mai Immigration Headquarter",
-        nameTh: "สำนักงานตรวจคนเข้าเมืองจังหวัดเชียงใหม่ (สนามบิน)",
-        addressTh: "71 หมู่ 3 ถนนสนามบิน ต.สุเทพ อ.เมืองเชียงใหม่",
-        lat: 18.7690, lng: 98.9660, district: "古城",
-        category: "全签证业务大本营与回头签总办处", tel: "053-201-755",
-        time: "周一至周五 08:30 - 16:30",
-        highlight: "长期签证（学生/陪读/养老/工作）首次审批、回头签(Re-entry)",
-        tips: "机场旁的移民局总局，复杂签证与首次签发业务办理地，建议早起取号。"
-      },
-      {
-        id: 803, type: "gov",
-        nameZh: "清迈交通陆路运输署 (驾照总局)",
-        nameEn: "Chiang Mai Land Transport Office",
-        nameTh: "สำนักงานขนส่งจังหวัดเชียงใหม่ (แม่เหียะ)",
-        addressTh: "ถนนเชียงใหม่-หางดง ต.แม่เหียะ อ.เมืองเชียงใหม่",
-        lat: 18.7390, lng: 98.9620, district: "湄海",
-        category: "泰国驾照考试/免试换领处", tel: "053-270-412",
-        time: "周一至周五 08:30 - 16:30",
-        highlight: "中国驾照直接免考换取泰国合法驾照、车辆过户与年检",
-        tips: "中国驾照经翻译认证后，可在此直接换取泰国合法驾驶执照。"
-      },
-      {
-        id: 804, type: "gov",
-        nameZh: "清迈府政务综合服务中心 (City Hall)",
-        nameEn: "Chiang Mai Provincial Government Complex",
-        nameTh: "ศูนย์ราชการจังหวัดเชียงใหม่",
-        addressTh: "ถนนโชตนา ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8350, lng: 98.9720, district: "运河路",
-        category: "省府综合政务中心与法律税务处", tel: "053-112-700",
-        time: "周一至周五 08:30 - 16:30",
-        highlight: "劳动厅工作证办理、商业厅DBD登记、税务申报",
-        tips: "办理在泰正规公司注册、工作证（Work Permit）的总部基地。"
-      },
-
-      // ===== 🛍️ 大型综合购物中心 (4) =====
-      {
-        id: 901, type: "mall",
-        nameZh: "Central Festival 清迈旗舰尚泰商场",
-        nameEn: "Central Chiang Mai (Fest)",
-        nameTh: "เซ็นทรัล เชียงใหม่ (เฟสติวัล)",
-        addressTh: "99/3 หมู่ 4 ถนนซุปเปอร์ไฮเวย์ ต.ฟ้าฮ่าม อ.เมืองเชียงใหม่",
-        lat: 18.8070, lng: 99.0180, district: "三塞",
-        category: "全清迈规模最大商业综合体", tel: "053-998-999",
-        time: "每天 10:00 - 21:30",
-        highlight: "2楼移民局便民站、IMAX影城、海底捞、MUJI、真冰滑冰场",
-        tips: "清迈设施最完备的顶流大商场，吃喝玩乐与办签证一站解决。"
-      },
-      {
-        id: 902, type: "mall",
-        nameZh: "Maya 玛雅生活购物中心 (宁曼地标)",
-        nameEn: "MAYA Lifestyle Shopping Center",
-        nameTh: "เมญ่า ไลฟ์สไตล์ ช้อปปิ้ง เซ็นเตอร์ เชียงใหม่",
-        addressTh: "55 หมู่ 5 ถนนห้วยแก้ว ต.ช้างเผือก อ.เมืองเชียงใหม่",
-        lat: 18.8025, lng: 98.9675, district: "宁曼路",
-        category: "宁曼潮流地标购物中心", tel: "052-081-555",
-        time: "每天 10:00 - 22:00",
-        highlight: "顶层落日观景天台、Camp 24小时自习咖啡区、SF电影院",
-        tips: "宁曼路门户地标，傍晚顶楼天台看素帖山日落晚霞非常震撼。"
-      },
-      {
-        id: 903, type: "mall",
-        nameZh: "Central Chiangmai Airport (机场尚泰)",
-        nameEn: "Central Chiang Mai Airport",
-        nameTh: "เซ็นทรัล เชียงใหม่ แอร์พอร์ต",
-        addressTh: "2 ถนนมหิดล ต.หายยา อ.เมืองเชียงใหม่",
-        lat: 18.7695, lng: 98.9750, district: "古城",
-        category: "西南区老牌综合购物广场", tel: "053-999-199",
-        time: "每天 10:30 - 21:00",
-        highlight: "地下一层Kad Luang泰北文化美食村、大型Major影城、优衣库",
-        tips: "临近机场和古城南门，负一层泰北风情美食广场平价地道，手信齐全。"
-      },
-      {
-        id: 904, type: "mall",
-        nameZh: "One Nimman 宁曼一号欧风文创街区",
-        nameEn: "One Nimman Lifestyle Community",
-        nameTh: "วัน นิมมาน เชียงใหม่",
-        addressTh: "1 ถนนนิมมานเหมินท์ ต.สุเทพ อ.เมืองเชียงใหม่",
-        lat: 18.8000, lng: 98.9680, district: "宁曼路",
-        category: "红砖欧式建筑艺术文创街区", tel: "052-080-900",
-        time: "每天 11:00 - 22:00",
-        highlight: "复古钟楼广场、周末文创市集、高端泰北手工艺品、网美打卡",
-        tips: "充满欧式复古红砖风情的高端街区，晚间经常有摇摆舞派对和现场演奏。"
-      },
-
-      // ===== 🏥 重点三甲与私立医院 (4) =====
-      {
-        id: 401, type: "hospital",
-        nameZh: "清迈麦考密克医院 (McCormick Hospital)",
-        nameEn: "McCormick Hospital Chiang Mai",
-        nameTh: "โรงพยาบาลแมคคอร์มิค เชียงใหม่",
-        addressTh: "133 ถนนแก้วนวรัฐ ต.วัดเกต อ.เมืองเชียงใหม่",
-        lat: 18.7940, lng: 99.0065, district: "瓦特盖特",
-        category: "百年教会创办综合医院", tel: "053-921-777",
-        time: "急诊 24 小时 / 门诊 08:00 - 17:00",
-        highlight: "收费平价透明、医护人员极具耐心、常规看诊性价比极高",
-        tips: "清迈历史悠久的教会医院，适合长辈日常就医配药。"
-      },
-      {
-        id: 402, type: "hospital",
-        nameZh: "曼谷医院清迈分院 (Bangkok Hospital)",
-        nameEn: "Bangkok Hospital Chiang Mai (BDMS)",
-        nameTh: "โรงพยาบาลกรุงเทพเชียงใหม่",
-        addressTh: "88/8-9 หมู่ 6 ถนนซุปเปอร์ไฮเวย์ ต.หนองป่าครั่ง อ.เมืองเชียงใหม่",
-        lat: 18.7950, lng: 99.0335, district: "瓦特盖特",
-        category: "JCI认证国际私立三甲医院", tel: "052-089-888",
-        time: "急诊 24 小时开放",
-        highlight: "设备顶尖、常设中文翻译陪同看诊、国际商业保险直付便利",
-        tips: "全清迈服务与硬件顶级的私立医院，就医完全没有语言沟通障碍。"
-      },
-      {
-        id: 403, type: "hospital",
-        nameZh: "清迈兰医院 (Chiangmai Ram Hospital)",
-        nameEn: "Chiangmai Ram Hospital",
-        nameTh: "โรงพยาบาลเชียงใหม่ ราม",
-        addressTh: "8 ถนนบุญเรืองฤทธิ์ ต.ศรีภูมิ อ.เมืองเชียงใหม่",
-        lat: 18.7955, lng: 98.9805, district: "古城",
-        category: "古城地标老牌私立综合医院", tel: "053-920-300",
-        time: "急诊 24 小时",
-        highlight: "古城西北角、名医多、配备中文同工",
-        tips: "交通便利，突发身体不适打车5分钟即达。"
-      },
-      {
-        id: 404, type: "hospital",
-        nameZh: "玛哈拉吉清大医院 (Suan Dok 松达公立)",
-        nameEn: "Maharaj Nakorn Chiang Mai Hospital",
-        nameTh: "โรงพยาบาลมหาราชนครเชียงใหม่ (สวนดอก)",
-        addressTh: "110 ถนนอินทวโรรส ต.ศรีภูมิ อ.เมืองเชียงใหม่",
-        lat: 18.7895, lng: 98.9725, district: "宁曼路",
-        category: "清迈大学医学院附属顶级公立", tel: "053-936-150",
-        time: "急诊 24 小时",
-        highlight: "泰北规模最大教学中心、疑难杂症专家汇聚",
-        tips: "心血管、神经外科泰北最强，医疗学术天花板。"
       }
     ];
 
@@ -1664,7 +1017,6 @@
       }
     }
 
-    // 标签切换过滤逻辑
     function setPersonaMode(mode) {
       currentPersona = mode;
       
@@ -1684,33 +1036,75 @@
     }
 
     // ==========================================
-    // 🚗 智能打车分流系统（原生直通超链接版，100%可跳转）
+    // 🚗 智能打车底层处理（防拦截 + 自动带入定位）
     // ==========================================
     function openRideModal(id) {
       const item = places.find(p => p.id === id);
       if (!item) return;
       activeRideTarget = item;
       document.getElementById("rideDestName").textContent = `目的地：${item.nameZh}`;
-
-      const { lat, lng, nameZh } = item;
-      const encodedName = encodeURIComponent(nameZh);
-
-      // 1. Grab 官方免安装/自动呼叫原生跳转协议
-      const grabUrl = `https://r.grab.com/?lat=${lat}&lng=${lng}&name=${encodedName}`;
-      document.getElementById("grabNativeLink").href = grabUrl;
-
-      // 2. Bolt 原生跳转协议
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      const boltUrl = isIOS 
-        ? "https://apps.apple.com/app/bolt-fast-affordable-rides/id675033630"
-        : "https://play.google.com/store/apps/details?id=ee.mtakso.client";
-      document.getElementById("boltNativeLink").href = boltUrl;
-
       document.getElementById("rideModal").classList.remove("hidden");
     }
 
     function closeRideModal() {
       document.getElementById("rideModal").classList.add("hidden");
+    }
+
+    // 1. 呼叫 Grab
+    function callGrab() {
+      if (!activeRideTarget) return;
+      const { lat, lng, nameZh } = activeRideTarget;
+      const destName = encodeURIComponent(nameZh);
+
+      // Grab 官方原生深度调起协议（直接带入下车经纬度与名称）
+      const grabAppUrl = `grab://open?screenType=BOOKING&dropoff_latitude=${lat}&dropoff_longitude=${lng}&dropoff_name=${destName}`;
+      
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const downloadUrl = isIOS 
+        ? "https://apps.apple.com/app/grab-superapp/id647268330"
+        : "https://play.google.com/store/apps/details?id=com.grabtaxi.passenger";
+
+      const t0 = Date.now();
+      window.location.href = grabAppUrl;
+
+      // 手机若无 App，自动降级打开应用商店
+      setTimeout(() => {
+        if (Date.now() - t0 < 2200) {
+          window.location.href = downloadUrl;
+        }
+      }, 1500);
+
+      closeRideModal();
+    }
+
+    // 2. 呼叫 Bolt
+    function callBolt() {
+      if (!activeRideTarget) return;
+      const boltAppUrl = "bolt://";
+      
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const downloadUrl = isIOS 
+        ? "https://apps.apple.com/app/bolt-fast-affordable-rides/id675033630"
+        : "https://play.google.com/store/apps/details?id=ee.mtakso.client";
+
+      const t0 = Date.now();
+      window.location.href = boltAppUrl;
+
+      setTimeout(() => {
+        if (Date.now() - t0 < 2200) {
+          window.location.href = downloadUrl;
+        }
+      }, 1500);
+
+      closeRideModal();
+    }
+
+    // 3. Google 地图官方比价聚合叫车通道
+    function callGoogleRide() {
+      if (!activeRideTarget) return;
+      const { lat, lng } = activeRideTarget;
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`, "_blank");
+      closeRideModal();
     }
 
     function copyCurrentAddress() {
@@ -1766,7 +1160,7 @@
         return `
           <div id="card-${item.id}" onclick="focusPlaceFromCard(${item.id})" class="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-400 transition cursor-pointer shadow-xs active:bg-slate-50 flex flex-col">
             
-            <!-- 官方实时地点交互窗口 (保证真实坐标与地图) -->
+            <!-- 官方实时地点交互窗口 -->
             <div class="w-full h-40 bg-slate-100 relative overflow-hidden shrink-0 border-b border-slate-100">
               <iframe 
                 src="${googlePlaceEmbedUrl}" 
